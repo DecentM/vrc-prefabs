@@ -1,4 +1,6 @@
-﻿namespace DecentM.Video.Plugins
+﻿using VRC.SDKBase;
+
+namespace DecentM.Video.Plugins
 {
     public class PlaylistPlayerPlugin : VideoPlugin
     {
@@ -41,7 +43,7 @@
             if (item == null)
                 return;
 
-            string url = (string)item[0];
+            VRCUrl url = (VRCUrl)item[0];
 
             this.system.RequestVideo(url);
         }

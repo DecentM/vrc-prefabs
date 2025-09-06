@@ -2,9 +2,13 @@
 using UnityEngine;
 using TMPro;
 using DecentM.Video.Handlers;
+using VRC.SDKBase;
+using UdonSharp;
+using VRC.SDK3.Components.Video;
 
 namespace DecentM.Video.Plugins
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class DebugPlugin : VideoPlugin
     {
         public TextMeshProUGUI gui;
@@ -67,7 +71,7 @@ namespace DecentM.Video.Plugins
             this.Log(nameof(OnLoadBegin));
         }
 
-        protected override void OnLoadBegin(string url)
+        protected override void OnLoadBegin(VRCUrl url)
         {
             this.Log(nameof(OnLoadBegin), "(with URL)");
         }
@@ -146,17 +150,17 @@ namespace DecentM.Video.Plugins
             );
         }
 
-        protected override void OnLoadRequested(string url)
+        protected override void OnLoadRequested(VRCUrl url)
         {
             this.Log(nameof(OnLoadRequested), "(with URL)");
         }
 
-        protected override void OnLoadApproved(string url)
+        protected override void OnLoadApproved(VRCUrl url)
         {
             this.Log(nameof(OnLoadApproved), "(with URL)");
         }
 
-        protected override void OnLoadDenied(string url, string reason)
+        protected override void OnLoadDenied(VRCUrl url, string reason)
         {
             this.Log(nameof(OnLoadDenied), $"(with URL) {reason}");
         }

@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 
 using DecentM.Pubsub;
-using DecentM.Video.Handlers;
+using UdonSharp;
+using VRC.SDKBase;
+using VRC.SDK3.Components.Video;
 
 namespace DecentM.Video
 {
@@ -50,6 +52,7 @@ namespace DecentM.Video
         OnSubtitleClear,
     }
 
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public sealed class VideoEvents : PubsubHost
     {
         #region Core
@@ -109,22 +112,22 @@ namespace DecentM.Video
             this.BroadcastEvent(VideoEvent.OnPlaybackEnd);
         }
 
-        public void OnLoadBegin(string url)
+        public void OnLoadBegin(VRCUrl url)
         {
             this.BroadcastEvent(VideoEvent.OnLoadBegin, url);
         }
 
-        public void OnLoadRequested(string url)
+        public void OnLoadRequested(VRCUrl url)
         {
             this.BroadcastEvent(VideoEvent.OnLoadRequested, url);
         }
 
-        public void OnLoadApproved(string url)
+        public void OnLoadApproved(VRCUrl url)
         {
             this.BroadcastEvent(VideoEvent.OnLoadApproved, url);
         }
 
-        public void OnLoadDenied(string url, string reason)
+        public void OnLoadDenied(VRCUrl url, string reason)
         {
             this.BroadcastEvent(VideoEvent.OnLoadDenied, url, reason);
         }

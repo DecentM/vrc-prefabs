@@ -1,27 +1,30 @@
 ﻿using DecentM.VideoRatelimit;
+using UdonSharp;
+using VRC.SDKBase;
 
 namespace DecentM.Video.Plugins
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class LoadRequestHandlerPlugin : VideoPlugin
     {
         public VideoRatelimitSystem ratelimit;
 
-        private string approvalPending;
+        private VRCUrl approvalPending;
         public float approvalTimeout = 0.3f;
 
-        protected override void OnLoadRequested(string vrcUrl)
+        protected override void OnLoadRequested(VRCUrl vrcUrl)
         {
             if (this.approvalPending != null)
                 return;
 
             this.denials = 0;
             this.approvalPending = vrcUrl;
-            Invoke(nameof(CheckForDenials), this.approvalTimeout);
+            this.SendCustomEventDelayedSeconds(nameof(CheckForDenials), this.approvalTimeout);
         }
 
         private int denials = 0;
 
-        protected override void OnLoadDenied(string url, string reason)
+        protected override void OnLoadDenied(VRCUrl url, string reason)
         {
             if (this.approvalPending == null || url != this.approvalPending)
                 return;

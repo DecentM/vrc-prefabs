@@ -1,31 +1,13 @@
 ﻿using JetBrains.Annotations;
 using UnityEngine;
 
-using DecentM.Video.Handlers;
-using DecentM.Shared;
 using UdonSharp;
+using VRC.SDKBase;
 
 namespace DecentM.Video
 {
-    public enum VideoErrorType
-    {
-        Unknown,
-        HttpError,
-        Timeout,
-    }
 
-    public struct VideoError
-    {
-        public VideoError(VideoErrorType type, string message = null)
-        {
-            this.type = type;
-            this.message = message;
-        }
-
-        public VideoErrorType type;
-        public string message;
-    }
-
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class VideoSystem : UdonSharpBehaviour
     {
         public VideoEvents events;
@@ -48,7 +30,7 @@ namespace DecentM.Video
 
         private void Start()
         {
-            Invoke(nameof(BroadcastInit), 0.1f);
+            this.SendCustomEventDelayedSeconds(nameof(BroadcastInit), 0.1f);
         }
 
         public void BroadcastInit()
@@ -171,7 +153,7 @@ namespace DecentM.Video
         [PublicAPI]
         public bool IsPlaying()
         {
-            return this.currentPlayerHandler.IsPlaying;
+            return this.currentPlayerHandler.IsPlaying();
         }
 
         [PublicAPI]
@@ -208,15 +190,15 @@ namespace DecentM.Video
             this.events.OnPlaybackStop(this.currentPlayerHandler.GetTime());
         }
 
-        private string currentUrl;
+        private VRCUrl currentUrl;
 
         [PublicAPI]
-        public void RequestVideo(string url)
+        public void RequestVideo(VRCUrl url)
         {
             this.events.OnLoadRequested(url);
         }
 
-        public void LoadVideo(string url)
+        public void LoadVideo(VRCUrl url)
         {
             this.currentUrl = url;
             this.currentPlayerHandler.LoadURL(url);
@@ -232,7 +214,7 @@ namespace DecentM.Video
         }
 
         [PublicAPI]
-        public string GetCurrentUrl()
+        public VRCUrl GetCurrentUrl()
         {
             return this.currentUrl;
         }

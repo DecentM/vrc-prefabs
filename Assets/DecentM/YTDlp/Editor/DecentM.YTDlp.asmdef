@@ -1,7 +1,8 @@
 {
     "name": "DecentM.YTDlp",
+    "rootNamespace": "",
     "references": [
-        "DecentM.Shared"
+        "DecentM.Shared.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

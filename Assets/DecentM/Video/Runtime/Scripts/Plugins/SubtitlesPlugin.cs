@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using TMPro;
+using VRC.SDKBase;
+using UdonSharp;
 
 namespace DecentM.Video.Plugins
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class SubtitlesPlugin : VideoPlugin
     {
         public TextMeshProUGUI debugSlot;
@@ -63,7 +66,7 @@ namespace DecentM.Video.Plugins
             this.Reset();
         }
 
-        protected override void OnLoadApproved(string url)
+        protected override void OnLoadApproved(VRCUrl url)
         {
             this.Reset();
         }

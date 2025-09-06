@@ -12,7 +12,7 @@ namespace DecentM.UI
         public Animator animator;
         public Button button;
 
-        private MonoBehaviour listener;
+        private UdonSharpBehaviour listener;
         private string onChangeEventName;
 
         private GameObject[] instantiatedOptions;
@@ -23,7 +23,7 @@ namespace DecentM.UI
             this.Clear();
         }
 
-        public void SetListener(MonoBehaviour listener, string onChangeEventName)
+        public void SetListener(UdonSharpBehaviour listener, string onChangeEventName)
         {
             this.listener = listener;
             this.onChangeEventName = onChangeEventName;
@@ -114,7 +114,7 @@ namespace DecentM.UI
         public void OnValueClick(object value)
         {
             this.value = value;
-            this.listener.Invoke(this.onChangeEventName, 0);
+            this.listener.SendCustomEvent(this.onChangeEventName);
             this.animator.SetBool("DropdownOpen", false);
         }
 

@@ -1,82 +1,176 @@
 ﻿using UnityEngine;
 using UdonSharp;
+using VRC.SDK3.Video.Components.Base;
+using VRC.SDKBase;
+using VRC.SDK3.Components.Video;
 
-namespace DecentM.Video.Handlers
+namespace DecentM.Video
 {
     public enum VideoHandlerType
     {
-        AVPro,
         Unity,
+        AVPro,
     }
 
     public abstract class PlayerHandler : UdonSharpBehaviour
     {
         public abstract VideoHandlerType type { get; }
+
+        public BaseVRCVideoPlayer player;
         public VideoEvents events;
+        public Renderer screen;
 
-        protected PlayerHandler playerHandler;
+        protected virtual void _Start() { }
 
-        public void RegisterPlayerHandler(PlayerHandler playerHandler)
+        private MaterialPropertyBlock _fetchBlock;
+
+        void Start()
         {
-            this.playerHandler = playerHandler;
+            if (this.player == null)
+            {
+                Debug.LogError(
+                    $"missing BaseVRCVideoPlayer on {this.name}, this video player will be broken"
+                );
+                this.enabled = false;
+                return;
+            }
+
+            this._fetchBlock = new MaterialPropertyBlock();
+
+            this._Start();
         }
 
-        public abstract bool IsPlaying { get; }
+        public float progressReportIntervalSeconds = 1;
 
-        public abstract float GetDuration();
+        private float clock = 0;
 
-        public abstract float GetTime();
-
-        public abstract void SetTime(float time);
-
-        public abstract void LoadURL(string url);
-
-        public abstract void Play();
-
-        public abstract void Play(float time);
-
-        public abstract void Unload();
-
-        public abstract void Pause();
-
-        public abstract void Pause(float time);
-
-        public abstract Texture GetScreenTexture();
-
-        protected virtual void OnVideoUnload()
+        private void FixedUpdate()
         {
-            this.events.OnUnload();
+            if (
+                this.player == null
+                || !this.player.IsPlaying
+                || float.IsInfinity(this.player.GetDuration())
+            )
+                return;
+
+            this.clock += Time.fixedDeltaTime;
+
+            if (this.clock > this.progressReportIntervalSeconds)
+            {
+                this.HandleProgress();
+                this.clock = 0;
+            }
         }
 
-        protected virtual void OnProgress()
+        public Texture GetScreenTexture()
         {
-            this.events.OnProgress(this.GetTime(), this.GetDuration());
+            Texture result = this.screen.material.GetTexture("_MainTex");
+
+            if (result == null)
+            {
+                this.screen.GetPropertyBlock(_fetchBlock);
+                result = _fetchBlock.GetTexture("_MainTex");
+            }
+
+            return result;
         }
 
-        protected virtual new void OnVideoEnd()
+        private void HandleProgress()
+        {
+            this.events.OnProgress(this.player.GetTime(), this.player.GetDuration());
+        }
+
+        public override void OnVideoEnd()
         {
             this.events.OnPlaybackEnd();
         }
 
-        protected virtual new void OnVideoPause()
+        public override void OnVideoPause()
         {
-            this.events.OnPlaybackStop(this.GetTime());
+            this.events.OnPlaybackStop(this.player.GetTime());
         }
 
-        protected virtual new void OnVideoPlay()
+        public override void OnVideoPlay()
         {
-            this.events.OnPlaybackStart(this.GetTime());
+            this.events.OnPlaybackStart(this.player.GetTime());
         }
 
-        protected virtual new void OnVideoReady()
+        public override void OnVideoReady()
         {
-            this.events.OnLoadReady(this.GetDuration());
+            this.events.OnLoadReady(this.player.GetDuration());
         }
 
-        protected virtual void OnVideoError()
+        public override void OnVideoStart()
         {
-            this.events.OnLoadError(new VideoError(VideoErrorType.Unknown));
+            this.events.OnPlaybackStart(this.player.GetTime());
+        }
+
+        public override void OnVideoError(VideoError videoError)
+        {
+            this.events.OnLoadError(videoError);
+        }
+
+        public void Play(float timestamp)
+        {
+            this.player.SetTime(timestamp);
+            this.player.Play();
+        }
+
+        public void Play()
+        {
+            this.player.Play();
+        }
+
+        public void StartPlayback(float timestamp)
+        {
+            this.player.SetTime(timestamp);
+            this.player.Play();
+        }
+
+        public void SetTime(float timestamp)
+        {
+            this.player.SetTime(timestamp);
+        }
+
+        public void Pause(float timestamp)
+        {
+            this.player.Pause();
+            this.player.SetTime(timestamp);
+        }
+
+        public void Pause()
+        {
+            this.player.Pause();
+        }
+
+        public void LoadURL(VRCUrl url)
+        {
+            this.player.LoadURL(url);
+            this.player.Pause();
+            this.player.SetTime(0);
+        }
+
+        public void Unload()
+        {
+            this.player.Stop();
+        }
+
+        public bool IsPlaying()
+        {
+            if (this.player == null)
+                return false;
+
+            return this.player.IsPlaying;
+        }
+
+        public float GetDuration()
+        {
+            return this.player.GetDuration();
+        }
+
+        public float GetTime()
+        {
+            return this.player.GetTime();
         }
     }
 }
-

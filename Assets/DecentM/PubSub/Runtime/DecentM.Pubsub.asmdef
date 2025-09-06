@@ -2,8 +2,8 @@
     "name": "DecentM.Pubsub",
     "rootNamespace": "",
     "references": [
-        "DecentM.Shared",
-        "UdonSharp.Runtime"
+        "UdonSharp.Runtime",
+        "DecentM.Collections"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

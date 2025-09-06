@@ -2,8 +2,8 @@
     "name": "DecentM.Collections",
     "rootNamespace": "",
     "references": [
-        "DecentM.Shared",
-        "UdonSharp.Runtime"
+        "UdonSharp.Runtime",
+        "DecentM.Shared"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

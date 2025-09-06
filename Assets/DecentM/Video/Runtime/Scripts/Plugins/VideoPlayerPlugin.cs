@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 
 using DecentM.Pubsub;
-using DecentM.Video.Handlers;
+using VRC.SDKBase;
+using UdonSharp;
+using VRC.SDK3.Components.Video;
 
 namespace DecentM.Video.Plugins
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public abstract class VideoPlugin : PubsubSubscriber
     {
         public VideoSystem system;
@@ -40,7 +43,7 @@ namespace DecentM.Video.Plugins
 
         protected virtual void OnProgress(float timestamp, float duration) { }
 
-        protected virtual void OnLoadBegin(string url) { }
+        protected virtual void OnLoadBegin(VRCUrl url) { }
 
         protected virtual void OnLoadBegin() { }
 
@@ -50,11 +53,11 @@ namespace DecentM.Video.Plugins
 
         protected virtual void OnUnload() { }
 
-        protected virtual void OnLoadRequested(string url) { }
+        protected virtual void OnLoadRequested(VRCUrl url) { }
 
-        protected virtual void OnLoadApproved(string url) { }
+        protected virtual void OnLoadApproved(VRCUrl url) { }
 
-        protected virtual void OnLoadDenied(string url, string reason) { }
+        protected virtual void OnLoadDenied(VRCUrl url, string reason) { }
 
         protected virtual void OnLoadRatelimitWaiting() { }
 
@@ -104,21 +107,21 @@ namespace DecentM.Video.Plugins
 
                 case VideoEvent.OnLoadRequested:
                 {
-                    string url = (string)data[0];
+                    VRCUrl url = (VRCUrl)data[0];
                     this.OnLoadRequested(url);
                     return;
                 }
 
                 case VideoEvent.OnLoadApproved:
                 {
-                    string url = (string)data[0];
+                    VRCUrl url = (VRCUrl)data[0];
                     this.OnLoadApproved(url);
                     return;
                 }
 
                 case VideoEvent.OnLoadDenied:
                 {
-                    string url = (string)data[0];
+                    VRCUrl url = (VRCUrl)data[0];
                     string reason = (string)data[1];
                     this.OnLoadDenied(url, reason);
                     return;
@@ -126,7 +129,7 @@ namespace DecentM.Video.Plugins
 
                 case VideoEvent.OnLoadBegin:
                 {
-                    string url = (string)data[0];
+                    VRCUrl url = (VRCUrl)data[0];
                     if (url == null)
                         this.OnLoadBegin();
                     else

@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
-
-using DecentM.Video.Handlers;
+using UdonSharp;
 
 namespace DecentM.Video.Plugins
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class TextureReferencePlugin : VideoPlugin
     {
         public Material[] materials;

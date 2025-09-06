@@ -1,9 +1,10 @@
 ﻿using System;
 using UnityEngine;
+using UdonSharp;
 
 namespace DecentM.Video.Plugins
 {
-    public class VideoPlaylistUI : MonoBehaviour
+    public class VideoPlaylistUI : UdonSharpBehaviour
     {
         public Transform itemsRoot;
         public GameObject itemRendererTemplate;

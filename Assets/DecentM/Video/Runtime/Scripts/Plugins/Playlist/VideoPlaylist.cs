@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine;
 using UnityEditor;
+using VRC.SDKBase;
 
 namespace DecentM.Video.Plugins
 {
-    public class VideoPlaylist : VideoPlugin, ISerializationCallbackReceiver
+    public class VideoPlaylist : VideoPlugin
     {
         /*
          * subtitle structure
@@ -467,9 +468,9 @@ namespace DecentM.Video.Plugins
         #region Autoupdate
 
         private int searchIndex = 0;
-        private string searchingUrl;
+        private VRCUrl searchingUrl;
 
-        protected override void OnLoadApproved(string url)
+        protected override void OnLoadApproved(VRCUrl url)
         {
             this.searchIndex = 0;
             this.searchingUrl = url;

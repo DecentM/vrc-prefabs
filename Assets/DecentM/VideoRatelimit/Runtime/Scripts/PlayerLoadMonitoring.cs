@@ -1,14 +1,12 @@
-﻿using UnityEngine;
-
-using DecentM.Shared;
+﻿using UdonSharp;
 
 namespace DecentM.VideoRatelimit
 {
-    public class PlayerLoadMonitoring : DBehaviour
+    public class PlayerLoadMonitoring : UdonSharpBehaviour
     {
         public VideoRatelimitSystem system;
 
-        public void OnVideoReady()
+        public override void OnVideoReady()
         {
             this.system.OnPlayerLoad();
         }

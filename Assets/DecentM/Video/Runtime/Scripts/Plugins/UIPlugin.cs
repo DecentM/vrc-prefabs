@@ -3,10 +3,14 @@ using UnityEngine;
 using TMPro;
 
 using UnityEngine.UI;
-using DecentM.Video.Handlers;
+using VRC.SDKBase;
+using VRC.SDK3.Components;
+using UdonSharp;
+using VRC.SDK3.Components.Video;
 
 namespace DecentM.Video.Plugins
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public sealed class UIPlugin : VideoPlugin
     {
         [Space]
@@ -28,7 +32,7 @@ namespace DecentM.Video.Plugins
 
         [Space]
         public TextMeshProUGUI status;
-        public InputField urlInput;
+        public VRCUrlInputField urlInput;
         public Button enterButton;
 
         [Space]
@@ -448,7 +452,7 @@ namespace DecentM.Video.Plugins
             this.status.text = $"Load timeout after {timeout} seconds, retrying...";
         }
 
-        protected override void OnLoadRequested(string url)
+        protected override void OnLoadRequested(VRCUrl url)
         {
             this.status.text = "Checking URL...";
         }
@@ -458,7 +462,7 @@ namespace DecentM.Video.Plugins
             this.status.text = "Waiting for rate limit...";
         }
 
-        protected override void OnLoadApproved(string url)
+        protected override void OnLoadApproved(VRCUrl url)
         {
             this.animator.SetBool("Loading", true);
             this.ClearMetadata();
@@ -474,11 +478,11 @@ namespace DecentM.Video.Plugins
             this.status.text = "Loading...";
         }
 
-        protected override void OnLoadBegin(string url)
+        protected override void OnLoadBegin(VRCUrl url)
         {
             this.animator.SetBool("Loading", true);
             this.status.text = "Loading...";
-            this.urlInput.SetTextWithoutNotify(url);
+            this.urlInput.SetUrl(url);
         }
 
         protected override void OnVideoPlayerInit()
@@ -486,9 +490,9 @@ namespace DecentM.Video.Plugins
             this.RenderScreen(0);
         }
 
-        protected override void OnLoadDenied(string url, string reason)
+        protected override void OnLoadDenied(VRCUrl url, string reason)
         {
-            this.urlInput.SetTextWithoutNotify(string.Empty);
+            this.urlInput.SetUrl(VRCUrl.Empty);
 
             // TODO Display the reason to the user (via a notification of some sort?)
             // (the status text isn't visible at this time, because the URL input field is shown)
@@ -611,7 +615,7 @@ namespace DecentM.Video.Plugins
 
         protected override void OnLoadError(VideoError videoError)
         {
-            this.status.text = videoError.message;
+            this.status.text = videoError.ToString();
             this.animator.SetBool("Loading", false);
         }
 
@@ -682,7 +686,7 @@ namespace DecentM.Video.Plugins
             this.isLoading = false;
             this.status.text = "Stopped";
             this.RenderScreen(this.system.GetDuration());
-            this.urlInput.SetTextWithoutNotify(string.Empty);
+            this.urlInput.SetUrl(VRCUrl.Empty);
             this.animator.SetBool("Loading", false);
         }
 
@@ -784,7 +788,7 @@ namespace DecentM.Video.Plugins
 
         public void OnUrlInput()
         {
-            this.system.RequestVideo(this.urlInput.text);
+            this.system.RequestVideo(this.urlInput.GetUrl());
         }
 
         #endregion

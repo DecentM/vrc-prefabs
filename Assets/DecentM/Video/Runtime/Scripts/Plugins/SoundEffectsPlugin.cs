@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using UdonSharp;
+using UnityEngine;
 
 namespace DecentM.Video.Plugins
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public sealed class SoundEffectsPlugin : VideoPlugin
     {
         [Space]

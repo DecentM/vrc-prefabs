@@ -1,5 +1,9 @@
-﻿namespace DecentM.Video.Plugins
+﻿using UdonSharp;
+using VRC.SDKBase;
+
+namespace DecentM.Video.Plugins
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public sealed class SkipToTimestampPlugin : VideoPlugin
     {
         private float GetTimestamp(string url)
@@ -52,7 +56,7 @@
 
         protected override void OnLoadReady(float duration)
         {
-            string url = this.system.GetCurrentUrl();
+            VRCUrl url = this.system.GetCurrentUrl();
 
             if (url == null)
                 return;

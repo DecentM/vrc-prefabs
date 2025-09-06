@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using TMPro;
+﻿using VRC.SDKBase;
 
 namespace DecentM.Video.Plugins
 {
@@ -8,83 +6,64 @@ namespace DecentM.Video.Plugins
     {
         public bool autoplayOnLoad = true;
 
-        /* TODO: Port this code once we have ownership working
+        private bool isOwner
+        {
+            get { return Networking.GetOwner(this.gameObject) == Networking.LocalPlayer; }
+        }
 
-            private bool isOwner
-            {
-                get { return Networking.GetOwner(this.gameObject) == Networking.LocalPlayer; }
-            }
-        */
-
-        // TODO: Port this code once we have networked events working
-        // private int receivedLoadedFrom = 0;
+        private int receivedLoadedFrom = 0;
 
         protected override void OnLoadReady(float duration)
         {
-            /* TODO: Port this code once we have a way to get player count
+            if (VRCPlayerApi.GetPlayerCount() == 1)
+            {
+                this.system.StartPlayback();
+                return;
+            }
 
-                if (VRCPlayerApi.GetPlayerCount() == 1)
-                {
-                    this.system.StartPlayback();
-                    return;
-                }
-            */
-
-            /* TODO: Port this code once we have ownership working
-
-                if (this.isOwner)
-                    return;
-            */
-
-            /* TODO: Port this code once we have network events working
+            if (this.isOwner)
+                return;
 
             this.SendCustomNetworkEvent(
                 VRC.Udon.Common.Interfaces.NetworkEventTarget.Owner,
                 nameof(this.OnClientLoaded)
             );
-            */
+        }
 
-            // TODO: Remove this once the above functions are ported
+        // Everyone except the owner does this, because then owner already knows when it finishes loading
+        public void OnClientLoaded()
+        {
+            if (!this.isOwner || !this.autoplayOnLoad)
+                return;
+
+            this.receivedLoadedFrom++;
+
+            this.events.OnRemotePlayerLoaded(this.receivedLoadedFrom);
+
+            // Everyone is loaded when this counter is above the player count
+            // (skipping one for the local player)
+            if (this.receivedLoadedFrom < VRCPlayerApi.GetPlayerCount() - 1)
+                return;
+
             this.system.StartPlayback();
         }
 
-        /* TODO: Restore these functions once we have ownership and networking working
+        private int ownerId = 0;
 
-            // Everyone except the owner does this, because then owner already knows when it finishes loading
-            public void OnClientLoaded()
-            {
-                if (!this.isOwner || !this.autoplayOnLoad)
-                    return;
+        protected void OnOwnershipChanged(int previousOwnerId, VRCPlayerApi nextOwner)
+        {
+            if (nextOwner == null || !nextOwner.IsValid())
+                return;
 
-                this.receivedLoadedFrom++;
+            this.ownerId = nextOwner.playerId;
+        }
 
-                this.events.OnRemotePlayerLoaded(this.receivedLoadedFrom);
+        protected override void OnLoadApproved(VRCUrl url)
+        {
+            if (!this.isOwner || !this.autoplayOnLoad)
+                return;
 
-                // Everyone is loaded when this counter is above the player count
-                // (skipping one for the local player)
-                if (this.receivedLoadedFrom < VRCPlayerApi.GetPlayerCount() - 1)
-                    return;
-
-                this.system.StartPlayback();
-            }
-
-            private int ownerId = 0;
-
-            protected override void OnOwnershipChanged(int previousOwnerId, VRCPlayerApi nextOwner)
-            {
-                if (nextOwner == null || !nextOwner.IsValid())
-                    return;
-
-                this.ownerId = nextOwner.playerId;
-            }
-
-            protected override void OnLoadApproved(VRCUrl url)
-            {
-                if (!this.isOwner || !this.autoplayOnLoad)
-                    return;
-
-                this.receivedLoadedFrom = 0;
-            }
-        */
+            this.receivedLoadedFrom = 0;
+        }
     }
 }

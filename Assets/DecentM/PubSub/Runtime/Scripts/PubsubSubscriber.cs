@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 using UdonSharp;
 
 namespace DecentM.Pubsub
@@ -14,7 +13,7 @@ namespace DecentM.Pubsub
             return;
         }
 
-        void Start()
+        private void Start()
         {
             if (this.pubsubHosts == null)
             {

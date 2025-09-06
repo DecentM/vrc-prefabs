@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using UdonSharp;
+using VRC.SDKBase;
 
 namespace DecentM.Video.Plugins
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class URLVerifierPlugin : VideoPlugin
     {
         private bool ValidateUrl(string url)
@@ -24,7 +26,7 @@ namespace DecentM.Video.Plugins
             return false;
         }
 
-        protected override void OnLoadRequested(string url)
+        protected override void OnLoadRequested(VRCUrl url)
         {
             if (this.ValidateUrl(url.ToString()))
                 return;

@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using UdonSharp;
+using UnityEngine;
+using VRC.SDK3.Components.Video;
+using VRC.SDKBase;
+using VRC.Udon;
 
 namespace DecentM.Video.Plugins
 {
@@ -23,43 +27,46 @@ namespace DecentM.Video.Plugins
             this.timeoutClock += Time.fixedDeltaTime;
             if (this.timeoutClock > this.videoLoadTimeout + ((this.failures + 1) * 5))
             {
-                VideoError error = new VideoError(VideoErrorType.Timeout, $"Video failed to load after {this.videoLoadTimeout} seconds");
-
                 this.timeoutClock = 0;
-                this.OnLoadError(error);
+                this.OnLoadError(VideoError.Unknown);
                 this.events.OnAutoRetryLoadTimeout((this.failures + 1) * 5);
             }
         }
 
         public void AttemptRetry()
         {
-            string url = this.system.GetCurrentUrl();
+            VRCUrl url = this.system.GetCurrentUrl();
             if (url == null)
                 return;
 
             this.system.RequestVideo(url);
         }
 
-        protected override void OnLoadApproved(string url)
+        protected override void OnLoadApproved(VRCUrl url)
         {
             this.timeoutClock = 0;
             this.waitingForLoad = true;
         }
 
-        protected void OnLoadError(VideoError error)
+        protected override void OnLoadError(VideoError videoError)
         {
-            string url = this.system.GetCurrentUrl();
+            VRCUrl url = this.system.GetCurrentUrl();
             if (url == null || string.IsNullOrEmpty(this.system.GetCurrentUrl().ToString()))
                 return;
 
-            switch (error.type)
+            switch (videoError)
             {
                 // Continue for rate limit errors and unknown ones
                 // (we repurposed unknown to mean player timeout as well)
-                case VideoErrorType.Timeout:
+                case VideoError.Unknown:
+                    break;
+                case VideoError.RateLimited:
+                    break;
+                case VideoError.PlayerError:
                     break;
                 // Don't retry for errors that are unlikely to be temporary
-                default:
+                case VideoError.InvalidURL:
+                case VideoError.AccessDenied:
                     this.timeoutClock = 0;
                     this.failures = 0;
                     this.events.OnAutoRetryAbort();
@@ -93,7 +100,7 @@ namespace DecentM.Video.Plugins
 
             // Schedule a retry after the rate limit expires
             this.events.OnAutoRetry(this.failures);
-            Invoke(nameof(AttemptRetry), 5.1f);
+            this.SendCustomEventDelayedSeconds(nameof(AttemptRetry), 5.1f);
         }
 
         protected override void OnLoadReady(float duration)

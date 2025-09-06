@@ -3,7 +3,7 @@ using TMPro;
 
 namespace DecentM.UI.Examples
 {
-    public class PlainTextVirtualScrollItem : VirtualScrollItem
+    public class PlaintextVirtualScrollItem : VirtualScrollItem
     {
         [SerializeField] private TextMeshProUGUI slot;
 

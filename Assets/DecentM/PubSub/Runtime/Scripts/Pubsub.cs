@@ -1,46 +1,45 @@
-﻿using System.Collections.Generic;
-
+﻿using System;
 using UdonSharp;
+using DecentM.Collections;
 
 namespace DecentM.Pubsub
 {
-    struct QueueItem
-    {
-        public QueueItem(object eventName, object[] data, PubsubSubscriber subscriber)
-        {
-            this.eventName = eventName;
-            this.data = data;
-            this.subscriber = subscriber;
-        }
-
-        public object eventName;
-        public object[] data;
-        public PubsubSubscriber subscriber;
-    }
-
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public abstract class PubsubHost : UdonSharpBehaviour
     {
         public int batchSize = 10;
 
-        private Queue<QueueItem> queue = new Queue<QueueItem>();
-        public List<PubsubSubscriber> subscribers = new List<PubsubSubscriber>();
+        [NonSerialized]
+        public List/*<PubsubSubscriber>*/ subscribers;
 
         public int Subscribe(PubsubSubscriber behaviour)
         {
-            if (this.subscribers.Contains(behaviour))
-                return -1;
-
             this.subscribers.Add(behaviour);
 
-            return this.subscribers.Count - 1;
+            return this.subscribers.Count;
         }
 
-        public void Unsubscribe(int index)
+        public bool Unsubscribe(int index)
         {
-            this.subscribers.RemoveAt(index);
+            return this.subscribers.RemoveAt(index);
         }
 
-        public void FixedUpdate()
+        [NonSerialized]
+        public Queue/*<object[]>*/ queue;
+
+        private void QueuePush(object eventName, object[] data, PubsubSubscriber behaviour)
+        {
+            object[] queueItem = new object[] { eventName, data, behaviour };
+
+            this.queue.Enqueue(queueItem);
+        }
+
+        private object[] QueuePop()
+        {
+            return (object[])this.queue.Dequeue();
+        }
+
+        private void FixedUpdate()
         {
             if (this.queue == null || this.queue.Count == 0)
                 return;
@@ -48,20 +47,22 @@ namespace DecentM.Pubsub
             int processedCount = 0;
 
             // Process a batch of items from the queue
-            while (processedCount < this.batchSize && this.queue.Count > 0)
+            while (processedCount < this.batchSize)
             {
                 // Get the first item from the queue and also remove it from the queue
-                QueueItem? queueItemOrNull = this.queue.Dequeue();
+                object[] queueItem = this.QueuePop();
 
-                if (queueItemOrNull == null)
+                if (queueItem == null)
                 {
                     processedCount++;
                     break;
                 }
 
-                QueueItem queueItem = (QueueItem)queueItemOrNull;
+                string eventName = (string)queueItem[0];
+                object[] data = (object[])queueItem[1];
+                PubsubSubscriber subscriber = (PubsubSubscriber)queueItem[2];
 
-                queueItem.subscriber.OnPubsubEvent(queueItem.eventName, queueItem.data);
+                subscriber.OnPubsubEvent(eventName, data);
 
                 processedCount++;
             }
@@ -69,12 +70,12 @@ namespace DecentM.Pubsub
 
         protected void BroadcastEvent(object eventName, params object[] data)
         {
-            if (this.subscribers.Count == 0)
+            if (this.subscribers == null || this.subscribers.Count == 0)
                 return;
 
             foreach (PubsubSubscriber subscriber in this.subscribers.ToArray())
             {
-                this.queue.Enqueue(new QueueItem(eventName, data, subscriber));
+                this.QueuePush(eventName, data, subscriber);
             }
         }
     }

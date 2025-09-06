@@ -1,9 +1,11 @@
 ﻿using JetBrains.Annotations;
-
+using UdonSharp;
 using UnityEngine;
+using VRC.SDKBase;
 
 namespace DecentM.Video.Plugins
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class ScreenAnalysisPlugin : VideoPlugin
     {
         public float targetFps = 30;
@@ -240,7 +242,7 @@ namespace DecentM.Video.Plugins
             this.Reset();
         }
 
-        protected override void OnLoadApproved(string url)
+        protected override void OnLoadApproved(VRCUrl url)
         {
             this.isRunning = false;
             this.Reset();

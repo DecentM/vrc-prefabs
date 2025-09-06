@@ -2,9 +2,8 @@
 
 namespace DecentM.Video
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class VideoUI : UdonSharpBehaviour
     {
-        public bool hasDefaultPlaylist = false;
-        public string[] defaultPlaylist = new string[0];
     }
 }
