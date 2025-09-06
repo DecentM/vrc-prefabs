@@ -6,19 +6,22 @@ using VRC.SDK3.Components.Video;
 
 namespace DecentM.Video
 {
-    public enum VideoHandlerType
+    public class VideoHandlerType
     {
-        Unity,
-        AVPro,
+        public void Unity() { }
+        public void AVPro() { }
     }
 
     public abstract class PlayerHandler : UdonSharpBehaviour
     {
-        public abstract VideoHandlerType type { get; }
+        public abstract string type { get; }
 
         public BaseVRCVideoPlayer player;
         public VideoEvents events;
         public Renderer screen;
+        public VideoSystem system;
+
+        protected virtual void _Awake() { }
 
         protected virtual void _Start() { }
 
@@ -26,18 +29,20 @@ namespace DecentM.Video
 
         void Start()
         {
-            if (this.player == null)
-            {
-                Debug.LogError(
-                    $"missing BaseVRCVideoPlayer on {this.name}, this video player will be broken"
-                );
-                this.enabled = false;
-                return;
-            }
+            if (this.system == null)
+                this.Awake();
 
-            this._fetchBlock = new MaterialPropertyBlock();
-
+            this.system.RegisterPlayerHandler(this);
             this._Start();
+        }
+
+        private void Awake()
+        {
+            this.player = this.GetComponent<BaseVRCVideoPlayer>();
+            this.system = this.GetComponentInParent<VideoSystem>();
+            this.events = this.GetComponentInParent<VideoEvents>();
+            this._fetchBlock = new MaterialPropertyBlock();
+            this._Awake();
         }
 
         public float progressReportIntervalSeconds = 1;

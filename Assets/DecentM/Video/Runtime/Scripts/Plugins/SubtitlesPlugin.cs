@@ -24,15 +24,14 @@ namespace DecentM.Video.Plugins
             {
                 this._displayValue = value;
 
-                // TODO: Restore after we have ownership working
-                // if (this.isOwner)
-                //    this.RequestSerialization();
+                if (this.isOwner)
+                   this.RequestSerialization();
 
                 // If the current non-owner already has subtitles loaded, we don't do anything.
                 // This way synced subtitles won't happen when there are multiple languages and people
                 // are using different ones.
-                // else if (this.instructions.Length > 0)
-                //    return;
+                else if (this.instructions.Length > 0)
+                   return;
 
                 if (string.IsNullOrEmpty(value))
                     this.events.OnSubtitleClear();
@@ -40,14 +39,10 @@ namespace DecentM.Video.Plugins
                     this.events.OnSubtitleRender(value);
             }
         }
-
-        /* TODO: Restore after we have ownership working
-
         private bool isOwner
         {
             get { return Networking.GetOwner(this.gameObject) == Networking.LocalPlayer; }
         }
-        */
 
         protected override void OnPlaybackStart(float timestamp)
         {
@@ -409,7 +404,7 @@ namespace DecentM.Video.Plugins
 
         public float subtitleOffset = 0;
 
-        protected override void _Start()
+        protected override void __Awake()
         {
             this.Reset();
         }
@@ -472,7 +467,7 @@ namespace DecentM.Video.Plugins
 
         private void FixedUpdate()
         {
-            if (!this.system.IsPlaying())
+            if (this.system == null || !this.system.IsPlaying())
                 return;
 
             this.elapsed += Time.fixedUnscaledDeltaTime;

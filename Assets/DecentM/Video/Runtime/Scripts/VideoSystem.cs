@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using UnityEngine;
+using DecentM.Collections;
 
 using UdonSharp;
 using VRC.SDKBase;
@@ -10,12 +11,12 @@ namespace DecentM.Video
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class VideoSystem : UdonSharpBehaviour
     {
-        public VideoEvents events;
-        public PlayerHandler[] playerHandlers;
+        private VideoEvents events;
+        [SerializeField]
+        private List/*<PlayerHandler>*/ playerHandlers;
         public AudioSource[] speakers;
         public ScreenHandler[] screens;
 
-        public bool muted = false;
         public float volume = 1.0f;
         public float brightness = 1.0f;
         public int minFps = 1;
@@ -23,21 +24,26 @@ namespace DecentM.Video
 
         private int currentPlayerHandlerIndex = 0;
 
-        public PlayerHandler currentPlayerHandler
-        {
-            get { return this.playerHandlers[currentPlayerHandlerIndex]; }
-        }
-
         private void Start()
         {
+            this.events = this.GetComponent<VideoEvents>();
             this.SendCustomEventDelayedSeconds(nameof(BroadcastInit), 0.1f);
+        }
+
+        internal void RegisterPlayerHandler(PlayerHandler behaviour)
+        {
+            this.playerHandlers.Add(behaviour);
+        }
+
+        private PlayerHandler GetCurrentPlayerHandler()
+        {
+            return (PlayerHandler)this.playerHandlers.ElementAt(this.currentPlayerHandlerIndex);
         }
 
         public void BroadcastInit()
         {
             this.DisableAllPlayers();
             this.EnablePlayer(0);
-            this.SetMuted(this.muted);
             this.SetVolume(this.volume);
             this.SetBrightness(this.brightness);
             this.PausePlayback();
@@ -72,7 +78,12 @@ namespace DecentM.Video
         [PublicAPI]
         public Texture GetVideoTexture()
         {
-            return this.currentPlayerHandler.GetScreenTexture();
+            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
+
+            if (playerHandler == null)
+                return null;
+
+            return playerHandler.GetScreenTexture();
         }
 
         [PublicAPI]
@@ -92,7 +103,7 @@ namespace DecentM.Video
 
         private void DisablePlayer(int index)
         {
-            PlayerHandler PlayerHandler = this.playerHandlers[index];
+            PlayerHandler PlayerHandler = (PlayerHandler)this.playerHandlers.ElementAt(index);
 
             if (PlayerHandler == null)
                 return;
@@ -108,17 +119,17 @@ namespace DecentM.Video
 
         private void EnablePlayer(int index)
         {
-            PlayerHandler PlayerHandler = this.playerHandlers[index];
+            PlayerHandler playerHandler = (PlayerHandler)this.playerHandlers.ElementAt(index);
 
-            if (PlayerHandler == null)
+            if (playerHandler == null)
                 return;
 
-            this.EnablePlayer(PlayerHandler);
+            this.EnablePlayer(playerHandler);
         }
 
         private void DisableAllPlayers()
         {
-            foreach (PlayerHandler player in playerHandlers)
+            foreach (PlayerHandler player in playerHandlers.ToArray())
             {
                 this.DisablePlayer(player);
             }
@@ -127,25 +138,31 @@ namespace DecentM.Video
         [PublicAPI]
         public int NextPlayerHandler()
         {
-            if (this.playerHandlers.Length == 0)
+            if (this.playerHandlers.Count == 0)
                 return -1;
 
             int newIndex = this.currentPlayerHandlerIndex + 1;
 
             if (
-                newIndex >= this.playerHandlers.Length
+                newIndex >= this.playerHandlers.Count
                 || newIndex < 0
                 || this.currentPlayerHandlerIndex == newIndex
-                || this.playerHandlers[newIndex] == null
+                || this.playerHandlers.ElementAt(newIndex) == null
             )
             {
                 newIndex = 0;
             }
 
-            this.DisablePlayer(this.currentPlayerHandler);
+            this.DisablePlayer(this.GetCurrentPlayerHandler());
             this.currentPlayerHandlerIndex = newIndex;
-            this.EnablePlayer(this.currentPlayerHandler);
-            this.events.OnPlayerSwitch(this.currentPlayerHandler.type);
+
+            PlayerHandler newPlayerHandler = this.GetCurrentPlayerHandler();
+
+            if (newPlayerHandler == null)
+                return -1;
+
+            this.EnablePlayer(newPlayerHandler);
+            this.events.OnPlayerSwitch(newPlayerHandler.type);
 
             return newIndex;
         }
@@ -153,41 +170,71 @@ namespace DecentM.Video
         [PublicAPI]
         public bool IsPlaying()
         {
-            return this.currentPlayerHandler.IsPlaying();
+            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
+
+            if (playerHandler == null)
+                return false;
+
+            return playerHandler.IsPlaying();
         }
 
         [PublicAPI]
         public void StartPlayback()
         {
-            this.currentPlayerHandler.Play();
+            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
+
+            if (playerHandler == null)
+                return;
+
+            playerHandler.Play();
         }
 
         [PublicAPI]
         public void StartPlayback(float timestamp)
         {
-            this.currentPlayerHandler.Play(timestamp);
+            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
+
+            if (playerHandler == null)
+                return;
+
+            playerHandler.Play(timestamp);
         }
 
         [PublicAPI]
         public void Seek(float timestamp)
         {
-            this.currentPlayerHandler.SetTime(timestamp);
+            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
+
+            if (playerHandler == null)
+                return;
+
+            playerHandler.SetTime(timestamp);
             this.events.OnProgress(timestamp, this.GetDuration());
         }
 
         [PublicAPI]
         public void PausePlayback(float timestamp)
         {
-            this.currentPlayerHandler.Pause();
-            this.currentPlayerHandler.SetTime(timestamp);
+            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
+
+            if (playerHandler == null)
+                return;
+
+            playerHandler.Pause();
+            playerHandler.SetTime(timestamp);
             this.events.OnPlaybackStop(timestamp);
         }
 
         [PublicAPI]
         public void PausePlayback()
         {
-            this.currentPlayerHandler.Pause();
-            this.events.OnPlaybackStop(this.currentPlayerHandler.GetTime());
+            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
+
+            if (playerHandler == null)
+                return;
+
+            playerHandler.Pause();
+            this.events.OnPlaybackStop(playerHandler.GetTime());
         }
 
         private VRCUrl currentUrl;
@@ -200,15 +247,25 @@ namespace DecentM.Video
 
         public void LoadVideo(VRCUrl url)
         {
+            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
+
+            if (playerHandler == null)
+                return;
+
             this.currentUrl = url;
-            this.currentPlayerHandler.LoadURL(url);
+            playerHandler.LoadURL(url);
         }
 
         [PublicAPI]
         public void Unload()
         {
+            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
+
+            if (playerHandler == null)
+                return;
+
             this.currentUrl = null;
-            this.currentPlayerHandler.Unload();
+            playerHandler.Unload();
             this.events.OnUnload();
             this.Seek(0);
         }
@@ -257,7 +314,7 @@ namespace DecentM.Video
             }
 
             this.volume = volume;
-            this.events.OnVolumeChange(volume, this.muted);
+            this.events.OnVolumeChange(volume);
 
             return true;
         }
@@ -269,33 +326,31 @@ namespace DecentM.Video
         }
 
         [PublicAPI]
-        public void SetMuted(bool muted)
-        {
-            foreach (AudioSource speaker in this.speakers)
-            {
-                speaker.volume = muted ? 0 : this.volume;
-            }
-
-            this.muted = muted;
-            this.events.OnMutedChange(muted, this.volume);
-        }
-
-        [PublicAPI]
         public bool GetMuted()
         {
-            return this.muted;
+            return this.volume > 0;
         }
 
         [PublicAPI]
         public float GetDuration()
         {
-            return this.currentPlayerHandler.GetDuration();
+            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
+
+            if (playerHandler == null)
+                return 0;
+
+            return playerHandler.GetDuration();
         }
 
         [PublicAPI]
         public float GetTime()
         {
-            return this.currentPlayerHandler.GetTime();
+            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
+
+            if (playerHandler == null)
+                return 0;
+
+            return playerHandler.GetTime();
         }
     }
 }

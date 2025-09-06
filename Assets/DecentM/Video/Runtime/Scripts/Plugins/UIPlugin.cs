@@ -75,6 +75,13 @@ namespace DecentM.Video.Plugins
         [Space]
         public TextMeshProUGUI subtitleSlot;
 
+        [Space]
+        public Button ownershipButton;
+        public TextMeshProUGUI ownershipLabel;
+        public Sprite lockIcon;
+        public Sprite unlockIcon;
+        public Sprite ownershipTransferIcon;
+
         #region Utilities
 
         private string HumanReadableTimestamp(float timestamp)
@@ -99,188 +106,12 @@ namespace DecentM.Video.Plugins
 
         #endregion
 
-        #region Focus handling
-
-        private float elapsed = 0;
-
-        private RaycastHit hitInfo;
-
-        public Quaternion desktopRaycastTurn = Quaternion.identity;
-        public Quaternion vrRaycastTurn = Quaternion.identity;
-
-        private bool CheckDesktopHit()
-        {
-            return false;
-
-            /* TODO: Restore once we have a tracking API working
-
-                if (RefugeeTools.IsUserInVR(RefugeeTools.LocalPlayer))
-                    return false;
-
-                TrackingData head = RefugeeTools.GetTrackingData(
-                    RefugeeTools.LocalPlayer,
-                    TrackingDataType.Head
-                );
-
-                return Physics.Raycast(
-                    head.position,
-                    head.rotation * desktopRaycastTurn * Vector3.forward,
-                    out hitInfo,
-                    this.raycastMaxDistance,
-                    this.raycastLayerMask
-                );
-            */
-        }
-
-        private bool CheckVRHit()
-        {
-            return false;
-
-            /* TODO: Restore once we have a tracking API working
-
-                if (!RefugeeTools.IsUserInVR(RefugeeTools.LocalPlayer))
-                    return false;
-
-                TrackingData rightHand = RefugeeTools.GetTrackingData(
-                    RefugeeTools.LocalPlayer,
-                    TrackingDataType.RightHand
-                );
-                TrackingData leftHand = RefugeeTools.GetTrackingData(
-                    RefugeeTools.LocalPlayer,
-                    TrackingDataType.LeftHand
-                );
-
-                RaycastHit rightHitInfo;
-                RaycastHit leftHitInfo;
-
-                bool rightHit = Physics.Raycast(
-                    rightHand.position,
-                    rightHand.rotation * vrRaycastTurn * Vector3.forward,
-                    out rightHitInfo,
-                    this.raycastMaxDistance,
-                    this.raycastLayerMask
-                );
-
-                if (rightHit)
-                {
-                    this.hitInfo = rightHitInfo;
-                    return true;
-                }
-
-                bool leftHit = Physics.Raycast(
-                    leftHand.position,
-                    leftHand.rotation * vrRaycastTurn * Vector3.forward,
-                    out leftHitInfo,
-                    this.raycastMaxDistance,
-                    this.raycastLayerMask
-                );
-
-                if (leftHit)
-                {
-                    this.hitInfo = leftHitInfo;
-                    return true;
-                }
-
-                return false;
-            */
-        }
-
-        private bool uiRunning = false;
-
-        /* TODO: Restore this once we have triggers working with CVRPlayerEntity
-
-        public override void OnPlayerTriggerEnter(CVRPlayerEntity player)
-        {
-            if (player != Networking.LocalPlayer)
-                return;
-
-            this.uiRunning = true;
-        }
-
-        public override void OnPlayerTriggerExit(CVRPlayerEntity player)
-        {
-            if (player != Networking.LocalPlayer)
-                return;
-
-            this.uiRunning = false;
-            this.animator.SetBool("ShowControls", false);
-        }
-        */
-
-        public float raycastElapsed = 0;
-        public float autoHideTimeout = 5f;
-        private RaycastHit lastHitInfo;
-
-        private void RaycastActivityUpdate()
-        {
-            if (object.Equals(this.hitInfo, null))
-                return;
-            if (object.Equals(this.lastHitInfo, null))
-                this.lastHitInfo = this.hitInfo;
-
-            float distance = Vector3.Distance(this.lastHitInfo.point, this.hitInfo.point);
-
-            if (distance < 0.1f)
-            {
-                if (this.raycastElapsed <= this.autoHideTimeout)
-                    this.raycastElapsed += this.raycastIntervalSeconds;
-            }
-            else
-            {
-                this.animator.SetBool("ShowControls", true);
-                this.raycastElapsed = 0;
-            }
-
-            this.lastHitInfo = this.hitInfo;
-
-            if (this.raycastElapsed >= this.autoHideTimeout)
-            {
-                this.animator.SetBool("ShowControls", false);
-            }
-        }
-
-        private void FixedUpdate()
-        {
-            if (!this.uiRunning)
-                return;
-
-            this.elapsed += Time.fixedUnscaledDeltaTime;
-            if (this.elapsed < this.raycastIntervalSeconds)
-                return;
-            this.elapsed = 0;
-
-            /* TODO: Restore once we have working RefugeeTools
-
-                if (!RefugeeTools.PlayerIsValid(RefugeeTools.LocalPlayer))
-                    return;
-            */
-
-            bool desktopHit = this.CheckDesktopHit();
-            bool vrHit = this.CheckVRHit();
-
-            bool isLookingAtUi =
-                (desktopHit || vrHit) && hitInfo.transform.gameObject == this.raycastTarget;
-
-            if (isLookingAtUi)
-            {
-                this.RaycastActivityUpdate();
-                return;
-            }
-
-            bool shown = this.animator.GetBool("ShowControls");
-            if (!shown)
-                return;
-
-            this.animator.SetBool("ShowControls", false);
-        }
-
-        #endregion
-
         #region Outputs
 
         protected override void _Start()
         {
             this.OnSubtitleLanguageOptionsChange(new string[0][]);
+            this.animator.SetBool("ShowControls", true);
         }
 
         private string currentLanguage = "en";
@@ -442,9 +273,9 @@ namespace DecentM.Video.Plugins
             this.isLoading = false;
         }
 
-        protected override void OnPlayerSwitch(VideoHandlerType type)
+        protected override void OnPlayerSwitch(string type)
         {
-            this.status.text = "Trying with a different player...";
+            this.status.text = $"Trying with a {type} player...";
         }
 
         protected override void OnAutoRetryLoadTimeout(int timeout)
@@ -498,9 +329,6 @@ namespace DecentM.Video.Plugins
             // (the status text isn't visible at this time, because the URL input field is shown)
             this.status.text = reason;
         }
-
-        // TODO: Remove after we have ownerships working
-        private bool selfOwned = true;
 
         private void StoppedScreen(float duration)
         {
@@ -635,9 +463,9 @@ namespace DecentM.Video.Plugins
             this.brightnessImage.sprite = this.GetBrightnessSprite(alpha);
         }
 
-        private Sprite GetVolumeSprite(float volume, bool muted)
+        private Sprite GetVolumeSprite(float volume)
         {
-            if (muted || volume == 0)
+            if (volume == 0)
                 return this.volumeMutedIcon;
 
             if (volume < 1f / 3f)
@@ -648,16 +476,15 @@ namespace DecentM.Video.Plugins
             return this.volumeHighIcon;
         }
 
-        protected override void OnVolumeChange(float volume, bool muted)
+        protected override void OnVolumeChange(float volume)
         {
             this.volumeSlider.SetValueWithoutNotify(volume);
-            this.volumeImage.sprite = this.GetVolumeSprite(volume, muted);
-        }
+            this.volumeSlider.interactable = volume > 0;
 
-        protected override void OnMutedChange(bool muted, float volume)
-        {
-            this.volumeSlider.interactable = !muted;
-            this.volumeImage.sprite = this.GetVolumeSprite(volume, muted);
+            if (volume == 0)
+                this.volumeImage.sprite = this.GetVolumeSprite(volume);
+            else
+                this.volumeImage.sprite = this.GetVolumeSprite(volume);
         }
 
         protected override void OnPlaybackEnd()
@@ -717,13 +544,39 @@ namespace DecentM.Video.Plugins
             }
         }
 
+        private bool selfOwned = true;
+
+        protected override void OnOwnershipChanged(int previousOwnerId, VRCPlayerApi nextOwner)
+        {
+            if (nextOwner == null || !nextOwner.IsValid())
+                return;
+
+            if (nextOwner != Networking.LocalPlayer)
+                this.ownershipButton.image.sprite = this.ownershipTransferIcon;
+            else if (this.ownershipLocked)
+                this.ownershipButton.image.sprite = this.lockIcon;
+            else
+                this.ownershipButton.image.sprite = this.unlockIcon;
+
+            this.selfOwned = nextOwner == Networking.LocalPlayer;
+
+            this.ownershipLabel.text = nextOwner.displayName;
+
+            this.RenderScreen(this.system.GetDuration());
+        }
+
+        private bool ownershipLocked = false;
+
+        protected override void OnOwnershipSecurityChanged(bool locked)
+        {
+            this.ownershipLocked = locked;
+
+            this.ownershipButton.image.sprite = locked ? this.lockIcon : this.unlockIcon;
+        }
+
         protected override void OnRemotePlayerLoaded(int loadedPlayers)
         {
-            // TODO: Restore once we have working RefugeeTools
-            // int players = RefugeeTools.GetPlayerCount();
-
-            // Assume only one player in world
-            int players = 1;
+            int players = VRCPlayerApi.GetPlayerCount();
             int unloadedPlayers = players - loadedPlayers - 1;
 
             if (unloadedPlayers == 1)
@@ -778,7 +631,8 @@ namespace DecentM.Video.Plugins
 
         public void OnMuteButton()
         {
-            this.system.SetMuted(!this.system.GetMuted());
+            bool muted = this.system.GetVolume() == 0;
+            this.system.SetVolume(muted ? 0.1f : 0);
         }
 
         public void OnProgressSlider()
@@ -789,6 +643,18 @@ namespace DecentM.Video.Plugins
         public void OnUrlInput()
         {
             this.system.RequestVideo(this.urlInput.GetUrl());
+        }
+
+        public void OnOwnershipButton()
+        {
+            if (selfOwned)
+            {
+                this.events.OnOwnershipSecurityChanged(!this.ownershipLocked);
+            }
+            else
+            {
+                this.events.OnOwnershipRequested();
+            }
         }
 
         #endregion

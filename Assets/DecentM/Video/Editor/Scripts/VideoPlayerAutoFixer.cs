@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using UnityEngine;
 using UnityEditor;
 
 using DecentM.Shared.Editor;
@@ -14,27 +13,7 @@ namespace DecentM.Video.Editor
         [MenuItem("DecentM/VideoPlayer/Run Autofixer")]
         public static bool OnPerformFixes()
         {
-            Debug.Log("Autofixer running...");
-
             FixRatelimits();
-
-            List<VideoUI> players =
-                ComponentCollector<VideoUI>.CollectFromActiveScene();
-
-            foreach (VideoUI player in players)
-            {
-                VideoPlugin[] plugins = player.GetComponentsInChildren<VideoPlugin>();
-                PluginRequirements requirements = PluginManager.GetRequirements(player);
-
-                foreach (VideoPlugin plugin in plugins)
-                {
-                    plugin.events = requirements.events;
-                    plugin.system = requirements.system;
-                    plugin.pubsubHosts = new Pubsub.PubsubHost[] { requirements.events };
-
-                    Inspector.SaveModifications(plugin);
-                }
-            }
 
             return true;
         }

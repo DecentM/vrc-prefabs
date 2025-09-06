@@ -5,6 +5,7 @@ using UdonSharp;
 
 namespace DecentM.UI
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class Dropdown : UdonSharpBehaviour
     {
         public GameObject optionTemplate;

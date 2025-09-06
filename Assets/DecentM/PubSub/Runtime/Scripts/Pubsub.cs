@@ -1,6 +1,6 @@
-﻿using System;
-using UdonSharp;
+﻿using UdonSharp;
 using DecentM.Collections;
+using UnityEngine;
 
 namespace DecentM.Pubsub
 {
@@ -9,14 +9,14 @@ namespace DecentM.Pubsub
     {
         public int batchSize = 10;
 
-        [NonSerialized]
+        [SerializeField]
         public List/*<PubsubSubscriber>*/ subscribers;
 
         public int Subscribe(PubsubSubscriber behaviour)
         {
             this.subscribers.Add(behaviour);
 
-            return this.subscribers.Count;
+            return this.subscribers.Count - 1;
         }
 
         public bool Unsubscribe(int index)
@@ -24,7 +24,7 @@ namespace DecentM.Pubsub
             return this.subscribers.RemoveAt(index);
         }
 
-        [NonSerialized]
+        [SerializeField]
         public Queue/*<object[]>*/ queue;
 
         private void QueuePush(object eventName, object[] data, PubsubSubscriber behaviour)

@@ -5,6 +5,6 @@ namespace DecentM.Video.Handlers
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class UnityVideo : PlayerHandler
     {
-        public override VideoHandlerType type => VideoHandlerType.Unity;
+        public override string type => nameof(VideoHandlerType.Unity);
     }
 }

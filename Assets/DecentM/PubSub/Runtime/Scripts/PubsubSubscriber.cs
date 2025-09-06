@@ -1,30 +1,21 @@
 ﻿using UnityEngine;
 using UdonSharp;
+using DecentM.Collections;
 
 namespace DecentM.Pubsub
 {
     public abstract class PubsubSubscriber : UdonSharpBehaviour
     {
-        public PubsubHost[] pubsubHosts;
-        private int[] subscriptions;
+        public PubsubHost[] pubsubHosts = new PubsubHost[0];
 
-        virtual protected void _Start()
-        {
-            return;
-        }
+        [SerializeField]
+        private List/*<int>*/ subscriptions;
+
+        virtual protected void _Start() { }
 
         private void Start()
         {
-            if (this.pubsubHosts == null)
-            {
-                Debug.LogError(
-                    $"no pubsub host object is attached to {this.name}, this subscriber will not receive events"
-                );
-                this.enabled = false;
-                return;
-            }
-
-            this.subscriptions = new int[this.pubsubHosts.Length];
+            this._Start();
 
             if (this.pubsubHosts.Length == 0)
             {
@@ -34,7 +25,13 @@ namespace DecentM.Pubsub
             }
 
             this.SubscribeAll();
-            this._Start();
+        }
+
+        virtual protected void _Awake() { }
+
+        private void Awake()
+        {
+            this._Awake();
         }
 
         private void SubscribeAll()
@@ -46,7 +43,7 @@ namespace DecentM.Pubsub
 
                 int subscription = this.pubsubHosts[i].Subscribe(this);
 
-                this.subscriptions[i] = subscription;
+                this.subscriptions.Add(subscription);
             }
         }
 
@@ -56,7 +53,7 @@ namespace DecentM.Pubsub
             {
                 if (this.pubsubHosts[i] == null)
                     continue;
-                int subscription = this.subscriptions[i];
+                int subscription = (int)this.subscriptions.ElementAt(i);
 
                 this.pubsubHosts[i].Unsubscribe(subscription);
             }
@@ -66,10 +63,7 @@ namespace DecentM.Pubsub
         protected void ResubscribeAll()
         {
             this.UnsubscribeAll();
-
-            // Reset the subscription store to the new length
-            this.subscriptions = new int[this.pubsubHosts.Length];
-
+            this.subscriptions.Clear();
             this.SubscribeAll();
         }
 

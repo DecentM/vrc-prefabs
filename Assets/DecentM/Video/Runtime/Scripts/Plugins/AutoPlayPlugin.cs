@@ -50,7 +50,7 @@ namespace DecentM.Video.Plugins
 
         private int ownerId = 0;
 
-        protected void OnOwnershipChanged(int previousOwnerId, VRCPlayerApi nextOwner)
+        protected override void OnOwnershipChanged(int previousOwnerId, VRCPlayerApi nextOwner)
         {
             if (nextOwner == null || !nextOwner.IsValid())
                 return;

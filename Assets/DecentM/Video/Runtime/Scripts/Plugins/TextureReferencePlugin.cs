@@ -33,16 +33,16 @@ namespace DecentM.Video.Plugins
             }
         }
 
-        protected override void OnPlayerSwitch(VideoHandlerType type)
+        protected override void OnPlayerSwitch(string type)
         {
             foreach (Material material in this.materials)
             {
-                material.SetInt(this.avProProperty, type == VideoHandlerType.AVPro ? 1 : 0);
+                material.SetInt(this.avProProperty, type == nameof(VideoHandlerType.AVPro) ? 1 : 0);
             }
 
             foreach (Renderer renderer in this.renderers)
             {
-                renderer.material.SetInt(this.avProProperty, type == VideoHandlerType.AVPro ? 1 : 0);
+                renderer.material.SetInt(this.avProProperty, type == nameof(VideoHandlerType.AVPro) ? 1 : 0);
             }
         }
     }

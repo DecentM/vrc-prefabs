@@ -47,9 +47,9 @@ namespace DecentM.Video.Plugins
             this.ShowIdleTexture();
         }
 
-        protected override void OnPlayerSwitch(VideoHandlerType type)
+        protected override void OnPlayerSwitch(string type)
         {
-            this.SetAVPro(type == VideoHandlerType.AVPro);
+            this.SetAVPro(type == nameof(VideoHandlerType.AVPro));
         }
 
         public void SetTexture(Texture texture)

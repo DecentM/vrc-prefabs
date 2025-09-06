@@ -51,9 +51,9 @@ namespace DecentM.Video.Plugins
             this.Log(nameof(OnVideoPlayerInit));
         }
 
-        protected override void OnPlayerSwitch(VideoHandlerType type)
+        protected override void OnPlayerSwitch(string type)
         {
-            this.Log(nameof(OnPlayerSwitch), type.ToString());
+            this.Log(nameof(OnPlayerSwitch), type);
         }
 
         protected override void OnPlaybackEnd()
@@ -121,14 +121,9 @@ namespace DecentM.Video.Plugins
             this.Log(nameof(OnBrightnessChange), alpha.ToString());
         }
 
-        protected override void OnVolumeChange(float volume, bool muted)
+        protected override void OnVolumeChange(float volume)
         {
-            this.Log(nameof(OnVolumeChange), volume.ToString(), muted.ToString());
-        }
-
-        protected override void OnMutedChange(bool muted, float volume)
-        {
-            this.Log(nameof(OnMutedChange), muted.ToString(), volume.ToString());
+            this.Log(nameof(OnVolumeChange), volume.ToString());
         }
 
         protected override void OnFpsChange(int fps)

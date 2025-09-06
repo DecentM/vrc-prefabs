@@ -8,7 +8,6 @@ using UnityEngine;
 using DecentM.Shared.Editor;
 using DecentM.Shared.Icons;
 using DecentM.Video.Plugins;
-using DecentM.YTdlp;
 
 namespace DecentM.Video.Editor
 {
@@ -409,65 +408,10 @@ namespace DecentM.Video.Editor
 
             EditorGUILayout.GetControlRect();
         }
-
         private void ReimportMetadata()
         {
             this.BakeMetadata();
         }
-
-        private void ImportPlaylistCallback(YTDLFlatPlaylistJson jsonOrNull)
-        {
-            VideoPlaylist playlist = (VideoPlaylist)target;
-
-            if (jsonOrNull as YTDLFlatPlaylistJson? == null)
-            {
-                EditorUtility.DisplayDialog(
-                    "Import error",
-                    "Could not retrieve videos from this playlist. Make sure the URL points to a playlist and not just a video",
-                    "OK"
-                );
-                return;
-            }
-
-            YTDLFlatPlaylistJson json = (YTDLFlatPlaylistJson)jsonOrNull;
-
-            if (playlist.urls.Length != 0)
-            {
-                bool shouldOverwrite = EditorUtility.DisplayDialog(
-                    "Playlist import",
-                    "There are already videos on the playlist. Do you want to clear them, or append the playlist?",
-                    "Overwrite",
-                    "Append"
-                );
-                if (shouldOverwrite)
-                    this.Clear();
-            }
-
-            for (int i = 0; i < json.entries.Length; i++)
-            {
-                YTDLFlatPlaylistJsonEntry entry = json.entries[i];
-                AsyncProgress.Display(
-                    $"Adding URLs... ({i} of {json.entries.Length})",
-                    1f * i / json.entries.Length
-                );
-                this.AddNew(entry.url);
-            }
-
-            playlist.title = json.title;
-            playlist.author = json.uploader;
-            playlist.description = json.description;
-
-            AsyncProgress.Clear();
-            this.importPlaylistUrl = "";
-            this.RemoveEmptyUrls();
-        }
-
-        private void ImportPlaylist()
-        {
-            GUI.FocusControl(null);
-            YTdlpCommands.GetPlaylistVideos(this.importPlaylistUrl, this.ImportPlaylistCallback);
-        }
-
         private void Clear()
         {
             GUI.FocusControl(null);

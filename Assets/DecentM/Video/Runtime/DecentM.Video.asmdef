@@ -4,10 +4,10 @@
     "references": [
         "Unity.TextMeshPro",
         "UdonSharp.Runtime",
-        "DecentM.Shared",
         "DecentM.Pubsub",
         "DecentM.UI",
-        "DecentM.VideoRatelimit"
+        "DecentM.VideoRatelimit",
+        "DecentM.Collections"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

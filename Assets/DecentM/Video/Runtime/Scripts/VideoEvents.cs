@@ -7,49 +7,48 @@ using VRC.SDK3.Components.Video;
 
 namespace DecentM.Video
 {
-    public enum VideoEvent
+    public class VideoEvent
     {
-        OnDebugLog,
+        internal void OnDebugLog() { }
 
-        OnVideoPlayerInit,
-        OnBrightnessChange,
-        OnVolumeChange,
-        OnMutedChange,
-        OnFpsChange,
-        OnScreenResolutionChange,
-        OnScreenTextureChange,
-        OnPlayerSwitch,
+        internal void OnVideoPlayerInit() { }
+        internal void OnBrightnessChange() { }
+        internal void OnVolumeChange() { }
+        internal void OnFpsChange() { }
+        internal void OnScreenResolutionChange() { }
+        internal void OnScreenTextureChange() { }
+        internal void OnPlayerSwitch() { }
 
-        OnPlaybackStart,
-        OnPlaybackStop,
-        OnPlaybackEnd,
-        OnProgress,
+        internal void OnPlaybackStart() { }
+        internal void OnPlaybackStop() { }
+        internal void OnPlaybackEnd() { }
+        internal void OnProgress() { }
 
-        OnLoadBegin,
-        OnLoadReady,
-        OnLoadError,
-        OnUnload,
-        OnLoadRequested,
-        OnLoadApproved,
-        OnLoadDenied,
-        OnLoadRatelimitWaiting,
+        internal void OnLoadBegin() { }
+        internal void OnLoadReady() { }
+        internal void OnLoadError() { }
+        internal void OnUnload() { }
+        internal void OnLoadRequested() { }
+        internal void OnLoadApproved() { }
+        internal void OnLoadDenied() { }
+        internal void OnLoadRatelimitWaiting() { }
 
-        OnAutoRetry,
-        OnAutoRetryLoadTimeout,
-        OnAutoRetryAbort,
-        OnAutoRetryAllPlayersFailed,
+        internal void OnAutoRetry() { }
+        internal void OnAutoRetryLoadTimeout() { }
+        internal void OnAutoRetryAbort() { }
+        internal void OnAutoRetryAllPlayersFailed() { }
 
-        OnOwnershipChanged,
-        OnOwnershipSecurityChanged,
-        OnOwnershipRequested,
+        internal void OnOwnershipChanged() { }
+        internal void OnOwnershipSecurityChanged() { }
+        internal void OnOwnershipRequested() { }
 
-        OnRemotePlayerLoaded,
+        internal void OnRemotePlayerLoaded() { }
 
-        OnMetadataChange,
-        OnSubtitleLanguageOptionsChange,
-        OnSubtitleLanguageRequested,
-        OnSubtitleRender,
-        OnSubtitleClear,
+        internal void OnMetadataChange() { }
+        internal void OnSubtitleLanguageOptionsChange() { }
+        internal void OnSubtitleLanguageRequested() { }
+        internal void OnSubtitleRender() { }
+        internal void OnSubtitleClear() { }
     }
 
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
@@ -59,102 +58,97 @@ namespace DecentM.Video
 
         public void OnDebugLog(string message)
         {
-            this.BroadcastEvent(VideoEvent.OnDebugLog, message);
+            this.BroadcastEvent(nameof(VideoEvent.OnDebugLog), message);
         }
 
         public void OnVideoPlayerInit()
         {
-            this.BroadcastEvent(VideoEvent.OnVideoPlayerInit);
+            this.BroadcastEvent(nameof(VideoEvent.OnVideoPlayerInit));
         }
 
         public void OnBrightnessChange(float alpha)
         {
-            this.BroadcastEvent(VideoEvent.OnBrightnessChange, alpha);
+            this.BroadcastEvent(nameof(VideoEvent.OnBrightnessChange), alpha);
         }
 
-        public void OnVolumeChange(float volume, bool muted)
+        public void OnVolumeChange(float volume)
         {
-            this.BroadcastEvent(VideoEvent.OnVolumeChange, volume, muted);
-        }
-
-        public void OnMutedChange(bool muted, float volume)
-        {
-            this.BroadcastEvent(VideoEvent.OnMutedChange, muted, volume);
+            this.BroadcastEvent(nameof(VideoEvent.OnVolumeChange), volume);
         }
 
         public void OnFpsChange(int fps)
         {
-            this.BroadcastEvent(VideoEvent.OnFpsChange, fps);
+            this.BroadcastEvent(nameof(VideoEvent.OnFpsChange), fps);
         }
 
         public void OnScreenResolutionChange(ScreenHandler screen, float width, float height)
         {
-            this.BroadcastEvent(VideoEvent.OnScreenResolutionChange, screen, width, height);
+            this.BroadcastEvent(nameof(VideoEvent.OnScreenResolutionChange), screen, width, height);
         }
 
         public void OnPlaybackStart(float timestamp)
         {
-            this.BroadcastEvent(VideoEvent.OnPlaybackStart, timestamp);
+            this.BroadcastEvent(nameof(VideoEvent.OnPlaybackStart), timestamp);
         }
 
         public void OnPlaybackStop(float timestamp)
         {
-            this.BroadcastEvent(VideoEvent.OnPlaybackStop, timestamp);
+            this.BroadcastEvent(nameof(VideoEvent.OnPlaybackStop), timestamp);
         }
 
         public void OnProgress(float timestamp, float duration)
         {
-            this.BroadcastEvent(VideoEvent.OnProgress, timestamp, duration);
+            this.BroadcastEvent(nameof(VideoEvent.OnProgress), timestamp, duration);
         }
 
         public void OnPlaybackEnd()
         {
-            this.BroadcastEvent(VideoEvent.OnPlaybackEnd);
+            this.BroadcastEvent(nameof(VideoEvent.OnPlaybackEnd));
         }
 
         public void OnLoadBegin(VRCUrl url)
         {
-            this.BroadcastEvent(VideoEvent.OnLoadBegin, url);
+            this.BroadcastEvent(nameof(VideoEvent.OnLoadBegin), url);
         }
 
         public void OnLoadRequested(VRCUrl url)
         {
-            this.BroadcastEvent(VideoEvent.OnLoadRequested, url);
+            this.BroadcastEvent(nameof(VideoEvent.OnLoadRequested), url);
         }
 
         public void OnLoadApproved(VRCUrl url)
         {
-            this.BroadcastEvent(VideoEvent.OnLoadApproved, url);
+            this.BroadcastEvent(nameof(VideoEvent.OnLoadApproved), url);
         }
 
         public void OnLoadDenied(VRCUrl url, string reason)
         {
-            this.BroadcastEvent(VideoEvent.OnLoadDenied, url, reason);
+            this.BroadcastEvent(nameof(VideoEvent.OnLoadDenied), url, reason);
         }
 
         public void OnLoadReady(float duration)
         {
-            this.BroadcastEvent(VideoEvent.OnLoadReady, duration);
+            this.BroadcastEvent(nameof(VideoEvent.OnLoadReady), duration);
         }
 
         public void OnUnload()
         {
-            this.BroadcastEvent(VideoEvent.OnUnload);
+            this.BroadcastEvent(nameof(VideoEvent.OnUnload));
         }
 
         public void OnLoadError(VideoError error)
         {
-            this.BroadcastEvent(VideoEvent.OnLoadError, error);
+            this.BroadcastEvent(nameof(VideoEvent.OnLoadError), error);
         }
 
         public void OnLoadRatelimitWaiting()
         {
-            this.BroadcastEvent(VideoEvent.OnLoadRatelimitWaiting);
+            this.BroadcastEvent(nameof(VideoEvent.OnLoadRatelimitWaiting));
         }
 
-        public void OnPlayerSwitch(VideoHandlerType type)
+        public void OnPlayerSwitch(string type)
         {
-            this.BroadcastEvent(VideoEvent.OnPlayerSwitch, type);
+            this.BroadcastEvent(nameof(VideoEvent.OnPlayerSwitch), type);
         }
 
         #endregion
@@ -163,32 +157,47 @@ namespace DecentM.Video
 
         public void OnAutoRetry(int attempt)
         {
-            this.BroadcastEvent(VideoEvent.OnAutoRetry, attempt);
+            this.BroadcastEvent(nameof(VideoEvent.OnAutoRetry), attempt);
         }
 
         public void OnAutoRetryLoadTimeout(int timeout)
         {
-            this.BroadcastEvent(VideoEvent.OnAutoRetryLoadTimeout, timeout);
+            this.BroadcastEvent(nameof(VideoEvent.OnAutoRetryLoadTimeout), timeout);
         }
 
         public void OnAutoRetryAbort()
         {
-            this.BroadcastEvent(VideoEvent.OnAutoRetryAbort);
+            this.BroadcastEvent(nameof(VideoEvent.OnAutoRetryAbort));
         }
 
         public void OnAutoRetryAllPlayersFailed()
         {
-            this.BroadcastEvent(VideoEvent.OnAutoRetryAllPlayersFailed);
+            this.BroadcastEvent(nameof(VideoEvent.OnAutoRetryAllPlayersFailed));
+        }
+
+        public void OnOwnershipChanged(int previousOwnerId, VRCPlayerApi nextOwner)
+        {
+            this.BroadcastEvent(nameof(VideoEvent.OnOwnershipChanged), previousOwnerId, nextOwner);
+        }
+
+        public void OnOwnershipSecurityChanged(bool locked)
+        {
+            this.BroadcastEvent(nameof(VideoEvent.OnOwnershipSecurityChanged), locked);
+        }
+
+        public void OnOwnershipRequested()
+        {
+            this.BroadcastEvent(nameof(VideoEvent.OnOwnershipRequested));
         }
 
         public void OnScreenTextureChange()
         {
-            this.BroadcastEvent(VideoEvent.OnScreenTextureChange);
+            this.BroadcastEvent(nameof(VideoEvent.OnScreenTextureChange));
         }
 
         public void OnRemotePlayerLoaded(int loadedPlayers)
         {
-            this.BroadcastEvent(VideoEvent.OnRemotePlayerLoaded, loadedPlayers);
+            this.BroadcastEvent(nameof(VideoEvent.OnRemotePlayerLoaded), loadedPlayers);
         }
 
         public void OnMetadataChange(
@@ -205,7 +214,7 @@ namespace DecentM.Video
         )
         {
             this.BroadcastEvent(
-                VideoEvent.OnMetadataChange,
+                nameof(VideoEvent.OnMetadataChange),
                 title,
                 uploader,
                 siteName,
@@ -221,22 +230,22 @@ namespace DecentM.Video
 
         public void OnSubtitleRender(string text)
         {
-            this.BroadcastEvent(VideoEvent.OnSubtitleRender, text);
+            this.BroadcastEvent(nameof(VideoEvent.OnSubtitleRender), text);
         }
 
         public void OnSubtitleClear()
         {
-            this.BroadcastEvent(VideoEvent.OnSubtitleClear);
+            this.BroadcastEvent(nameof(VideoEvent.OnSubtitleClear));
         }
 
         public void OnSubtitleLanguageOptionsChange(string[][] newOptions)
         {
-            this.BroadcastEvent(VideoEvent.OnSubtitleLanguageOptionsChange, newOptions);
+            this.BroadcastEvent(nameof(VideoEvent.OnSubtitleLanguageOptionsChange), newOptions);
         }
 
         public void OnSubtitleLanguageRequested(string language)
         {
-            this.BroadcastEvent(VideoEvent.OnSubtitleLanguageRequested, language);
+            this.BroadcastEvent(nameof(VideoEvent.OnSubtitleLanguageRequested), language);
         }
 
         #endregion

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace DecentM.Video
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class ScreenHandler : UdonSharpBehaviour
     {
         public Renderer[] screens;
@@ -10,7 +11,7 @@ namespace DecentM.Video
 
         private void Start()
         {
-            this.camera = GetComponentInChildren<Camera>();
+            this.camera = this.GetComponentInChildren<Camera>();
         }
 
         private bool isLocked = false;
