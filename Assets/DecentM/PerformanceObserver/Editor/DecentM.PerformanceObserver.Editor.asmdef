@@ -1,0 +1,21 @@
+{
+    "name": "DecentM.PerformanceObserver.Editor",
+    "rootNamespace": "",
+    "references": [
+        "DecentM.Shared",
+        "DecentM.Shared.Editor",
+        "DecentM.PerformanceObserver",
+        "DecentM.Pubsub"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

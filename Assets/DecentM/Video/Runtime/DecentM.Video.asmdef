@@ -1,0 +1,20 @@
+{
+    "name": "DecentM.Video",
+    "rootNamespace": "",
+    "references": [
+        "Unity.TextMeshPro",
+        "DecentM.Shared",
+        "DecentM.Pubsub",
+        "DecentM.VideoRatelimit",
+        "DecentM.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
