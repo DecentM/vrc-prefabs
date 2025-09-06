@@ -1,9 +1,11 @@
 {
     "name": "DecentM.VideoRatelimit",
+    "rootNamespace": "",
     "references": [
         "DecentM.Shared",
-        "DecentM.Collections",
-        "DecentM.Shared.Editor"
+        "DecentM.Shared.Editor",
+        "UdonSharp.Runtime",
+        "DecentM.Collections"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

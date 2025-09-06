@@ -1,13 +1,13 @@
 ﻿using JetBrains.Annotations;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
+using UdonSharp;
 
 namespace DecentM.UI
 { 
-    public class VirtualScroll<Item> : MonoBehaviour
+    public class VirtualScroll<Item> : UdonSharpBehaviour
     {
         [SerializeField] private RectTransform window;
         [SerializeField] private VirtualScrollItem itemTemplate;

@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
-
-using DecentM.Shared;
+using UdonSharp;
 
 namespace DecentM.UI
 {
-    public abstract class VirtualScrollItem : DBehaviour
+    public abstract class VirtualScrollItem : UdonSharpBehaviour
     {
         public RectTransform rectTransform;
 

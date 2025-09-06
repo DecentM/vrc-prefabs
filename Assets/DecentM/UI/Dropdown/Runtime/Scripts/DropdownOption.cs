@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using TMPro;
+﻿using TMPro;
+using UdonSharp;
 
 namespace DecentM.UI
 {
-    public class DropdownOption : MonoBehaviour
+    public class DropdownOption : UdonSharpBehaviour
     {
         public TextMeshProUGUI labelSlot;
 

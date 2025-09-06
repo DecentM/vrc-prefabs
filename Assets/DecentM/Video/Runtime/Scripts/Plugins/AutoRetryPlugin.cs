@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public class AutoRetryPlugin : VideoPlayerPlugin
+    public class AutoRetryPlugin : VideoPlugin
     {
         [Tooltip(
             "Switch to the next player handler after this many failures. Each attempt takes 5 seconds."
@@ -46,7 +46,7 @@ namespace DecentM.VideoPlayer.Plugins
             this.waitingForLoad = true;
         }
 
-        protected override void OnLoadError(VideoError error)
+        protected void OnLoadError(VideoError error)
         {
             string url = this.system.GetCurrentUrl();
             if (url == null || string.IsNullOrEmpty(this.system.GetCurrentUrl().ToString()))

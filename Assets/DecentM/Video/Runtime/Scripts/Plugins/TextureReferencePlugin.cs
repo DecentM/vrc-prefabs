@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-using DecentM.VideoPlayer.Handlers;
+using DecentM.Video.Handlers;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public class TextureReferencePlugin : VideoPlayerPlugin
+    public class TextureReferencePlugin : VideoPlugin
     {
         public Material[] materials;
         public Renderer[] renderers;
@@ -33,16 +33,16 @@ namespace DecentM.VideoPlayer.Plugins
             }
         }
 
-        protected override void OnPlayerSwitch(VideoPlayerHandlerType type)
+        protected override void OnPlayerSwitch(VideoHandlerType type)
         {
             foreach (Material material in this.materials)
             {
-                material.SetInt(this.avProProperty, type == VideoPlayerHandlerType.AVPro ? 1 : 0);
+                material.SetInt(this.avProProperty, type == VideoHandlerType.AVPro ? 1 : 0);
             }
 
             foreach (Renderer renderer in this.renderers)
             {
-                renderer.material.SetInt(this.avProProperty, type == VideoPlayerHandlerType.AVPro ? 1 : 0);
+                renderer.material.SetInt(this.avProProperty, type == VideoHandlerType.AVPro ? 1 : 0);
             }
         }
     }

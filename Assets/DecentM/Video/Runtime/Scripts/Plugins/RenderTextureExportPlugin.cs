@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public class RenderTextureExportPlugin : VideoPlayerPlugin
+    public class RenderTextureExportPlugin : VideoPlugin
     {
         public float targetFps = 24;
         public RenderTexture renderTexture;

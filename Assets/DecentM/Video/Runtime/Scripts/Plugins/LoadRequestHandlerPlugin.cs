@@ -1,12 +1,8 @@
-﻿using System;
-using UnityEngine;
-using TMPro;
+﻿using DecentM.VideoRatelimit;
 
-using DecentM.VideoRatelimit;
-
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public class LoadRequestHandlerPlugin : VideoPlayerPlugin
+    public class LoadRequestHandlerPlugin : VideoPlugin
     {
         public VideoRatelimitSystem ratelimit;
 

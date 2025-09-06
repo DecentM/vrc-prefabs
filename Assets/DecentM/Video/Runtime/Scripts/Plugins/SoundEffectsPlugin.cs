@@ -1,10 +1,8 @@
-﻿using System;
-using UnityEngine;
-using TMPro;
+﻿using UnityEngine;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public sealed class SoundEffectsPlugin : VideoPlayerPlugin
+    public sealed class SoundEffectsPlugin : VideoPlugin
     {
         [Space]
         public AudioSource audioSource;

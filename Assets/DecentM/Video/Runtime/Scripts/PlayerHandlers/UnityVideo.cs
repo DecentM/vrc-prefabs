@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 
-namespace DecentM.VideoPlayer.Handlers
+namespace DecentM.Video.Handlers
 {
     public class UnityVideo : PlayerHandler
     {
-        public override VideoPlayerHandlerType type => VideoPlayerHandlerType.Unity;
+        public override VideoHandlerType type => VideoHandlerType.Unity;
 
         public UnityEngine.Video.VideoPlayer player;
         public AudioSource audioSource;
         public MeshRenderer screen;
-        public new VideoPlayerEvents events;
+        public new VideoEvents events;
 
         private MaterialPropertyBlock _fetchBlock;
 

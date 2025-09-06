@@ -2,9 +2,9 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public class VideoPlaylist : VideoPlayerPlugin, ISerializationCallbackReceiver
+    public class VideoPlaylist : VideoPlugin, ISerializationCallbackReceiver
     {
         /*
          * subtitle structure

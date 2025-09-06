@@ -5,7 +5,8 @@
         "DecentM.Shared",
         "DecentM.Shared.Editor",
         "DecentM.PerformanceObserver",
-        "DecentM.Pubsub"
+        "DecentM.Pubsub",
+        "UdonSharp.Runtime"
     ],
     "includePlatforms": [
         "Editor"

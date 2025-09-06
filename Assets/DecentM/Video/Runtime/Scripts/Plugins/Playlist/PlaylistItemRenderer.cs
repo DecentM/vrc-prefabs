@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using DecentM.Shared;
+using UdonSharp;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public class PlaylistItemRenderer : DBehaviour
+    public class PlaylistItemRenderer : UdonSharpBehaviour
     {
         public VideoPlaylist playlist;
 

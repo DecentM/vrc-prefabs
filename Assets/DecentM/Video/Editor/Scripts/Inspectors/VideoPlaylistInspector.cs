@@ -5,12 +5,12 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-using DecentM.YTdlp;
 using DecentM.Shared.Editor;
 using DecentM.Shared.Icons;
-using DecentM.VideoPlayer.Plugins;
+using DecentM.Video.Plugins;
+using DecentM.YTdlp;
 
-namespace DecentM.VideoPlayer.Editor
+namespace DecentM.Video.Editor
 {
     [CustomEditor(typeof(VideoPlaylist))]
     public class VideoPlaylistInspector : Inspector
@@ -84,7 +84,7 @@ namespace DecentM.VideoPlayer.Editor
             EditorGUI.BeginDisabledGroup(this.importPlaylistUrl == "");
             if (this.Button(importButton, "Import playlist"))
             {
-                this.ImportPlaylist();
+                // this.ImportPlaylist();
             }
             EditorGUI.EndDisabledGroup();
 

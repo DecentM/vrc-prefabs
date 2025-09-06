@@ -1,21 +1,18 @@
 ﻿using UnityEngine;
+using UdonSharp;
 
-using DecentM.Shared;
-
-namespace DecentM.VideoPlayer.Handlers
+namespace DecentM.Video.Handlers
 {
-    public enum VideoPlayerHandlerType
+    public enum VideoHandlerType
     {
         AVPro,
         Unity,
-        CVR,
-        VLC,
     }
 
-    public abstract class PlayerHandler : DBehaviour
+    public abstract class PlayerHandler : UdonSharpBehaviour
     {
-        public abstract VideoPlayerHandlerType type { get; }
-        public VideoPlayerEvents events;
+        public abstract VideoHandlerType type { get; }
+        public VideoEvents events;
 
         protected PlayerHandler playerHandler;
 
@@ -56,22 +53,22 @@ namespace DecentM.VideoPlayer.Handlers
             this.events.OnProgress(this.GetTime(), this.GetDuration());
         }
 
-        protected virtual void OnVideoEnd()
+        protected virtual new void OnVideoEnd()
         {
             this.events.OnPlaybackEnd();
         }
 
-        protected virtual void OnVideoPause()
+        protected virtual new void OnVideoPause()
         {
             this.events.OnPlaybackStop(this.GetTime());
         }
 
-        protected virtual void OnVideoPlay()
+        protected virtual new void OnVideoPlay()
         {
             this.events.OnPlaybackStart(this.GetTime());
         }
 
-        protected virtual void OnVideoReady()
+        protected virtual new void OnVideoReady()
         {
             this.events.OnLoadReady(this.GetDuration());
         }

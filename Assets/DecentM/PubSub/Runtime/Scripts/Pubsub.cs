@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-using DecentM.Shared;
+using UdonSharp;
 
 namespace DecentM.Pubsub
 {
@@ -18,7 +18,7 @@ namespace DecentM.Pubsub
         public PubsubSubscriber subscriber;
     }
 
-    public abstract class PubsubHost : DBehaviour
+    public abstract class PubsubHost : UdonSharpBehaviour
     {
         public int batchSize = 10;
 

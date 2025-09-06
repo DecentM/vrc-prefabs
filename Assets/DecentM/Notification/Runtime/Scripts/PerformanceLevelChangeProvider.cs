@@ -1,33 +1,33 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-using DecentM.PerformanceGovernor;
-using DecentM.PerformanceGovernor.Plugins;
+using DecentM.PerformanceObserver;
+using DecentM.PerformanceObserver.Plugins;
 
-namespace DecentM.NotificationSystem.Providers
+namespace DecentM.Notification.Providers
 {
-    public class PerformanceLevelChangeProvider : PerformanceGovernorPlugin
+    public class PerformanceLevelChangeProvider : PerformanceObserverPlugin
     {
-        public NotificationSystem notifications;
+        public Notification notifications;
         public Toggle toggle;
 
         public Sprite iconHigh;
         public Sprite iconMed;
         public Sprite iconLow;
 
-        protected override void OnPerformanceModeChange(PerformanceGovernorMode mode, float fps)
+        protected override void OnPerformanceModeChange(PerformanceObserverMode mode, float fps)
         {
             switch (mode)
             {
-                case PerformanceGovernorMode.Low:
+                case PerformanceObserverMode.Low:
                     this.OnPerformanceLow();
                     return;
 
-                case PerformanceGovernorMode.Medium:
+                case PerformanceObserverMode.Medium:
                     this.OnPerformanceMedium();
                     return;
 
-                case PerformanceGovernorMode.High:
+                case PerformanceObserverMode.High:
                     this.OnPerformanceHigh();
                     return;
             }

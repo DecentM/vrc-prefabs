@@ -6,7 +6,8 @@
         "DecentM.Shared",
         "DecentM.Pubsub",
         "DecentM.VideoRatelimit",
-        "DecentM.UI"
+        "DecentM.UI",
+        "UdonSharp.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

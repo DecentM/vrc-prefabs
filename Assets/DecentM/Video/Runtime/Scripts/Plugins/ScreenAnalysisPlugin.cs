@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 using UnityEngine;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public class ScreenAnalysisPlugin : VideoPlayerPlugin
+    public class ScreenAnalysisPlugin : VideoPlugin
     {
         public float targetFps = 30;
         public float historyLengthSeconds = 0.3333f;

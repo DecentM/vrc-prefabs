@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public class URLVerifierPlugin : VideoPlayerPlugin
+    public class URLVerifierPlugin : VideoPlugin
     {
         private bool ValidateUrl(string url)
         {

@@ -1,10 +1,6 @@
-﻿using System;
-using UnityEngine;
-using TMPro;
-
-namespace DecentM.VideoPlayer.Plugins
+﻿namespace DecentM.Video.Plugins
 {
-    public sealed class SkipToTimestampPlugin : VideoPlayerPlugin
+    public sealed class SkipToTimestampPlugin : VideoPlugin
     {
         private float GetTimestamp(string url)
         {

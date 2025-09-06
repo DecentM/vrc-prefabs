@@ -1,10 +1,8 @@
-﻿using System;
-using UnityEngine;
-using TMPro;
+﻿using UnityEngine;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public sealed class ResolutionUpdaterPlugin : VideoPlayerPlugin
+    public sealed class ResolutionUpdaterPlugin : VideoPlugin
     {
         public bool dynamicResolution = false;
 

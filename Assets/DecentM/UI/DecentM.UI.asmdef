@@ -1,8 +1,10 @@
 {
     "name": "DecentM.UI",
+    "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro",
-        "DecentM.Shared"
+        "DecentM.Shared",
+        "UdonSharp.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

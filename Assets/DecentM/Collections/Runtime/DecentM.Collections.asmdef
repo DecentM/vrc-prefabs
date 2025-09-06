@@ -1,0 +1,17 @@
+{
+    "name": "DecentM.Collections",
+    "rootNamespace": "",
+    "references": [
+        "DecentM.Shared",
+        "UdonSharp.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,12 +1,11 @@
 ﻿using System;
 using UnityEngine;
 using TMPro;
+using DecentM.Video.Handlers;
 
-using DecentM.VideoPlayer.Handlers;
-
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public class DebugPlugin : VideoPlayerPlugin
+    public class DebugPlugin : VideoPlugin
     {
         public TextMeshProUGUI gui;
         public bool logToConsole = false;
@@ -48,7 +47,7 @@ namespace DecentM.VideoPlayer.Plugins
             this.Log(nameof(OnVideoPlayerInit));
         }
 
-        protected override void OnPlayerSwitch(VideoPlayerHandlerType type)
+        protected override void OnPlayerSwitch(VideoHandlerType type)
         {
             this.Log(nameof(OnPlayerSwitch), type.ToString());
         }

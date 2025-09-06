@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-using DecentM.Shared;
+using UdonSharp;
 
 namespace DecentM.Pubsub
 {
-    public abstract class PubsubSubscriber : DBehaviour
+    public abstract class PubsubSubscriber : UdonSharpBehaviour
     {
         public PubsubHost[] pubsubHosts;
         private int[] subscriptions;

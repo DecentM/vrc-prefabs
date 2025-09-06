@@ -1,9 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-using UnityEngine.UI;
-
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
     public class VideoPlaylistUI : MonoBehaviour
     {

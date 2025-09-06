@@ -1,9 +1,9 @@
-﻿using DecentM.Shared;
+﻿using UdonSharp;
 using UnityEngine;
 
-namespace DecentM.VideoPlayer
+namespace DecentM.Video
 {
-    public class ScreenHandler : DBehaviour
+    public class ScreenHandler : UdonSharpBehaviour
     {
         public Renderer[] screens;
         private new Camera camera;

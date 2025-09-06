@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-using DecentM.VideoPlayer.Handlers;
+using DecentM.Video.Handlers;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public sealed class TextureUpdaterPlugin : VideoPlayerPlugin
+    public sealed class TextureUpdaterPlugin : VideoPlugin
     {
         public Texture idleTexture;
 
@@ -46,9 +46,9 @@ namespace DecentM.VideoPlayer.Plugins
             this.ShowIdleTexture();
         }
 
-        protected override void OnPlayerSwitch(VideoPlayerHandlerType type)
+        protected override void OnPlayerSwitch(VideoHandlerType type)
         {
-            this.SetAVPro(type == VideoPlayerHandlerType.AVPro);
+            this.SetAVPro(type == VideoHandlerType.AVPro);
         }
 
         public void SetTexture(Texture texture)

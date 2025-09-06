@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-
-namespace DecentM.VideoPlayer.Plugins
+﻿namespace DecentM.Video.Plugins
 {
-    public class PlaylistPlayerPlugin : VideoPlayerPlugin
+    public class PlaylistPlayerPlugin : VideoPlugin
     {
         public VideoPlaylist playlist;
 

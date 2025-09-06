@@ -1,8 +1,10 @@
 {
     "name": "DecentM.PerformanceObserver",
+    "rootNamespace": "",
     "references": [
         "DecentM.Shared",
-        "DecentM.Pubsub"
+        "DecentM.Pubsub",
+        "UdonSharp.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

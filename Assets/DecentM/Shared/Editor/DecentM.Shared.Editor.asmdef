@@ -1,7 +1,9 @@
 {
     "name": "DecentM.Shared.Editor",
+    "rootNamespace": "",
     "references": [
-        "DecentM.Shared"
+        "DecentM.Shared",
+        "UdonSharp.Runtime"
     ],
     "includePlatforms": [
         "Editor"

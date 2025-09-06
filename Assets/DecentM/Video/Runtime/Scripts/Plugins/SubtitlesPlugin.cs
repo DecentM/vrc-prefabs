@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using TMPro;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public class SubtitlesPlugin : VideoPlayerPlugin
+    public class SubtitlesPlugin : VideoPlugin
     {
         public TextMeshProUGUI debugSlot;
         public TextMeshProUGUI pregenerateSlot;

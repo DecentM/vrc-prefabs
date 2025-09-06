@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 
 using DecentM.Pubsub;
-using DecentM.VideoPlayer.Handlers;
+using DecentM.Video.Handlers;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public abstract class VideoPlayerPlugin : PubsubSubscriber
+    public abstract class VideoPlugin : PubsubSubscriber
     {
-        public VideoPlayerSystem system;
-        public VideoPlayerEvents events;
+        public VideoSystem system;
+        public VideoEvents events;
 
         protected virtual void OnDebugLog(string message) { }
 
@@ -30,7 +30,7 @@ namespace DecentM.VideoPlayer.Plugins
 
         protected virtual void OnScreenTextureChange() { }
 
-        protected virtual void OnPlayerSwitch(VideoPlayerHandlerType type) { }
+        protected virtual void OnPlayerSwitch(VideoHandlerType type) { }
 
         protected virtual void OnPlaybackStart(float timestamp) { }
 
@@ -95,28 +95,28 @@ namespace DecentM.VideoPlayer.Plugins
             {
                 #region Core
 
-                case VideoPlayerEvent.OnDebugLog:
+                case VideoEvent.OnDebugLog:
                 {
                     string message = (string)data[0];
                     this.OnDebugLog(message);
                     return;
                 }
 
-                case VideoPlayerEvent.OnLoadRequested:
+                case VideoEvent.OnLoadRequested:
                 {
                     string url = (string)data[0];
                     this.OnLoadRequested(url);
                     return;
                 }
 
-                case VideoPlayerEvent.OnLoadApproved:
+                case VideoEvent.OnLoadApproved:
                 {
                     string url = (string)data[0];
                     this.OnLoadApproved(url);
                     return;
                 }
 
-                case VideoPlayerEvent.OnLoadDenied:
+                case VideoEvent.OnLoadDenied:
                 {
                     string url = (string)data[0];
                     string reason = (string)data[1];
@@ -124,7 +124,7 @@ namespace DecentM.VideoPlayer.Plugins
                     return;
                 }
 
-                case VideoPlayerEvent.OnLoadBegin:
+                case VideoEvent.OnLoadBegin:
                 {
                     string url = (string)data[0];
                     if (url == null)
@@ -134,14 +134,14 @@ namespace DecentM.VideoPlayer.Plugins
                     return;
                 }
 
-                case VideoPlayerEvent.OnBrightnessChange:
+                case VideoEvent.OnBrightnessChange:
                 {
                     float alpha = (float)data[0];
                     this.OnBrightnessChange(alpha);
                     return;
                 }
 
-                case VideoPlayerEvent.OnVolumeChange:
+                case VideoEvent.OnVolumeChange:
                 {
                     float volume = (float)data[0];
                     bool muted = (bool)data[1];
@@ -149,7 +149,7 @@ namespace DecentM.VideoPlayer.Plugins
                     return;
                 }
 
-                case VideoPlayerEvent.OnMutedChange:
+                case VideoEvent.OnMutedChange:
                 {
                     bool muted = (bool)data[0];
                     float volume = (float)data[1];
@@ -157,14 +157,14 @@ namespace DecentM.VideoPlayer.Plugins
                     return;
                 }
 
-                case VideoPlayerEvent.OnFpsChange:
+                case VideoEvent.OnFpsChange:
                 {
                     int fps = (int)data[0];
                     this.OnFpsChange(fps);
                     return;
                 }
 
-                case VideoPlayerEvent.OnScreenResolutionChange:
+                case VideoEvent.OnScreenResolutionChange:
                 {
                     ScreenHandler screen = (ScreenHandler)data[0];
                     float width = (float)data[1];
@@ -173,47 +173,47 @@ namespace DecentM.VideoPlayer.Plugins
                     return;
                 }
 
-                case VideoPlayerEvent.OnLoadReady:
+                case VideoEvent.OnLoadReady:
                 {
                     float duration = (float)data[0];
                     this.OnLoadReady(duration);
                     return;
                 }
 
-                case VideoPlayerEvent.OnLoadError:
+                case VideoEvent.OnLoadError:
                 {
                     VideoError error = (VideoError)data[0];
                     this.OnLoadError(error);
                     return;
                 }
 
-                case VideoPlayerEvent.OnLoadRatelimitWaiting:
+                case VideoEvent.OnLoadRatelimitWaiting:
                 {
                     this.OnLoadRatelimitWaiting();
                     return;
                 }
 
-                case VideoPlayerEvent.OnUnload:
+                case VideoEvent.OnUnload:
                 {
                     this.OnUnload();
                     return;
                 }
 
-                case VideoPlayerEvent.OnPlaybackStart:
+                case VideoEvent.OnPlaybackStart:
                 {
                     float timestamp = (float)data[0];
                     this.OnPlaybackStart(timestamp);
                     return;
                 }
 
-                case VideoPlayerEvent.OnPlaybackStop:
+                case VideoEvent.OnPlaybackStop:
                 {
                     float timestamp = (float)data[0];
                     this.OnPlaybackStop(timestamp);
                     return;
                 }
 
-                case VideoPlayerEvent.OnProgress:
+                case VideoEvent.OnProgress:
                 {
                     float timestamp = (float)data[0];
                     float duration = (float)data[1];
@@ -221,21 +221,21 @@ namespace DecentM.VideoPlayer.Plugins
                     return;
                 }
 
-                case VideoPlayerEvent.OnPlaybackEnd:
+                case VideoEvent.OnPlaybackEnd:
                 {
                     this.OnPlaybackEnd();
                     return;
                 }
 
-                case VideoPlayerEvent.OnVideoPlayerInit:
+                case VideoEvent.OnVideoPlayerInit:
                 {
                     this.OnVideoPlayerInit();
                     return;
                 }
 
-                case VideoPlayerEvent.OnPlayerSwitch:
+                case VideoEvent.OnPlayerSwitch:
                 {
-                    VideoPlayerHandlerType type = (VideoPlayerHandlerType)data[0];
+                    VideoHandlerType type = (VideoHandlerType)data[0];
                     this.OnPlayerSwitch(type);
                     return;
                 }
@@ -244,46 +244,46 @@ namespace DecentM.VideoPlayer.Plugins
 
                 #region Plugins
 
-                case VideoPlayerEvent.OnAutoRetry:
+                case VideoEvent.OnAutoRetry:
                 {
                     int attempt = (int)data[0];
                     this.OnAutoRetry(attempt);
                     return;
                 }
 
-                case VideoPlayerEvent.OnAutoRetryLoadTimeout:
+                case VideoEvent.OnAutoRetryLoadTimeout:
                 {
                     int timeout = (int)data[0];
                     this.OnAutoRetryLoadTimeout(timeout);
                     return;
                 }
 
-                case VideoPlayerEvent.OnAutoRetryAbort:
+                case VideoEvent.OnAutoRetryAbort:
                 {
                     this.OnAutoRetryAbort();
                     return;
                 }
 
-                case VideoPlayerEvent.OnAutoRetryAllPlayersFailed:
+                case VideoEvent.OnAutoRetryAllPlayersFailed:
                 {
                     this.OnAutoRetryAllPlayersFailed();
                     return;
                 }
 
-                case VideoPlayerEvent.OnScreenTextureChange:
+                case VideoEvent.OnScreenTextureChange:
                 {
                     this.OnScreenTextureChange();
                     return;
                 }
 
-                case VideoPlayerEvent.OnRemotePlayerLoaded:
+                case VideoEvent.OnRemotePlayerLoaded:
                 {
                     int loadedPlayers = (int)data[0];
                     this.OnRemotePlayerLoaded(loadedPlayers);
                     return;
                 }
 
-                case VideoPlayerEvent.OnMetadataChange:
+                case VideoEvent.OnMetadataChange:
                 {
                     string title = (string)data[0];
                     string uploader = (string)data[1];
@@ -311,27 +311,27 @@ namespace DecentM.VideoPlayer.Plugins
                     return;
                 }
 
-                case VideoPlayerEvent.OnSubtitleRender:
+                case VideoEvent.OnSubtitleRender:
                 {
                     string text = (string)data[0];
                     this.OnSubtitleRender(text);
                     return;
                 }
 
-                case VideoPlayerEvent.OnSubtitleClear:
+                case VideoEvent.OnSubtitleClear:
                 {
                     this.OnSubtitleClear();
                     return;
                 }
 
-                case VideoPlayerEvent.OnSubtitleLanguageOptionsChange:
+                case VideoEvent.OnSubtitleLanguageOptionsChange:
                 {
                     string[][] newOptions = (string[][])data;
                     this.OnSubtitleLanguageOptionsChange(newOptions);
                     return;
                 }
 
-                case VideoPlayerEvent.OnSubtitleLanguageRequested:
+                case VideoEvent.OnSubtitleLanguageRequested:
                 {
                     string language = (string)data[0];
                     this.OnSubtitleLanguageRequested(language);
@@ -343,7 +343,7 @@ namespace DecentM.VideoPlayer.Plugins
                     break;
                 }
 
-                    #endregion
+                #endregion
             }
         }
     }

@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEditor;
 
 using DecentM.Shared.Editor;
-using DecentM.VideoPlayer.Plugins;
+using DecentM.Video.Plugins;
 using DecentM.VideoRatelimit;
 
-namespace DecentM.VideoPlayer.Editor
+namespace DecentM.Video.Editor
 {
     public static class VideoPlayerAutoFixer
     {
@@ -18,15 +18,15 @@ namespace DecentM.VideoPlayer.Editor
 
             FixRatelimits();
 
-            List<VideoPlayerUI> players =
-                ComponentCollector<VideoPlayerUI>.CollectFromActiveScene();
+            List<VideoUI> players =
+                ComponentCollector<VideoUI>.CollectFromActiveScene();
 
-            foreach (VideoPlayerUI player in players)
+            foreach (VideoUI player in players)
             {
-                VideoPlayerPlugin[] plugins = player.GetComponentsInChildren<VideoPlayerPlugin>();
+                VideoPlugin[] plugins = player.GetComponentsInChildren<VideoPlugin>();
                 PluginRequirements requirements = PluginManager.GetRequirements(player);
 
-                foreach (VideoPlayerPlugin plugin in plugins)
+                foreach (VideoPlugin plugin in plugins)
                 {
                     plugin.events = requirements.events;
                     plugin.system = requirements.system;

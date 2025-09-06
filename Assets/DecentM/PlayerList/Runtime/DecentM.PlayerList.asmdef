@@ -1,9 +1,11 @@
 {
     "name": "DecentM.PlayerList",
+    "rootNamespace": "",
     "references": [
-        "DecentM.Collections",
         "DecentM.Shared",
-        "DecentM.Pubsub"
+        "DecentM.Pubsub",
+        "UdonSharp.Runtime",
+        "DecentM.Collections"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

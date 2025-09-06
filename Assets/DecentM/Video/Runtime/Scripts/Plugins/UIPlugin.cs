@@ -3,12 +3,11 @@ using UnityEngine;
 using TMPro;
 
 using UnityEngine.UI;
+using DecentM.Video.Handlers;
 
-using DecentM.VideoPlayer.Handlers;
-
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public sealed class UIPlugin : VideoPlayerPlugin
+    public sealed class UIPlugin : VideoPlugin
     {
         [Space]
         public LayerMask raycastLayerMask;
@@ -439,7 +438,7 @@ namespace DecentM.VideoPlayer.Plugins
             this.isLoading = false;
         }
 
-        protected override void OnPlayerSwitch(VideoPlayerHandlerType type)
+        protected override void OnPlayerSwitch(VideoHandlerType type)
         {
             this.status.text = "Trying with a different player...";
         }

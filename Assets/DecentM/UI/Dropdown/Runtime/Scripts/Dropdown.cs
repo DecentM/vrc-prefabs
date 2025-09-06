@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UdonSharp;
 
 namespace DecentM.UI
 {
-    public class Dropdown : MonoBehaviour
+    public class Dropdown : UdonSharpBehaviour
     {
         public GameObject optionTemplate;
         public Transform optionsRoot;

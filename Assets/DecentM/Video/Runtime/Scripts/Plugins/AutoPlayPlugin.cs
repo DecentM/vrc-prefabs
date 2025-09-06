@@ -2,9 +2,9 @@
 using UnityEngine;
 using TMPro;
 
-namespace DecentM.VideoPlayer.Plugins
+namespace DecentM.Video.Plugins
 {
-    public class AutoPlayPlugin : VideoPlayerPlugin
+    public class AutoPlayPlugin : VideoPlugin
     {
         public bool autoplayOnLoad = true;
 

@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
-using DecentM.Shared;
 using DecentM.Collections;
+using UdonSharp;
 
 namespace DecentM.VideoRatelimit
 {
-    public class VideoRatelimitSystem : DBehaviour
+    public class VideoRatelimitSystem : UdonSharpBehaviour
     {
         public float ratelimitSeconds = 5.2f;
         public Queue queue = new Queue();
@@ -43,7 +43,7 @@ namespace DecentM.VideoRatelimit
             this.isWaiting = true;
         }
 
-        public void RequestPlaybackWindow(DBehaviour behaviour)
+        public void RequestPlaybackWindow(UdonSharpBehaviour behaviour)
         {
             this.queue.Enqueue(behaviour);
         }
@@ -53,7 +53,7 @@ namespace DecentM.VideoRatelimit
             if (this.queue.Count <= 0)
                 return;
 
-            DBehaviour behaviour = (DBehaviour)this.queue.Dequeue();
+            UdonSharpBehaviour behaviour = (UdonSharpBehaviour)this.queue.Dequeue();
             if (behaviour == null)
                 return;
 
