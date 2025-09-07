@@ -49,9 +49,9 @@ namespace DecentM.Video.Plugins
 
                 _isPlaying = value;
                 if (value)
-                    this.system.StartPlayback(this.system.GetTime() + this.latency);
+                    this.system.Play(this.system.GetTime() + this.latency);
                 else
-                    this.system.PausePlayback();
+                    this.system.Play();
             }
             get => _isPlaying;
         }
@@ -153,7 +153,7 @@ namespace DecentM.Video.Plugins
             this.RequestSerialization();
         }
 
-        public void SyncPausedTime()
+        private void SyncPausedTime()
         {
             if (Networking.GetOwner(this.gameObject) == Networking.LocalPlayer)
                 return;
@@ -165,7 +165,7 @@ namespace DecentM.Video.Plugins
             this.latency += diff;
 
             if (this.system.IsPlaying())
-                this.system.PausePlayback(this.progress);
+                this.system.Pause(this.progress);
         }
 
         protected override void OnLoadReady(float duration)
@@ -174,15 +174,13 @@ namespace DecentM.Video.Plugins
                 return;
 
             if (this.isPlaying)
-                this.system.StartPlayback();
+                this.system.Pause();
         }
 
         private int currentOwnerId = 0;
 
         protected override void OnVideoPlayerInit()
         {
-            Debug.Log("Video player init");
-
             VRCPlayerApi owner = Networking.GetOwner(this.gameObject);
             if (owner == null || !owner.IsValid())
                 return;

@@ -70,23 +70,6 @@ namespace DecentM.Video.Editor
                 playlistPlayer.enabled = this.Toggle("Default playlist", playlistPlayer.enabled);
             }
 
-            ResolutionUpdaterPlugin resolutionUpdater =
-                ui.GetComponentInChildren<ResolutionUpdaterPlugin>();
-            if (resolutionUpdater != null)
-            {
-                this.HelpBox(
-                    MessageType.Info,
-                    resolutionUpdater.dynamicResolution
-                      ? "The video screen will adapt its scale to match the aspect ratio of the video"
-                      : "The video screen will stay the same size and use black bars to keep the video from stretching"
-                );
-
-                resolutionUpdater.dynamicResolution = this.Toggle(
-                    "Dynamic resolution",
-                    resolutionUpdater.dynamicResolution
-                );
-            }
-
             this.SaveModifications();
         }
     }

@@ -42,7 +42,7 @@ namespace DecentM.Video.Plugins
         protected virtual void OnFpsChange(int fps) { }
 
         protected virtual void OnScreenResolutionChange(
-            ScreenHandler screen,
+            VideoScreen screen,
             float width,
             float height
         ) { }
@@ -182,7 +182,7 @@ namespace DecentM.Video.Plugins
 
                 case nameof(VideoEvent.OnScreenResolutionChange):
                 {
-                    ScreenHandler screen = (ScreenHandler)data[0];
+                    VideoScreen screen = (VideoScreen)data[0];
                     float width = (float)data[1];
                     float height = (float)data[2];
                     this.OnScreenResolutionChange(screen, width, height);

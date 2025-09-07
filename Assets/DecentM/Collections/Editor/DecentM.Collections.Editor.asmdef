@@ -4,8 +4,8 @@
     "references": [
         "DecentM.Collections",
         "DecentM.Shared.Editor",
-        "DecentM.Shared",
-        "UdonSharp.Runtime"
+        "UdonSharp.Runtime",
+        "UdonSharp.Editor"
     ],
     "includePlatforms": [
         "Editor"

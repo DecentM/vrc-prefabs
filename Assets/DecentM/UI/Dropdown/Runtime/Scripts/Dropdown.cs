@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UdonSharp;
+using DecentM.Collections;
 
 namespace DecentM.UI
 {
@@ -16,7 +17,8 @@ namespace DecentM.UI
         private UdonSharpBehaviour listener;
         private string onChangeEventName;
 
-        private GameObject[] instantiatedOptions;
+        [SerializeField]
+        private List/*<GameObject>*/ instantiatedOptions;
 
         private void Start()
         {
@@ -32,16 +34,13 @@ namespace DecentM.UI
 
         public void Clear()
         {
-            if (this.instantiatedOptions == null)
-                this.instantiatedOptions = new GameObject[0];
-
-            foreach (GameObject option in this.instantiatedOptions)
+            foreach (GameObject option in this.instantiatedOptions.ToArray())
             {
                 Destroy(option);
             }
 
             this.options = new object[0][];
-            this.instantiatedOptions = new GameObject[0];
+            this.instantiatedOptions.Clear();
         }
 
         private float elapsed = 0;
@@ -51,7 +50,7 @@ namespace DecentM.UI
 
         private void FixedUpdate()
         {
-            if (this.options.Length == this.instantiatedOptions.Length)
+            if (this.options.Length == this.instantiatedOptions.Count)
                 return;
 
             this.elapsed += Time.fixedUnscaledDeltaTime;
@@ -59,7 +58,7 @@ namespace DecentM.UI
                 return;
             this.elapsed = 0;
 
-            int newIndex = this.instantiatedOptions.Length;
+            int newIndex = this.instantiatedOptions.Count;
             if (newIndex >= this.options.Length || this.options[newIndex] == null)
                 return;
 
@@ -68,9 +67,6 @@ namespace DecentM.UI
 
         private void AddOption(object[] optionKvp)
         {
-            if (this.instantiatedOptions == null)
-                this.instantiatedOptions = new GameObject[0];
-
             GameObject instance = Instantiate(this.optionTemplate);
 
             instance.transform.SetParent(this.optionsRoot);
@@ -88,10 +84,7 @@ namespace DecentM.UI
             option.SetData(this, optionKvp[0], (string)optionKvp[1]);
             instance.SetActive(true);
 
-            GameObject[] tmp = new GameObject[this.instantiatedOptions.Length + 1];
-            Array.Copy(this.instantiatedOptions, tmp, this.instantiatedOptions.Length);
-            tmp[tmp.Length - 1] = instance;
-            this.instantiatedOptions = tmp;
+            this.instantiatedOptions.Add(instance);
         }
 
         public void SetOptions(string[][] options)

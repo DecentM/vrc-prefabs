@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using DecentM.Shared.Editor;
+using UdonSharpEditor;
 
 namespace DecentM.Collections.Editor
 {
@@ -10,13 +11,16 @@ namespace DecentM.Collections.Editor
 
         public override void OnInspectorGUI()
         {
+
+            UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(this.target);
+
             Collection target = (Collection)this.target;
             object[] data = target.ToArray();
 
             this.HelpBox(MessageType.Info, $"Total: {target.Count}");
 
             Rect region = this.DrawRegion(data.Length * RowHeight);
-
+            EditorGUI.BeginDisabledGroup(true);
             int i = 0;
             foreach (object item in data)
             {
@@ -30,6 +34,7 @@ namespace DecentM.Collections.Editor
                 this.DrawRow(row, i, item);
                 i++;
             }
+            EditorGUI.EndDisabledGroup();
         }
 
         protected abstract void DrawRow(Rect rect, int index, object item);
@@ -41,9 +46,7 @@ namespace DecentM.Collections.Editor
 
             if (item is Component)
             {
-                EditorGUI.BeginDisabledGroup(true);
                 EditorGUI.ObjectField(rect, (Component)item, typeof(Component), false);
-                EditorGUI.EndDisabledGroup();
                 return;
             }
 

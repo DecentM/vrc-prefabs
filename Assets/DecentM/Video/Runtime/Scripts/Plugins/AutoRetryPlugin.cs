@@ -35,7 +35,7 @@ namespace DecentM.Video.Plugins
 
         public void AttemptRetry()
         {
-            VRCUrl url = this.system.GetCurrentUrl();
+            VRCUrl url = this.system.GetUrl();
             if (url == null)
                 return;
 
@@ -50,8 +50,8 @@ namespace DecentM.Video.Plugins
 
         protected override void OnLoadError(VideoError videoError)
         {
-            VRCUrl url = this.system.GetCurrentUrl();
-            if (url == null || string.IsNullOrEmpty(this.system.GetCurrentUrl().ToString()))
+            VRCUrl url = this.system.GetUrl();
+            if (url == null || string.IsNullOrEmpty(this.system.GetUrl().ToString()))
                 return;
 
             switch (videoError)

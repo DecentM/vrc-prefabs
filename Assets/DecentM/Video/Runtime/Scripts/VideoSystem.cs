@@ -4,6 +4,7 @@ using DecentM.Collections;
 
 using UdonSharp;
 using VRC.SDKBase;
+using System;
 
 namespace DecentM.Video
 {
@@ -11,16 +12,20 @@ namespace DecentM.Video
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class VideoSystem : UdonSharpBehaviour
     {
+        [NonSerialized]
         private VideoEvents events;
+
         [SerializeField]
         private List/*<PlayerHandler>*/ playerHandlers;
-        public AudioSource[] speakers;
-        public ScreenHandler[] screens;
+
+        [SerializeField]
+        private AudioSource[] speakers;
+
+        [SerializeField]
+        private VideoScreen[] screens;
 
         public float volume = 1.0f;
         public float brightness = 1.0f;
-        public int minFps = 1;
-        public int maxFps = 144;
 
         private int currentPlayerHandlerIndex = 0;
 
@@ -44,35 +49,51 @@ namespace DecentM.Video
         {
             this.DisableAllPlayers();
             this.EnablePlayer(0);
+
             this.SetVolume(this.volume);
             this.SetBrightness(this.brightness);
-            this.PausePlayback();
+
+            this.Pause();
             this.Seek(0);
+
+#if UNITY_EDITOR
+            if (this.GetCurrentPlayerHandler().type == nameof(VideoHandlerType.AVPro))
+            {
+                this.currentPlayerHandlerIndex = this.NextPlayerHandler();
+            }
+#endif
+
             this.events.OnVideoPlayerInit();
         }
+        internal void ChangeScreenResolution(float width, float height)
+        {
+            float aspectRatio = width / height;
+
+            for (int i = 0; i < this.screens.Length; i++)
+            {
+                VideoScreen screen = this.screens[i];
+
+                if (screen == null)
+                    continue;
+
+                // Change physical screen size - should be a plugin
+                /* screen.SetSize(
+                    new Vector2(
+                        screen.transform.localScale.x,
+                        screen.transform.localScale.x / aspectRatio
+                    )
+                ); */
+
+                screen.SetAspectRatio(aspectRatio);
+                this.events.OnScreenResolutionChange(screen, width, height);
+            }
+        }
+
 
         [PublicAPI]
         public int ScreenCount
         {
             get { return this.screens.Length; }
-        }
-
-        [PublicAPI]
-        public void RenderCurrentFrame(RenderTexture texture, int screenIndex)
-        {
-            if (this.screens == null || this.screens.Length == 0)
-                return;
-            if (screenIndex >= this.screens.Length || screenIndex < 0)
-                screenIndex = 0;
-
-            ScreenHandler screen = this.screens[screenIndex];
-            screen.RenderToRenderTexture(texture);
-        }
-
-        [PublicAPI]
-        public void RenderCurrentFrame(RenderTexture texture)
-        {
-            this.RenderCurrentFrame(texture, 0);
         }
 
         [PublicAPI]
@@ -89,26 +110,18 @@ namespace DecentM.Video
         [PublicAPI]
         public void SetScreenTexture(Texture texture)
         {
-            foreach (ScreenHandler screen in this.screens)
+            foreach (VideoScreen screen in this.screens)
             {
                 screen.SetTexture(texture);
             }
+
+            this.events.OnScreenTextureChange();
         }
 
         private void DisablePlayer(PlayerHandler player)
         {
             player.Unload();
             player.gameObject.SetActive(false);
-        }
-
-        private void DisablePlayer(int index)
-        {
-            PlayerHandler PlayerHandler = (PlayerHandler)this.playerHandlers.ElementAt(index);
-
-            if (PlayerHandler == null)
-                return;
-
-            this.DisablePlayer(PlayerHandler);
         }
 
         private void EnablePlayer(PlayerHandler player)
@@ -135,8 +148,10 @@ namespace DecentM.Video
             }
         }
 
-        [PublicAPI]
-        public int NextPlayerHandler()
+#if UNITY_EDITOR
+        [RecursiveMethod]
+#endif
+        internal int NextPlayerHandler()
         {
             if (this.playerHandlers.Count == 0)
                 return -1;
@@ -164,6 +179,18 @@ namespace DecentM.Video
             this.EnablePlayer(newPlayerHandler);
             this.events.OnPlayerSwitch(newPlayerHandler.type);
 
+            foreach (VideoScreen screen in this.screens)
+            {
+                screen.SetIsAVPro(newPlayerHandler.type == nameof(VideoHandlerType.AVPro));
+            }
+
+#if UNITY_EDITOR
+            if (newPlayerHandler.type == nameof(VideoHandlerType.AVPro))
+            {
+                newIndex = this.NextPlayerHandler();
+            }
+#endif
+
             return newIndex;
         }
 
@@ -179,7 +206,7 @@ namespace DecentM.Video
         }
 
         [PublicAPI]
-        public void StartPlayback()
+        public void Play()
         {
             PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
 
@@ -190,7 +217,7 @@ namespace DecentM.Video
         }
 
         [PublicAPI]
-        public void StartPlayback(float timestamp)
+        public void Play(float timestamp)
         {
             PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
 
@@ -213,7 +240,7 @@ namespace DecentM.Video
         }
 
         [PublicAPI]
-        public void PausePlayback(float timestamp)
+        public void Pause(float timestamp)
         {
             PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
 
@@ -226,7 +253,7 @@ namespace DecentM.Video
         }
 
         [PublicAPI]
-        public void PausePlayback()
+        public void Pause()
         {
             PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
 
@@ -245,7 +272,7 @@ namespace DecentM.Video
             this.events.OnLoadRequested(url);
         }
 
-        public void LoadVideo(VRCUrl url)
+        internal void LoadVideo(VRCUrl url)
         {
             PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
 
@@ -271,7 +298,7 @@ namespace DecentM.Video
         }
 
         [PublicAPI]
-        public VRCUrl GetCurrentUrl()
+        public VRCUrl GetUrl()
         {
             return this.currentUrl;
         }
@@ -282,7 +309,7 @@ namespace DecentM.Video
             if (this.screens.Length == 0)
                 return 1f;
 
-            ScreenHandler screen = this.screens[0];
+            VideoScreen screen = this.screens[0];
             return screen.GetBrightness();
         }
 
@@ -292,7 +319,7 @@ namespace DecentM.Video
             if (alpha < 0 || alpha > 1)
                 return false;
 
-            foreach (ScreenHandler screen in this.screens)
+            foreach (VideoScreen screen in this.screens)
             {
                 screen.SetBrightness(alpha);
             }
@@ -303,7 +330,7 @@ namespace DecentM.Video
         }
 
         [PublicAPI]
-        public bool SetVolume(float volume)
+        public bool SetVolumeNoBroadcast(float volume)
         {
             if (volume < 0 || volume > 1)
                 return false;
@@ -314,21 +341,24 @@ namespace DecentM.Video
             }
 
             this.volume = volume;
-            this.events.OnVolumeChange(volume);
 
             return true;
+        }
+
+        [PublicAPI]
+        public bool SetVolume(float volume)
+        {
+            bool result = this.SetVolumeNoBroadcast(volume);
+
+            this.events.OnVolumeChange(volume);
+
+            return result;
         }
 
         [PublicAPI]
         public float GetVolume()
         {
             return this.volume;
-        }
-
-        [PublicAPI]
-        public bool GetMuted()
-        {
-            return this.volume > 0;
         }
 
         [PublicAPI]

@@ -4,27 +4,7 @@ namespace DecentM.Video.Plugins
 {
     public sealed class ResolutionUpdaterPlugin : VideoPlugin
     {
-        public bool dynamicResolution = false;
-
         public Vector2Int defaultResolution = new Vector2Int(1920, 1080);
-
-        private void ChangeScreenResolution(ScreenHandler screen, float width, float height)
-        {
-            if (this.dynamicResolution)
-            {
-                float aspectRatio = width / height;
-
-                screen.SetSize(
-                    new Vector2(
-                        screen.transform.localScale.x,
-                        screen.transform.localScale.x / aspectRatio
-                    )
-                );
-                screen.SetAspectRatio(aspectRatio);
-            }
-
-            this.events.OnScreenResolutionChange(screen, width, height);
-        }
 
         private void ChangeScreenResolution()
         {
@@ -33,13 +13,10 @@ namespace DecentM.Video.Plugins
             if (videoTexture == null)
                 return;
 
-            foreach (ScreenHandler screen in this.system.screens)
-            {
-                float w = videoTexture.width;
-                float h = videoTexture.height;
+            float w = videoTexture.width;
+            float h = videoTexture.height;
 
-                this.ChangeScreenResolution(screen, w, h);
-            }
+            this.system.ChangeScreenResolution(w, h);
         }
 
         protected override void OnPlaybackStart(float duration)

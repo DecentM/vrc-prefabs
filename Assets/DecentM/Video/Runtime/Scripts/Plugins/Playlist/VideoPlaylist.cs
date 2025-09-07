@@ -43,7 +43,6 @@ namespace DecentM.Video.Plugins
 
         [Space]
         public PlaylistPlayerPlugin playlistPlayer;
-        public TextureUpdaterPlugin textureUpdater;
 
         [HideInInspector]
         public VideoPlaylistUI ui;

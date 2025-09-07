@@ -3,7 +3,7 @@
 namespace DecentM.Video.Handlers
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class AVProVideo : PlayerHandler
+    internal class AVProVideo : PlayerHandler
     {
         public override string type => nameof(VideoHandlerType.AVPro);
     }

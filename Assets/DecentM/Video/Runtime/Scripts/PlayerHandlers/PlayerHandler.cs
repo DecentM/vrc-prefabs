@@ -12,7 +12,7 @@ namespace DecentM.Video
         public void AVPro() { }
     }
 
-    public abstract class PlayerHandler : UdonSharpBehaviour
+    internal abstract class PlayerHandler : UdonSharpBehaviour
     {
         public abstract string type { get; }
 
@@ -21,28 +21,20 @@ namespace DecentM.Video
         public Renderer screen;
         public VideoSystem system;
 
-        protected virtual void _Awake() { }
-
         protected virtual void _Start() { }
 
         private MaterialPropertyBlock _fetchBlock;
 
         void Start()
         {
-            if (this.system == null)
-                this.Awake();
-
-            this.system.RegisterPlayerHandler(this);
             this._Start();
-        }
 
-        private void Awake()
-        {
             this.player = this.GetComponent<BaseVRCVideoPlayer>();
             this.system = this.GetComponentInParent<VideoSystem>();
             this.events = this.GetComponentInParent<VideoEvents>();
             this._fetchBlock = new MaterialPropertyBlock();
-            this._Awake();
+
+            this.system.RegisterPlayerHandler(this);
         }
 
         public float progressReportIntervalSeconds = 1;
@@ -67,7 +59,7 @@ namespace DecentM.Video
             }
         }
 
-        public Texture GetScreenTexture()
+        internal Texture GetScreenTexture()
         {
             Texture result = this.screen.material.GetTexture("_MainTex");
 
@@ -123,12 +115,6 @@ namespace DecentM.Video
 
         public void Play()
         {
-            this.player.Play();
-        }
-
-        public void StartPlayback(float timestamp)
-        {
-            this.player.SetTime(timestamp);
             this.player.Play();
         }
 

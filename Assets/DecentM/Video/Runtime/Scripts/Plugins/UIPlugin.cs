@@ -76,11 +76,12 @@ namespace DecentM.Video.Plugins
         public TextMeshProUGUI subtitleSlot;
 
         [Space]
-        public Button ownershipButton;
-        public TextMeshProUGUI ownershipLabel;
-        public Sprite lockIcon;
-        public Sprite unlockIcon;
-        public Sprite ownershipTransferIcon;
+        [SerializeField] private RectTransform ownershipContainer;
+        [SerializeField] private Button ownershipButton;
+        [SerializeField] private TextMeshProUGUI ownershipLabel;
+        [SerializeField] private Sprite lockIcon;
+        [SerializeField] private Sprite unlockIcon;
+        [SerializeField] private Sprite ownershipTransferIcon;
 
         #region Utilities
 
@@ -112,6 +113,7 @@ namespace DecentM.Video.Plugins
         {
             this.OnSubtitleLanguageOptionsChange(new string[0][]);
             this.animator.SetBool("ShowControls", true);
+            this.ShowOwnershipUI(false);
         }
 
         private string currentLanguage = "en";
@@ -422,7 +424,7 @@ namespace DecentM.Video.Plugins
                 return;
             }
 
-            if (this.system.GetCurrentUrl() == null)
+            if (this.system.GetUrl() == null)
             {
                 this.StoppedScreen(duration);
                 return;
@@ -529,7 +531,7 @@ namespace DecentM.Video.Plugins
         }
 
         protected override void OnScreenResolutionChange(
-            ScreenHandler screen,
+            VideoScreen screen,
             float width,
             float height
         )
@@ -546,10 +548,18 @@ namespace DecentM.Video.Plugins
 
         private bool selfOwned = true;
 
+        private void ShowOwnershipUI(bool state)
+        {
+            this.ownershipContainer.gameObject.SetActive(state);
+        }
+
         protected override void OnOwnershipChanged(int previousOwnerId, VRCPlayerApi nextOwner)
         {
             if (nextOwner == null || !nextOwner.IsValid())
+            {
+                this.ShowOwnershipUI(false);
                 return;
+            }
 
             if (nextOwner != Networking.LocalPlayer)
                 this.ownershipButton.image.sprite = this.ownershipTransferIcon;
@@ -562,6 +572,7 @@ namespace DecentM.Video.Plugins
 
             this.ownershipLabel.text = nextOwner.displayName;
 
+            this.ShowOwnershipUI(true);
             this.RenderScreen(this.system.GetDuration());
         }
 
@@ -594,12 +605,12 @@ namespace DecentM.Video.Plugins
 
         public void OnPlayButton()
         {
-            this.system.StartPlayback();
+            this.system.Play();
         }
 
         public void OnPauseButton()
         {
-            this.system.PausePlayback();
+            this.system.Pause();
         }
 
         public void OnStopButton()

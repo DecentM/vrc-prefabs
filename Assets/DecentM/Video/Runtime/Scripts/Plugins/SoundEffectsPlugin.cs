@@ -6,16 +6,16 @@ namespace DecentM.Video.Plugins
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public sealed class SoundEffectsPlugin : VideoPlugin
     {
-        [Space]
-        public AudioSource audioSource;
+        [Space, SerializeField]
+        private AudioSource audioSource;
 
-        [Space]
-        public AudioClip autoRetry;
-        public AudioClip autoRetryAbort;
-        public AudioClip loadReady;
-        public AudioClip playbackEnded;
-        public AudioClip remotePlayerLoaded;
-        public AudioClip videoUnloaded;
+        [Space, SerializeField]
+        private AudioClip autoRetry;
+        private AudioClip autoRetryAbort;
+        private AudioClip loadReady;
+        private AudioClip playbackEnded;
+        private AudioClip remotePlayerLoaded;
+        private AudioClip videoUnloaded;
 
         private void PlaySound(AudioClip clip)
         {

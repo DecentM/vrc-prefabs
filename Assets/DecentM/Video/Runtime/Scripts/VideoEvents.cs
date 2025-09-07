@@ -81,7 +81,7 @@ namespace DecentM.Video
             this.BroadcastEvent(nameof(VideoEvent.OnFpsChange), fps);
         }
 
-        public void OnScreenResolutionChange(ScreenHandler screen, float width, float height)
+        public void OnScreenResolutionChange(VideoScreen screen, float width, float height)
         {
             this.BroadcastEvent(nameof(VideoEvent.OnScreenResolutionChange), screen, width, height);
         }

@@ -1,43 +1,30 @@
 ﻿using System;
 using UnityEngine;
-using TMPro;
-using DecentM.Video.Handlers;
 using VRC.SDKBase;
 using UdonSharp;
 using VRC.SDK3.Components.Video;
+using DecentM.Collections;
 
 namespace DecentM.Video.Plugins
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class DebugPlugin : VideoPlugin
     {
-        public TextMeshProUGUI gui;
-        public bool logToConsole = false;
-
-        string[] logs = new string[40];
+        [SerializeField]
+        private Queue/*<string>*/ logs;
 
         public void Log(params string[] messages)
         {
-            if (this.logToConsole)
-                Debug.Log($"[VideoPlayer] Debug: {String.Join(" ", messages)}");
+            if (this.logs.Count > 20)
+            {
+                this.logs.Dequeue();
+            }
 
-            string[] tmp = new string[logs.Length];
-            Array.Copy(logs, 1, tmp, 0, this.logs.Length - 1);
-            tmp[tmp.Length - 1] = String.Join(" ", messages);
-            this.logs = tmp;
-
-            if (this.gui != null)
-                this.gui.text = String.Join("\n", this.logs);
+            this.logs.Enqueue(String.Join(" ", messages));
         }
 
         protected override void _Start()
         {
-            if (this.gui == null)
-            {
-                this.enabled = false;
-                return;
-            }
-
             this.Log(nameof(_Start));
         }
 
@@ -132,7 +119,7 @@ namespace DecentM.Video.Plugins
         }
 
         protected override void OnScreenResolutionChange(
-            ScreenHandler screen,
+            VideoScreen screen,
             float width,
             float height
         )

@@ -56,7 +56,7 @@ namespace DecentM.Video.Plugins
 
         protected override void OnLoadReady(float duration)
         {
-            VRCUrl url = this.system.GetCurrentUrl();
+            VRCUrl url = this.system.GetUrl();
 
             if (url == null)
                 return;

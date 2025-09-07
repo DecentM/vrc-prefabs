@@ -16,20 +16,12 @@ namespace DecentM.Video.Plugins
             if (videoTexture == null)
                 return;
 
-            this.SetTexture(videoTexture);
+            this.system.SetScreenTexture(videoTexture);
         }
 
         private void ShowIdleTexture()
         {
-            this.SetTexture(idleTexture);
-        }
-
-        private void SetAVPro(bool isAVPro)
-        {
-            foreach (ScreenHandler screen in this.system.screens)
-            {
-                screen.SetIsAVPro(isAVPro);
-            }
+            this.system.SetScreenTexture(this.idleTexture);
         }
 
         protected override void OnVideoPlayerInit()
@@ -45,24 +37,6 @@ namespace DecentM.Video.Plugins
         protected override void OnPlaybackEnd()
         {
             this.ShowIdleTexture();
-        }
-
-        protected override void OnPlayerSwitch(string type)
-        {
-            this.SetAVPro(type == nameof(VideoHandlerType.AVPro));
-        }
-
-        public void SetTexture(Texture texture)
-        {
-            if (texture == null)
-                return;
-
-            foreach (ScreenHandler screen in this.system.screens)
-            {
-                screen.SetTexture(texture);
-            }
-
-            this.events.OnScreenTextureChange();
         }
     }
 }

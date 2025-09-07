@@ -1,4 +1,4 @@
-﻿Shader "DecentM/VideoPlayer/Screen"
+﻿Shader "DecentM/Video/Screen"
 {
     Properties
     {

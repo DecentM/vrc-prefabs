@@ -17,7 +17,7 @@ namespace DecentM.Video.Plugins
         {
             if (VRCPlayerApi.GetPlayerCount() == 1)
             {
-                this.system.StartPlayback();
+                this.system.Play();
                 return;
             }
 
@@ -45,17 +45,7 @@ namespace DecentM.Video.Plugins
             if (this.receivedLoadedFrom < VRCPlayerApi.GetPlayerCount() - 1)
                 return;
 
-            this.system.StartPlayback();
-        }
-
-        private int ownerId = 0;
-
-        protected override void OnOwnershipChanged(int previousOwnerId, VRCPlayerApi nextOwner)
-        {
-            if (nextOwner == null || !nextOwner.IsValid())
-                return;
-
-            this.ownerId = nextOwner.playerId;
+            this.system.Play();
         }
 
         protected override void OnLoadApproved(VRCUrl url)
