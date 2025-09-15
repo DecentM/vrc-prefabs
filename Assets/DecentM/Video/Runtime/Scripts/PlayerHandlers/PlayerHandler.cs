@@ -79,17 +79,17 @@ namespace DecentM.Video
 
         public override void OnVideoEnd()
         {
-            this.events.OnPlaybackEnd();
+            this.system.Stop();
         }
 
         public override void OnVideoPause()
         {
-            this.events.OnPlaybackStop(this.player.GetTime());
+            this.events.OnPause(this.player.GetTime());
         }
 
         public override void OnVideoPlay()
         {
-            this.events.OnPlaybackStart(this.player.GetTime());
+            this.events.OnPlay(this.player.GetTime());
         }
 
         public override void OnVideoReady()
@@ -99,7 +99,7 @@ namespace DecentM.Video
 
         public override void OnVideoStart()
         {
-            this.events.OnPlaybackStart(this.player.GetTime());
+            this.events.OnPlay(this.player.GetTime());
         }
 
         public override void OnVideoError(VideoError videoError)

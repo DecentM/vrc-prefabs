@@ -236,7 +236,7 @@ namespace DecentM.Video.Plugins
             this.fps = fps <= 0 ? this.targetFps : Mathf.Min(fps, targetFps);
         }
 
-        protected override void OnPlaybackEnd()
+        protected override void OnStop()
         {
             this.isRunning = false;
             this.Reset();
@@ -248,20 +248,14 @@ namespace DecentM.Video.Plugins
             this.Reset();
         }
 
-        protected override void OnPlaybackStart(float timestamp)
+        protected override void OnPlay(float timestamp)
         {
             this.isRunning = true;
         }
 
-        protected override void OnPlaybackStop(float timestamp)
+        protected override void OnPause(float timestamp)
         {
             this.isRunning = false;
-        }
-
-        protected override void OnUnload()
-        {
-            this.isRunning = false;
-            this.Reset();
         }
     }
 }

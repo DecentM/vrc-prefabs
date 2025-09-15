@@ -44,7 +44,7 @@ namespace DecentM.Video.Plugins
             get { return Networking.GetOwner(this.gameObject) == Networking.LocalPlayer; }
         }
 
-        protected override void OnPlaybackStart(float timestamp)
+        protected override void OnPlay(float timestamp)
         {
             if (timestamp < 10000)
                 this.JumpToStart();
@@ -56,7 +56,7 @@ namespace DecentM.Video.Plugins
             }
         }
 
-        protected override void OnUnload()
+        protected override void OnStop()
         {
             this.Reset();
         }

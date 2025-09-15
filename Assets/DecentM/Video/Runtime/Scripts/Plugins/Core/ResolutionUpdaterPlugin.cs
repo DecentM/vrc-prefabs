@@ -19,7 +19,7 @@ namespace DecentM.Video.Plugins
             this.system.ChangeScreenResolution(w, h);
         }
 
-        protected override void OnPlaybackStart(float duration)
+        protected override void OnPlay(float duration)
         {
             this.ChangeScreenResolution();
         }

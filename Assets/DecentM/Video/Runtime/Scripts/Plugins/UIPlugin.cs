@@ -14,11 +14,7 @@ namespace DecentM.Video.Plugins
     public sealed class UIPlugin : VideoPlugin
     {
         [Space]
-        public LayerMask raycastLayerMask;
-        public float raycastIntervalSeconds = 0.5f;
-        public float raycastMaxDistance = 2f;
         public Animator animator;
-        public GameObject raycastTarget;
 
         [Space]
         public Slider progress;
@@ -489,27 +485,20 @@ namespace DecentM.Video.Plugins
                 this.volumeImage.sprite = this.GetVolumeSprite(volume);
         }
 
-        protected override void OnPlaybackEnd()
-        {
-            this.ClearMetadata();
-            this.status.text = "Playback ended";
-            this.RenderScreen(this.system.GetDuration());
-        }
-
-        protected override void OnPlaybackStart(float timestamp)
+        protected override void OnPlay(float timestamp)
         {
             this.status.text = "Playing...";
             this.RenderScreen(this.system.GetDuration());
         }
 
-        protected override void OnPlaybackStop(float timestamp)
+        protected override void OnPause(float timestamp)
         {
             this.status.text =
                 $"Paused - {this.GetProgressIndicator(timestamp, this.system.GetDuration())}";
             this.RenderScreen(this.system.GetDuration());
         }
 
-        protected override void OnUnload()
+        protected override void OnStop()
         {
             this.ClearMetadata();
             this.isLoading = false;
@@ -615,7 +604,7 @@ namespace DecentM.Video.Plugins
 
         public void OnStopButton()
         {
-            this.system.Unload();
+            this.system.Stop();
         }
 
         public void OnBrightnessSlider()

@@ -9,13 +9,12 @@ namespace DecentM.Video.Plugins
         [Space, SerializeField]
         private AudioSource audioSource;
 
-        [Space, SerializeField]
-        private AudioClip autoRetry;
-        private AudioClip autoRetryAbort;
-        private AudioClip loadReady;
-        private AudioClip playbackEnded;
-        private AudioClip remotePlayerLoaded;
-        private AudioClip videoUnloaded;
+        [Space]
+        [SerializeField] private AudioClip autoRetry;
+        [SerializeField] private AudioClip autoRetryAbort;
+        [SerializeField] private AudioClip loadReady;
+        [SerializeField] private AudioClip remotePlayerLoaded;
+        [SerializeField] private AudioClip videoUnloaded;
 
         private void PlaySound(AudioClip clip)
         {
@@ -40,17 +39,12 @@ namespace DecentM.Video.Plugins
             this.PlaySound(this.loadReady);
         }
 
-        protected override void OnPlaybackEnd()
-        {
-            this.PlaySound(this.playbackEnded);
-        }
-
         protected override void OnRemotePlayerLoaded(int loadedPlayers)
         {
             this.PlaySound(this.remotePlayerLoaded);
         }
 
-        protected override void OnUnload()
+        protected override void OnStop()
         {
             this.PlaySound(this.videoUnloaded);
         }

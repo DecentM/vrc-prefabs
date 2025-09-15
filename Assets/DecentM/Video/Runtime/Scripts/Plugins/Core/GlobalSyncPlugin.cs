@@ -111,10 +111,10 @@ namespace DecentM.Video.Plugins
             if (Networking.GetOwner(this.gameObject) == Networking.LocalPlayer)
                 return;
 
-            this.system.Unload();
+            this.system.Stop();
         }
 
-        protected override void OnUnload()
+        protected override void OnStop()
         {
             this.latency = 0;
 
@@ -131,7 +131,7 @@ namespace DecentM.Video.Plugins
             this.RequestSerialization();
         }
 
-        protected override void OnPlaybackStart(float timestamp)
+        protected override void OnPlay(float timestamp)
         {
             if (Networking.GetOwner(this.gameObject) != Networking.LocalPlayer)
                 return;
@@ -140,7 +140,7 @@ namespace DecentM.Video.Plugins
             this.RequestSerialization();
         }
 
-        protected override void OnPlaybackStop(float timestamp)
+        protected override void OnPause(float timestamp)
         {
             if (Networking.GetOwner(this.gameObject) != Networking.LocalPlayer)
             {

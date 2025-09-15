@@ -17,17 +17,16 @@ namespace DecentM.Video
         internal void OnFpsChange() { }
         internal void OnScreenResolutionChange() { }
         internal void OnScreenTextureChange() { }
-        internal void OnPlayerSwitch() { }
+        internal void OnPlayerChange() { }
 
-        internal void OnPlaybackStart() { }
-        internal void OnPlaybackStop() { }
-        internal void OnPlaybackEnd() { }
+        internal void OnPlay() { }
+        internal void OnPause() { }
+        internal void OnStop() { }
         internal void OnProgress() { }
 
         internal void OnLoadBegin() { }
         internal void OnLoadReady() { }
         internal void OnLoadError() { }
-        internal void OnUnload() { }
         internal void OnLoadRequested() { }
         internal void OnLoadApproved() { }
         internal void OnLoadDenied() { }
@@ -86,14 +85,14 @@ namespace DecentM.Video
             this.BroadcastEvent(nameof(VideoEvent.OnScreenResolutionChange), screen, width, height);
         }
 
-        public void OnPlaybackStart(float timestamp)
+        public void OnPlay(float timestamp)
         {
-            this.BroadcastEvent(nameof(VideoEvent.OnPlaybackStart), timestamp);
+            this.BroadcastEvent(nameof(VideoEvent.OnPlay), timestamp);
         }
 
-        public void OnPlaybackStop(float timestamp)
+        public void OnPause(float timestamp)
         {
-            this.BroadcastEvent(nameof(VideoEvent.OnPlaybackStop), timestamp);
+            this.BroadcastEvent(nameof(VideoEvent.OnPause), timestamp);
         }
 
         public void OnProgress(float timestamp, float duration)
@@ -101,9 +100,9 @@ namespace DecentM.Video
             this.BroadcastEvent(nameof(VideoEvent.OnProgress), timestamp, duration);
         }
 
-        public void OnPlaybackEnd()
+        public void OnStop()
         {
-            this.BroadcastEvent(nameof(VideoEvent.OnPlaybackEnd));
+            this.BroadcastEvent(nameof(VideoEvent.OnStop));
         }
 
         public void OnLoadBegin(VRCUrl url)
@@ -131,11 +130,6 @@ namespace DecentM.Video
             this.BroadcastEvent(nameof(VideoEvent.OnLoadReady), duration);
         }
 
-        public void OnUnload()
-        {
-            this.BroadcastEvent(nameof(VideoEvent.OnUnload));
-        }
-
         public void OnLoadError(VideoError error)
         {
             this.BroadcastEvent(nameof(VideoEvent.OnLoadError), error);
@@ -146,9 +140,9 @@ namespace DecentM.Video
             this.BroadcastEvent(nameof(VideoEvent.OnLoadRatelimitWaiting));
         }
 
-        public void OnPlayerSwitch(string type)
+        public void OnPlayerChange(string type)
         {
-            this.BroadcastEvent(nameof(VideoEvent.OnPlayerSwitch), type);
+            this.BroadcastEvent(nameof(VideoEvent.OnPlayerChange), type);
         }
 
         #endregion

@@ -43,11 +43,6 @@ namespace DecentM.Video.Plugins
             this.Log(nameof(OnPlayerSwitch), type);
         }
 
-        protected override void OnPlaybackEnd()
-        {
-            this.Log(nameof(OnPlaybackEnd));
-        }
-
         protected override void OnLoadReady(float duration)
         {
             this.Log(nameof(OnLoadReady), duration.ToString());
@@ -73,19 +68,19 @@ namespace DecentM.Video.Plugins
             this.Log(nameof(OnProgress), timestamp.ToString(), duration.ToString());
         }
 
-        protected override void OnUnload()
+        protected override void OnStop()
         {
-            this.Log(nameof(OnUnload));
+            this.Log(nameof(OnStop));
         }
 
-        protected override void OnPlaybackStart(float timestamp)
+        protected override void OnPlay(float timestamp)
         {
-            this.Log(nameof(OnPlaybackStart), timestamp.ToString());
+            this.Log(nameof(OnPlay), timestamp.ToString());
         }
 
-        protected override void OnPlaybackStop(float timestamp)
+        protected override void OnPause(float timestamp)
         {
-            this.Log(nameof(OnPlaybackStop), timestamp.ToString());
+            this.Log(nameof(OnPause), timestamp.ToString());
         }
 
         protected override void OnAutoRetry(int attempt)

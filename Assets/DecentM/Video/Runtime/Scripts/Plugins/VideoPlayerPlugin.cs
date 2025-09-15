@@ -51,11 +51,11 @@ namespace DecentM.Video.Plugins
 
         protected virtual void OnPlayerSwitch(string type) { }
 
-        protected virtual void OnPlaybackStart(float timestamp) { }
+        protected virtual void OnPlay(float timestamp) { }
 
-        protected virtual void OnPlaybackStop(float timestamp) { }
+        protected virtual void OnPause(float timestamp) { }
 
-        protected virtual void OnPlaybackEnd() { }
+        protected virtual void OnStop() { }
 
         protected virtual void OnProgress(float timestamp, float duration) { }
 
@@ -66,8 +66,6 @@ namespace DecentM.Video.Plugins
         protected virtual void OnLoadReady(float duration) { }
 
         protected virtual void OnLoadError(VideoError error) { }
-
-        protected virtual void OnUnload() { }
 
         protected virtual void OnLoadRequested(VRCUrl url) { }
 
@@ -209,23 +207,17 @@ namespace DecentM.Video.Plugins
                     return;
                 }
 
-                case nameof(VideoEvent.OnUnload):
+                case nameof(VideoEvent.OnPlay):
                 {
-                    this.OnUnload();
+                    float timestamp = (float)data[0];
+                    this.OnPlay(timestamp);
                     return;
                 }
 
-                case nameof(VideoEvent.OnPlaybackStart):
+                case nameof(VideoEvent.OnPause):
                 {
                     float timestamp = (float)data[0];
-                    this.OnPlaybackStart(timestamp);
-                    return;
-                }
-
-                case nameof(VideoEvent.OnPlaybackStop):
-                {
-                    float timestamp = (float)data[0];
-                    this.OnPlaybackStop(timestamp);
+                    this.OnPause(timestamp);
                     return;
                 }
 
@@ -237,9 +229,9 @@ namespace DecentM.Video.Plugins
                     return;
                 }
 
-                case nameof(VideoEvent.OnPlaybackEnd):
+                case nameof(VideoEvent.OnStop):
                 {
-                    this.OnPlaybackEnd();
+                    this.OnStop();
                     return;
                 }
 
@@ -249,7 +241,7 @@ namespace DecentM.Video.Plugins
                     return;
                 }
 
-                case nameof(VideoEvent.OnPlayerSwitch):
+                case nameof(VideoEvent.OnPlayerChange):
                 {
                     string type = (string)data[0];
                     this.OnPlayerSwitch(type);

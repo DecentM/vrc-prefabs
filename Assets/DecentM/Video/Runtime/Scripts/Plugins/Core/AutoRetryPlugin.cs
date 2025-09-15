@@ -87,7 +87,7 @@ namespace DecentM.Video.Plugins
                 {
                     if (abortAfterAllPlayersFailed)
                     {
-                        this.system.Unload();
+                        this.system.Stop();
                         this.events.OnAutoRetryAbort();
                         return;
                     }
@@ -110,7 +110,7 @@ namespace DecentM.Video.Plugins
             this.waitingForLoad = false;
         }
 
-        protected override void OnUnload()
+        protected override void OnStop()
         {
             this.timeoutClock = 0;
             this.failures = 0;

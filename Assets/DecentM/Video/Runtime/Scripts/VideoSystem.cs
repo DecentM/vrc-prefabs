@@ -177,7 +177,7 @@ namespace DecentM.Video
                 return -1;
 
             this.EnablePlayer(newPlayerHandler);
-            this.events.OnPlayerSwitch(newPlayerHandler.type);
+            this.events.OnPlayerChange(newPlayerHandler.type);
 
             foreach (VideoScreen screen in this.screens)
             {
@@ -242,14 +242,8 @@ namespace DecentM.Video
         [PublicAPI]
         public void Pause(float timestamp)
         {
-            PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
-
-            if (playerHandler == null)
-                return;
-
-            playerHandler.Pause();
-            playerHandler.SetTime(timestamp);
-            this.events.OnPlaybackStop(timestamp);
+            this.Pause();
+            this.Seek(timestamp);
         }
 
         [PublicAPI]
@@ -261,7 +255,7 @@ namespace DecentM.Video
                 return;
 
             playerHandler.Pause();
-            this.events.OnPlaybackStop(playerHandler.GetTime());
+            this.events.OnPause(playerHandler.GetTime());
         }
 
         private VRCUrl currentUrl;
@@ -284,7 +278,7 @@ namespace DecentM.Video
         }
 
         [PublicAPI]
-        public void Unload()
+        public void Stop()
         {
             PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
 
@@ -293,7 +287,7 @@ namespace DecentM.Video
 
             this.currentUrl = null;
             playerHandler.Unload();
-            this.events.OnUnload();
+            this.events.OnStop();
             this.Seek(0);
         }
 

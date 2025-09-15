@@ -9,7 +9,7 @@ namespace DecentM.Video.Plugins
     {
         public Texture idleTexture;
 
-        protected override void OnPlaybackStart(float duration)
+        protected override void OnPlay(float duration)
         {
             Texture videoTexture = this.system.GetVideoTexture();
 
@@ -29,12 +29,7 @@ namespace DecentM.Video.Plugins
             this.ShowIdleTexture();
         }
 
-        protected override void OnUnload()
-        {
-            this.ShowIdleTexture();
-        }
-
-        protected override void OnPlaybackEnd()
+        protected override void OnStop()
         {
             this.ShowIdleTexture();
         }

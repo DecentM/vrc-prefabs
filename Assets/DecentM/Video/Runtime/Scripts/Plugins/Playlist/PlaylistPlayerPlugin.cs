@@ -15,7 +15,7 @@ namespace DecentM.Video.Plugins
             this.PlayItem(next);
         }
 
-        protected override void OnPlaybackEnd()
+        protected override void OnStop()
         {
             if (this.playlist == null)
                 return;
