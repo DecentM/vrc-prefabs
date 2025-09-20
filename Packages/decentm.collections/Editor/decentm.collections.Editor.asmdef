@@ -1,0 +1,19 @@
+{
+    "name": "DecentM.Collections.Editor",
+    "rootNamespace": "",
+    "references": [
+        "DecentM.Collections",
+        "DecentM.Shared.Editor",
+        "UdonSharp.Editor",
+        "UdonSharp.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
