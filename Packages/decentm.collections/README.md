@@ -1,1 +1,0 @@
-# decentm.collections by DecentM
