@@ -16,6 +16,15 @@
         "com.decentm.shared": "0.0.1"
       }
     },
+    "com.decentm.pubsub": {
+      "version": "file:com.decentm.pubsub",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.decentm.shared": "0.0.1",
+        "com.decentm.collections": "0.0.1"
+      }
+    },
     "com.decentm.shared": {
       "version": "file:com.decentm.shared",
       "depth": 0,
