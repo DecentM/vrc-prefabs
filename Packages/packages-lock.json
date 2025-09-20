@@ -1,7 +1,15 @@
 {
   "dependencies": {
     "com.decentm.collections": {
-      "version": "file:decentm.collections",
+      "version": "file:com.decentm.collections",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.decentm.shared": "0.0.1"
+      }
+    },
+    "com.decentm.performance-observer": {
+      "version": "file:com.decentm.performance-observer",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
@@ -9,13 +17,13 @@
       }
     },
     "com.decentm.shared": {
-      "version": "file:decentm.shared",
+      "version": "file:com.decentm.shared",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
     },
     "com.decentm.video": {
-      "version": "file:decentm.video",
+      "version": "file:com.decentm.video",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
