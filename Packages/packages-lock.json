@@ -1,5 +1,19 @@
 {
   "dependencies": {
+    "com.decentm.collections": {
+      "version": "file:decentm.collections",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.decentm.shared": "0.0.1"
+      }
+    },
+    "com.decentm.shared": {
+      "version": "file:decentm.shared",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.ai.navigation": {
       "version": "1.1.5",
       "depth": 1,
