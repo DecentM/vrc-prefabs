@@ -223,12 +223,6 @@
       "source": "embedded",
       "dependencies": {}
     },
-    "decentm.shared": {
-      "version": "file:decentm.shared",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "dev.onevr.vrworldtoolkit": {
       "version": "file:dev.onevr.vrworldtoolkit",
       "depth": 0,
