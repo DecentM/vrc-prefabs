@@ -4,31 +4,26 @@ using DecentM.Pubsub;
 using VRC.SDKBase;
 using UdonSharp;
 using VRC.SDK3.Components.Video;
+using System;
 
 namespace DecentM.Video.Plugins
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public abstract class VideoPlugin : PubsubSubscriber
     {
-        [SerializeField]
-        protected VideoSystem system;
-        [SerializeField]
-        protected VideoEvents events;
+        [NonSerialized] protected VideoSystem system;
+        [NonSerialized] protected VideoEvents events;
 
-        protected virtual void __Awake() { }
+        protected virtual void __Start() { }
 
-        protected override void _Awake()
+        protected override sealed void _Start()
         {
-            this.__Awake();
-
-            if (this.events == null)
-            {
-                Debug.LogError("Events is null on " + this.gameObject.name);
-                return;
-            }
-
+            this.system = this.GetComponentInParent<VideoSystem>();
+            this.events = this.GetComponentInParent<VideoEvents>();
             this.pubsubHosts = new PubsubHost[1];
             this.pubsubHosts[0] = this.events;
+
+            this.__Start();
         }
 
         protected virtual void OnDebugLog(string message) { }

@@ -404,7 +404,7 @@ namespace DecentM.Video.Plugins
 
         public float subtitleOffset = 0;
 
-        protected override void __Awake()
+        protected override void _Awake()
         {
             this.Reset();
         }

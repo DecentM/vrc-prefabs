@@ -23,7 +23,7 @@ namespace DecentM.Video.Plugins
             this.logs.Enqueue(String.Join(" ", messages));
         }
 
-        protected override void _Start()
+        protected override void __Start()
         {
             this.Log(nameof(_Start));
         }

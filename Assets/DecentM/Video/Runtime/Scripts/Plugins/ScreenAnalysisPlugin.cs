@@ -22,7 +22,7 @@ namespace DecentM.Video.Plugins
 
         private new Camera camera;
 
-        protected override void _Start()
+        protected override void __Start()
         {
             this.camera = GetComponent<Camera>();
 

@@ -20,7 +20,7 @@ namespace DecentM.Video.Plugins
             if (this.renderers == null || this.renderers.Length == 0)
                 return;
 
-            Texture videoPlayerTex = this.system.GetVideoTexture();
+            Texture videoPlayerTex = this.system.GetScreenTexture();
 
             foreach (Material material in this.materials)
             {

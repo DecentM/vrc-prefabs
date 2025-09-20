@@ -11,7 +11,7 @@ namespace DecentM.Video.Plugins
 
         protected override void OnPlay(float duration)
         {
-            Texture videoTexture = this.system.GetVideoTexture();
+            Texture videoTexture = this.system.GetScreenTexture();
 
             if (videoTexture == null)
                 return;

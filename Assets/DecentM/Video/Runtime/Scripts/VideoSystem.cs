@@ -12,20 +12,10 @@ namespace DecentM.Video
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class VideoSystem : UdonSharpBehaviour
     {
-        [NonSerialized]
-        private VideoEvents events;
-
-        [SerializeField]
-        private List/*<PlayerHandler>*/ playerHandlers;
-
-        [SerializeField]
-        private AudioSource[] speakers;
-
-        [SerializeField]
-        private VideoScreen[] screens;
-
-        public float volume = 1.0f;
-        public float brightness = 1.0f;
+        [NonSerialized] private VideoEvents events;
+        [SerializeField] private List/*<VideoHandler>*/ playerHandlers;
+        [SerializeField] private AudioSource[] speakers;
+        [SerializeField] private VideoScreen[] screens;
 
         private int currentPlayerHandlerIndex = 0;
 
@@ -50,12 +40,7 @@ namespace DecentM.Video
             this.DisableAllPlayers();
             this.EnablePlayer(0);
 
-            this.SetVolume(this.volume);
-            this.SetBrightness(this.brightness);
-
-            this.Pause();
-            this.Seek(0);
-
+// Skip AVPro when running in editor
 #if UNITY_EDITOR
             if (this.GetCurrentPlayerHandler().type == nameof(VideoHandlerType.AVPro))
             {
@@ -76,14 +61,6 @@ namespace DecentM.Video
                 if (screen == null)
                     continue;
 
-                // Change physical screen size - should be a plugin
-                /* screen.SetSize(
-                    new Vector2(
-                        screen.transform.localScale.x,
-                        screen.transform.localScale.x / aspectRatio
-                    )
-                ); */
-
                 screen.SetAspectRatio(aspectRatio);
                 this.events.OnScreenResolutionChange(screen, width, height);
             }
@@ -97,7 +74,7 @@ namespace DecentM.Video
         }
 
         [PublicAPI]
-        public Texture GetVideoTexture()
+        public Texture GetScreenTexture()
         {
             PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
 
@@ -179,11 +156,7 @@ namespace DecentM.Video
             this.EnablePlayer(newPlayerHandler);
             this.events.OnPlayerChange(newPlayerHandler.type);
 
-            foreach (VideoScreen screen in this.screens)
-            {
-                screen.SetIsAVPro(newPlayerHandler.type == nameof(VideoHandlerType.AVPro));
-            }
-
+// Skip AVPro when running in editor
 #if UNITY_EDITOR
             if (newPlayerHandler.type == nameof(VideoHandlerType.AVPro))
             {
@@ -205,6 +178,14 @@ namespace DecentM.Video
             return playerHandler.IsPlaying();
         }
 
+        private void UpdateAvProType(bool isAVPro)
+        {
+            foreach (VideoScreen screen in this.screens)
+            {
+                screen.SetIsAVPro(isAVPro);
+            }
+        }
+
         [PublicAPI]
         public void Play()
         {
@@ -213,6 +194,7 @@ namespace DecentM.Video
             if (playerHandler == null)
                 return;
 
+            this.UpdateAvProType(playerHandler.type == nameof(VideoHandlerType.AVPro));
             playerHandler.Play();
         }
 
@@ -224,6 +206,7 @@ namespace DecentM.Video
             if (playerHandler == null)
                 return;
 
+            this.UpdateAvProType(playerHandler.type == nameof(VideoHandlerType.AVPro));
             playerHandler.Play(timestamp);
         }
 
@@ -286,9 +269,9 @@ namespace DecentM.Video
                 return;
 
             this.currentUrl = null;
+            this.UpdateAvProType(false);
             playerHandler.Unload();
             this.events.OnStop();
-            this.Seek(0);
         }
 
         [PublicAPI]
@@ -307,34 +290,42 @@ namespace DecentM.Video
             return screen.GetBrightness();
         }
 
-        [PublicAPI]
-        public bool SetBrightness(float alpha)
+        private bool SetBrightnessNoBroadcast(float alpha)
         {
             if (alpha < 0 || alpha > 1)
                 return false;
 
+            float linearBrightness = (float)Math.Pow(alpha, 2.2f);
+
             foreach (VideoScreen screen in this.screens)
             {
-                screen.SetBrightness(alpha);
+                screen.SetBrightness(linearBrightness);
             }
-
-            this.events.OnBrightnessChange(alpha);
 
             return true;
         }
 
         [PublicAPI]
-        public bool SetVolumeNoBroadcast(float volume)
+        public bool SetBrightness(float alpha)
+        {
+            bool result = this.SetBrightnessNoBroadcast(alpha);
+
+            this.events.OnBrightnessChange(alpha);
+
+            return result;
+        }
+
+        private bool SetVolumeNoBroadcast(float volume)
         {
             if (volume < 0 || volume > 1)
                 return false;
 
+            float linearVolume = volume == 0 ? 0 : (float)Math.Pow(10, volume * 2 - 1) / 10;
+
             foreach (AudioSource speaker in this.speakers)
             {
-                speaker.volume = volume;
+                speaker.volume = linearVolume;
             }
-
-            this.volume = volume;
 
             return true;
         }
@@ -352,7 +343,7 @@ namespace DecentM.Video
         [PublicAPI]
         public float GetVolume()
         {
-            return this.volume;
+            return this.speakers.Length > 0 ? this.speakers[0].volume : 0;
         }
 
         [PublicAPI]

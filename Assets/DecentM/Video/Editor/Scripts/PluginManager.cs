@@ -1,4 +1,6 @@
-﻿namespace DecentM.Video.Editor
+﻿using UnityEngine.Rendering.VirtualTexturing;
+
+namespace DecentM.Video.Editor
 {
     public struct PluginRequirements
     {
@@ -14,12 +16,12 @@
 
     public static class PluginManager
     {
-        public static PluginRequirements GetRequirements(VideoUI ui)
+        public static PluginRequirements GetRequirements(VideoSystem system)
         {
             PluginRequirements requirements = new PluginRequirements();
 
-            requirements.system = ui.GetComponentInChildren<VideoSystem>();
-            requirements.events = ui.GetComponentInChildren<VideoEvents>();
+            requirements.system = system.GetComponentInChildren<VideoSystem>();
+            requirements.events = system.GetComponentInChildren<VideoEvents>();
 
             return requirements;
         }

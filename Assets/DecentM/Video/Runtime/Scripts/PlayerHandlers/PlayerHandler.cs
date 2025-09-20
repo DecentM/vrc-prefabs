@@ -3,6 +3,7 @@ using UdonSharp;
 using VRC.SDK3.Video.Components.Base;
 using VRC.SDKBase;
 using VRC.SDK3.Components.Video;
+using System;
 
 namespace DecentM.Video
 {
@@ -16,18 +17,15 @@ namespace DecentM.Video
     {
         public abstract string type { get; }
 
-        public BaseVRCVideoPlayer player;
-        public VideoEvents events;
+        [NonSerialized] private BaseVRCVideoPlayer player;
+        [NonSerialized] private VideoEvents events;
         public Renderer screen;
-        public VideoSystem system;
-
-        protected virtual void _Start() { }
+        [NonSerialized] private VideoSystem system;
 
         private MaterialPropertyBlock _fetchBlock;
 
         void Start()
         {
-            this._Start();
 
             this.player = this.GetComponent<BaseVRCVideoPlayer>();
             this.system = this.GetComponentInParent<VideoSystem>();

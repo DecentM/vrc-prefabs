@@ -8,7 +8,7 @@ namespace DecentM.Video.Plugins
 
         private void ChangeScreenResolution()
         {
-            Texture videoTexture = this.system.GetVideoTexture();
+            Texture videoTexture = this.system.GetScreenTexture();
 
             if (videoTexture == null)
                 return;
