@@ -14,6 +14,15 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.decentm.video": {
+      "version": "file:decentm.video",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.decentm.shared": "0.0.1",
+        "com.decentm.pubsub": "0.0.1"
+      }
+    },
     "com.unity.ai.navigation": {
       "version": "1.1.5",
       "depth": 1,
