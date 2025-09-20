@@ -2,9 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 using UnityEngine;
 
 namespace DecentM.Shared
@@ -46,9 +44,7 @@ namespace DecentM.Shared
             if (runningCoroutines.Contains(this))
                 return;
 
-#if UNITY_EDITOR
             EditorApplication.update += this.Update;
-#endif
             
             runningCoroutines.Add(this);
         }
@@ -58,9 +54,7 @@ namespace DecentM.Shared
             if (!runningCoroutines.Contains(this))
                 return;
 
-#if UNITY_EDITOR
             EditorApplication.update -= this.Update;
-#endif
 
             runningCoroutines.Remove(this);
         }

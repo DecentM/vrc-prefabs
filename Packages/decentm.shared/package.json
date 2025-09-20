@@ -1,8 +1,9 @@
 {
-  "name": "decentm.collections",
-  "displayName": "DecentM.Collections",
+  "name": "decentm.shared",
+  "displayName": "DecentM.Shared",
   "version": "0.0.1",
-  "description": "VRChat-specific reimplementation of popular collection classes, like List, Queue, and Stack",
+  "description": "Common editor and runtime tools required by my packages",
+  "dependencies": {},
   "gitDependencies": {},
   "vpmDependencies": {},
   "author": {
