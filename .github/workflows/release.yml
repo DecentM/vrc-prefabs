@@ -2,22 +2,31 @@ name: Build Release
 
 on: 
   workflow_dispatch:
-    inputs:
-      PACKAGE_NAME:
-        description: 'Package name under "Packages" to publish'
-        required: true
-        type: string
-
 
 jobs:
+  matrix:
+    runs-on: ubuntu-latest
+
+    outputs:
+      packages: ${{ steps.matrix.outputs.dirs }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get directories
+        id: matrix
+        run: |
+          echo dirs=$(find Packages/ -type d -name 'com.decentm.*' | xargs -n 1 basename | jq -R . | jq -s .) >> $GITHUB_OUTPUT
 
   # Validate Repository Configuration
   config:
     runs-on: ubuntu-latest
+
     outputs:
       config_package: ${{ steps.config_package.outputs.configPackage }}
-    steps:
 
+    steps:
     # Ensure that required repository variable has been created for the Package
     - name: Validate Package Config
       id: config_package
@@ -27,13 +36,24 @@ jobs:
   # Build and release the Package
   # If the repository is not configured properly, this job will be skipped
   build:
-    needs: config
+    needs:
+      - config
+      - matrix
+
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
-    env:
-      packagePath: Packages/${{ inputs.PACKAGE_NAME }}
+
     if: needs.config.outputs.config_package == 'true'
+
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.matrix.outputs.packages) }}
+
+    env:
+      packagePath: Packages/${{ matrix.package }}
+
     steps:
 
       # Checkout Local Repository
@@ -51,8 +71,8 @@ jobs:
       # Configure the Environment Variables needed for releasing the Package
       - name: Set Environment Variables
         run: |
-          echo "zipFile=${{ inputs.PACKAGE_NAME }}-${{ steps.version.outputs.value }}".zip >> $GITHUB_ENV
-          echo "unityPackage=${{ inputs.PACKAGE_NAME }}-${{ steps.version.outputs.value }}.unitypackage" >> $GITHUB_ENV
+          echo "zipFile=${{ matrix.package }}-${{ steps.version.outputs.value }}".zip >> $GITHUB_ENV
+          echo "unityPackage=${{ matrix.package }}-${{ steps.version.outputs.value }}.unitypackage" >> $GITHUB_ENV
           echo "version=${{ steps.version.outputs.value }}" >> $GITHUB_ENV
 
       # Zip the Package for release
@@ -76,7 +96,7 @@ jobs:
         id: tag_version
         uses: rickstaa/action-create-tag@88dbf7ff6fe2405f8e8f6c6fdfd78829bc631f83
         with:
-          tag: ${{ inputs.PACKAGE_NAME }}-${{ env.version }}
+          tag: ${{ matrix.package }}-${{ env.version }}
       
       # Publish the Release to GitHub
       - name: Make Release
@@ -86,4 +106,4 @@ jobs:
             ${{ env.zipFile }}
             ${{ env.unityPackage }}
             ${{ env.packagePath }}/package.json
-          tag_name: ${{ inputs.PACKAGE_NAME }}-${{ env.version }}
+          tag_name: ${{ matrix.package }}-${{ env.version }}
