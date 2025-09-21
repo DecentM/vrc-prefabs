@@ -1,0 +1,18 @@
+{
+    "name":"DecentM's VPM Repo",
+    "id":"com.decentm.vrc-prefabs",
+    "url":"https://decentm.github.io/vrc-prefabs/index.json",
+    "author":{
+        "name":"DecentM",
+        "url":"https://github.com/DecentM"
+    },
+    "description":"DecentM's VRC prefabs.",
+    "infoLink":{
+        "url":"https://github.com/DecentM/vrc-prefabs",
+        "text":"Repository"
+    },
+    "bannerUrl":"",
+    "githubRepos":[
+        "DecentM/vrc-prefabs"
+    ]
+}
