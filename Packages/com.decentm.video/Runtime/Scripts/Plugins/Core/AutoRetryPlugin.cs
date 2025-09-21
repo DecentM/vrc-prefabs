@@ -1,21 +1,22 @@
-﻿using UdonSharp;
-using UnityEngine;
+﻿using UnityEngine;
 using VRC.SDK3.Components.Video;
 using VRC.SDKBase;
-using VRC.Udon;
 
 namespace DecentM.Video.Plugins
 {
-    public class AutoRetryPlugin : VideoPlugin
+    /// <summary>
+    /// When loading the video fails, this plugin will cause the player to retry a number of times.
+    /// If there are multiple players configured, it'll try them all, sequentially.
+    /// </summary>
+    internal sealed class AutoRetryPlugin : VideoPlugin
     {
-        [Tooltip(
-            "Switch to the next player handler after this many failures. Each attempt takes 5 seconds."
-        )]
-        public int failureCeiling = 3;
-        public bool abortAfterAllPlayersFailed = true;
+        [Tooltip("Switch to the next player handler after this many failures. Each attempt takes 5 seconds."), SerializeField] private int failureCeiling = 2;
+        [Tooltip("Abort loading if all players error. If false, the first player will be tried again."), SerializeField] private bool abortAfterAllPlayersFailed = true;
+        
         private int failures = 0;
 
-        public int videoLoadTimeout = 10;
+        [Tooltip("If a player doesn't start playing in this amount of seconds, consider the load attempt as errored.")] private int videoLoadTimeout = 10;
+
         private float timeoutClock = 0;
         private bool waitingForLoad = false;
 
@@ -42,7 +43,7 @@ namespace DecentM.Video.Plugins
             this.system.RequestVideo(url);
         }
 
-        protected override void OnLoadApproved(VRCUrl url)
+        protected override void OnLoadRequested(VRCUrl url)
         {
             this.timeoutClock = 0;
             this.waitingForLoad = true;
@@ -51,6 +52,7 @@ namespace DecentM.Video.Plugins
         protected override void OnLoadError(VideoError videoError)
         {
             VRCUrl url = this.system.GetUrl();
+
             if (url == null || string.IsNullOrEmpty(this.system.GetUrl().ToString()))
                 return;
 
@@ -59,9 +61,7 @@ namespace DecentM.Video.Plugins
                 // Continue for rate limit errors and unknown ones
                 // (we repurposed unknown to mean player timeout as well)
                 case VideoError.Unknown:
-                    break;
                 case VideoError.RateLimited:
-                    break;
                 case VideoError.PlayerError:
                     break;
                 // Don't retry for errors that are unlikely to be temporary

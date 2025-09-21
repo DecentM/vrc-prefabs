@@ -3,8 +3,11 @@ using VRC.SDKBase;
 
 namespace DecentM.Video.Plugins
 {
+    /// <summary>
+    /// When a video loads, this plugin will skip to the correct timestamp if the URL has a known skip parameter
+    /// </summary>
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public sealed class SkipToTimestampPlugin : VideoPlugin
+    internal sealed class SkipToTimestampPlugin : VideoPlugin
     {
         private float GetTimestamp(string url)
         {

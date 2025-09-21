@@ -469,7 +469,7 @@ namespace DecentM.Video.Plugins
         private int searchIndex = 0;
         private VRCUrl searchingUrl;
 
-        protected override void OnLoadApproved(VRCUrl url)
+        protected override void OnLoadRequested(VRCUrl url)
         {
             this.searchIndex = 0;
             this.searchingUrl = url;

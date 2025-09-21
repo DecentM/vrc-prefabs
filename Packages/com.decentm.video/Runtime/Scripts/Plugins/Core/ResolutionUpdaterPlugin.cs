@@ -1,10 +1,15 @@
-﻿using UnityEngine;
+﻿using UdonSharp;
+using UnityEngine;
 
 namespace DecentM.Video.Plugins
 {
-    public sealed class ResolutionUpdaterPlugin : VideoPlugin
+    /// <summary>
+    /// When a video loads, this plugin updates the screen resolution to match the video's size
+    /// </summary>
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    internal sealed class ResolutionUpdaterPlugin : VideoPlugin
     {
-        public Vector2Int defaultResolution = new Vector2Int(1920, 1080);
+        [SerializeField] private Vector2Int defaultResolution = new Vector2Int(1920, 1080);
 
         private void ChangeScreenResolution()
         {

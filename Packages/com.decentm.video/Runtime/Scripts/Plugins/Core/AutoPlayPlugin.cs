@@ -1,10 +1,15 @@
 ﻿using VRC.SDKBase;
+using UnityEngine;
 
 namespace DecentM.Video.Plugins
 {
-    public class AutoPlayPlugin : VideoPlugin
+    /// <summary>
+    /// Causes the video player to automatically start playing a video once it loads.
+    /// If there are multiple players in the world, it'll wait for everyone to load before starting playback.
+    /// </summary>
+    internal sealed class AutoPlayPlugin : VideoPlugin
     {
-        public bool autoplayOnLoad = true;
+        [SerializeField] private bool autoplayOnLoad = true;
 
         private bool isOwner
         {
@@ -48,7 +53,7 @@ namespace DecentM.Video.Plugins
             this.system.Play();
         }
 
-        protected override void OnLoadApproved(VRCUrl url)
+        protected override void OnLoadRequested(VRCUrl url)
         {
             if (!this.isOwner || !this.autoplayOnLoad)
                 return;

@@ -6,10 +6,9 @@ namespace DecentM.Pubsub
 {
     public abstract class PubsubSubscriber : UdonSharpBehaviour
     {
-        public PubsubHost[] pubsubHosts = new PubsubHost[0];
+        [HideInInspector] public PubsubHost[] pubsubHosts = new PubsubHost[0];
 
-        [SerializeField]
-        private List/*<int>*/ subscriptions;
+        [SerializeField] private List/*<int>*/ subscriptions;
 
         virtual protected void _Start() { }
 
@@ -20,7 +19,7 @@ namespace DecentM.Pubsub
             if (this.pubsubHosts.Length == 0)
             {
                 Debug.LogWarning(
-                    $"no pubsub host object is attached to {this.name}, this subscriber will not reveive events until a host is attached"
+                    $"no pubsub host object is attached to {this.name}, this subscriber will not receive events until a host is attached"
                 );
             }
 

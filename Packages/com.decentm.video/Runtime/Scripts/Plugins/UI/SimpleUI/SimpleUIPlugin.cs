@@ -7,8 +7,11 @@ using VRC.SDKBase;
 
 namespace DecentM.Video.Plugins
 {
+    /// <summary>
+    /// Implements a minimal UI to control the video player using its events
+    /// </summary>
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public sealed class SimpleUIPlugin : VideoPlugin
+    internal sealed class SimpleUIPlugin : VideoPlugin
     {
         [Space]
         [SerializeField] private Animator animator;
@@ -60,17 +63,12 @@ namespace DecentM.Video.Plugins
             this.system.Stop();
         }
 
-        protected override void OnLoadApproved(VRCUrl url)
+        protected override void OnLoadRequested(VRCUrl url)
         {
             this.animator.SetBool("Loading", true);
         }
 
         protected override void OnLoadReady(float duration)
-        {
-            this.animator.SetBool("Loading", false);
-        }
-
-        protected override void OnLoadDenied(VRCUrl url, string reason)
         {
             this.animator.SetBool("Loading", false);
         }

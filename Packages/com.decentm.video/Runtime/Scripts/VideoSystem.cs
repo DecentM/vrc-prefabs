@@ -1,21 +1,22 @@
-﻿using JetBrains.Annotations;
-using UnityEngine;
-using DecentM.Collections;
-
-using UdonSharp;
-using VRC.SDKBase;
+﻿using DecentM.Collections;
+using JetBrains.Annotations;
 using System;
+using System.Security.Policy;
+using UdonSharp;
+using UnityEngine;
+using VRC.SDKBase;
 
 namespace DecentM.Video
 {
 
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class VideoSystem : UdonSharpBehaviour
+    public sealed class VideoSystem : UdonSharpBehaviour
     {
-        [NonSerialized] private VideoEvents events;
         [SerializeField] private List/*<VideoHandler>*/ playerHandlers;
         [SerializeField] private AudioSource[] speakers;
         [SerializeField] private VideoScreen[] screens;
+
+        [NonSerialized] private VideoEvents events;
 
         private int currentPlayerHandlerIndex = 0;
 
@@ -40,8 +41,8 @@ namespace DecentM.Video
             this.DisableAllPlayers();
             this.EnablePlayer(0);
 
-// Skip AVPro when running in editor
 #if UNITY_EDITOR
+            // Skip AVPro when running in editor
             if (this.GetCurrentPlayerHandler().type == nameof(VideoHandlerType.AVPro))
             {
                 this.currentPlayerHandlerIndex = this.NextPlayerHandler();
@@ -50,7 +51,12 @@ namespace DecentM.Video
 
             this.events.OnVideoPlayerInit();
         }
-        internal void ChangeScreenResolution(float width, float height)
+
+        /// <summary>
+        /// Calculates the aspect ratio, and sets it on supported screens. The default prefab comes with a supported screen.
+        /// </summary>
+        [PublicAPI]
+        public void ChangeScreenResolution(float width, float height)
         {
             float aspectRatio = width / height;
 
@@ -62,17 +68,13 @@ namespace DecentM.Video
                     continue;
 
                 screen.SetAspectRatio(aspectRatio);
-                this.events.OnScreenResolutionChange(screen, width, height);
+                this.events.OnScreenResolutionChange(width, height);
             }
         }
 
-
-        [PublicAPI]
-        public int ScreenCount
-        {
-            get { return this.screens.Length; }
-        }
-
+        /// <summary>
+        /// Returns a reference to the screen texture. This shouln't be called every frame, but instead in reaction to state changes, such as when the player starts playing.
+        /// </summary>
         [PublicAPI]
         public Texture GetScreenTexture()
         {
@@ -84,6 +86,10 @@ namespace DecentM.Video
             return playerHandler.GetScreenTexture();
         }
 
+        /// <summary>
+        /// Sets the screen texture. This shouln't be called every frame, but instead in reaction to state changes, such as when the player starts playing.
+        /// The default prefab comes with a plugin that takes care of this.
+        /// </summary>
         [PublicAPI]
         public void SetScreenTexture(Texture texture)
         {
@@ -126,6 +132,7 @@ namespace DecentM.Video
         }
 
 #if UNITY_EDITOR
+        // Skip AVPro when running in editor
         [RecursiveMethod]
 #endif
         internal int NextPlayerHandler()
@@ -156,8 +163,8 @@ namespace DecentM.Video
             this.EnablePlayer(newPlayerHandler);
             this.events.OnPlayerChange(newPlayerHandler.type);
 
-// Skip AVPro when running in editor
 #if UNITY_EDITOR
+            // Skip AVPro when running in editor
             if (newPlayerHandler.type == nameof(VideoHandlerType.AVPro))
             {
                 newIndex = this.NextPlayerHandler();
@@ -167,6 +174,9 @@ namespace DecentM.Video
             return newIndex;
         }
 
+        /// <summary>
+        /// Returns true if the player is currently playing
+        /// </summary>
         [PublicAPI]
         public bool IsPlaying()
         {
@@ -186,6 +196,9 @@ namespace DecentM.Video
             }
         }
 
+        /// <summary>
+        /// Starts playback from the current position
+        /// </summary>
         [PublicAPI]
         public void Play()
         {
@@ -198,6 +211,9 @@ namespace DecentM.Video
             playerHandler.Play();
         }
 
+        /// <summary>
+        /// Starts playback from the given timestamp
+        /// </summary>
         [PublicAPI]
         public void Play(float timestamp)
         {
@@ -210,6 +226,9 @@ namespace DecentM.Video
             playerHandler.Play(timestamp);
         }
 
+        /// <summary>
+        /// Sets the position to the given timestamp, but does not start/stop playback
+        /// </summary>
         [PublicAPI]
         public void Seek(float timestamp)
         {
@@ -222,6 +241,9 @@ namespace DecentM.Video
             this.events.OnProgress(timestamp, this.GetDuration());
         }
 
+        /// <summary>
+        /// Pauses playback at the given timestamp
+        /// </summary>
         [PublicAPI]
         public void Pause(float timestamp)
         {
@@ -229,6 +251,9 @@ namespace DecentM.Video
             this.Seek(timestamp);
         }
 
+        /// <summary>
+        /// Pauses playback at the current position
+        /// </summary>
         [PublicAPI]
         public void Pause()
         {
@@ -242,11 +267,50 @@ namespace DecentM.Video
         }
 
         private VRCUrl currentUrl;
+        private VRCUrl approvalPending = VRCUrl.Empty;
+        private float approvalTimeout = 0.3f;
+        private int denials = 0;
 
+        /// <summary>
+        /// Requests playback of the given URL. If no plugin denies the request, loads the URL.
+        /// </summary>
         [PublicAPI]
         public void RequestVideo(VRCUrl url)
         {
+            if (!string.IsNullOrWhiteSpace(this.approvalPending.ToString()))
+                return;
+            
+            this.denials = 0;
+            this.approvalPending = url;
+            this.SendCustomEventDelayedSeconds(nameof(CheckForDenials), this.approvalTimeout);
             this.events.OnLoadRequested(url);
+        }
+
+        public void CheckForDenials()
+        {
+            if (string.IsNullOrWhiteSpace(this.approvalPending.ToString())) return;
+
+            if (this.denials == 0)
+            {
+                this.LoadVideo(this.approvalPending);
+            }
+            else
+            {
+                this.events.OnLoadError(VRC.SDK3.Components.Video.VideoError.InvalidURL);
+                this.Stop();
+                this.denials = 0;
+            }
+
+            this.approvalPending = VRCUrl.Empty;
+        }
+
+        [PublicAPI]
+        public void DenyVideoRequest(VRCUrl url)
+        {
+            if (string.IsNullOrWhiteSpace(this.approvalPending.ToString()) || url != this.approvalPending)
+                return;
+
+            this.denials++;
         }
 
         internal void LoadVideo(VRCUrl url)
@@ -260,6 +324,9 @@ namespace DecentM.Video
             playerHandler.LoadURL(url);
         }
 
+        /// <summary>
+        /// Stops playback and unloads the current video
+        /// </summary>
         [PublicAPI]
         public void Stop()
         {
@@ -274,28 +341,68 @@ namespace DecentM.Video
             this.events.OnStop();
         }
 
+        /// <summary>
+        /// Returns the currently loaded VRCUrl
+        /// </summary>
         [PublicAPI]
         public VRCUrl GetUrl()
         {
             return this.currentUrl;
         }
 
+        [SerializeField] private float baseGamma = 2.2f;
+        [SerializeField] private float gammaRange = 0.4f;
+
+        private float gamma = 2.2f;
+
+        /// <summary>
+        /// Returns the currently set gamma value, a float between 0 and 1
+        /// </summary>
+        [PublicAPI]
+        public float GetGamma()
+        {
+            return (this.gamma - this.baseGamma) / this.gammaRange;
+        }
+
+        /// <summary>
+        /// Sets the gamma value to the given value, which must be a normal value between 0 and 1
+        /// </summary>
+        public void SetGamma(float gamma)
+        {
+            this.gamma = this.baseGamma + gamma * this.gammaRange;
+            this.SetBrightness(this.GetBrightness());
+        }
+
+        /// <summary>
+        /// Returns the current brightness value, which is a float between 0 and 1.<br />
+        /// Returns -1f if there are no screens, or if a screen is missing a renderer.<br />
+        /// </summary>
         [PublicAPI]
         public float GetBrightness()
         {
             if (this.screens.Length == 0)
-                return 1f;
+                return -1f;
 
             VideoScreen screen = this.screens[0];
-            return screen.GetBrightness();
+            float screenBrightness = screen.GetBrightness();
+
+            if (screenBrightness < 0f)
+                return -1;
+
+            return (float)Math.Pow(screen.GetBrightness(), 1 / this.gamma);
         }
 
-        private bool SetBrightnessNoBroadcast(float alpha)
+        /// <summary>
+        /// Returns the current brightness value (without sending events), which is a float between 0 and 1.<br />
+        /// Returns -1f if there are no screens, or if a screen is missing a renderer.
+        /// </summary>
+        [PublicAPI]
+        public bool SetBrightnessNoBroadcast(float alpha)
         {
             if (alpha < 0 || alpha > 1)
                 return false;
 
-            float linearBrightness = (float)Math.Pow(alpha, 2.2f);
+            float linearBrightness = (float)Math.Pow(alpha, this.gamma);
 
             foreach (VideoScreen screen in this.screens)
             {
@@ -305,17 +412,27 @@ namespace DecentM.Video
             return true;
         }
 
+        /// <summary>
+        /// Sets the brightness value to the given value, which must be a normal value between 0 and 1.<br />
+        /// Returns false if it failed.
+        /// </summary>
         [PublicAPI]
         public bool SetBrightness(float alpha)
         {
-            bool result = this.SetBrightnessNoBroadcast(alpha);
+            if (!this.SetBrightnessNoBroadcast(alpha))
+                return false;
 
             this.events.OnBrightnessChange(alpha);
 
-            return result;
+            return true;
         }
 
-        private bool SetVolumeNoBroadcast(float volume)
+        /// <summary>
+        /// Sets the brightness value to the given value (without sending events), which must be a normal value between 0 and 1.<br />
+        /// Returns false if it failed.
+        /// </summary>
+        [PublicAPI]
+        public bool SetVolumeNoBroadcast(float volume)
         {
             if (volume < 0 || volume > 1)
                 return false;
@@ -330,33 +447,52 @@ namespace DecentM.Video
             return true;
         }
 
+        /// <summary>
+        /// Sets the volume to the given value, which must be a normal value between 0 and 1.<br />
+        /// Returns false if it failed.
+        /// </summary>
         [PublicAPI]
         public bool SetVolume(float volume)
         {
-            bool result = this.SetVolumeNoBroadcast(volume);
+            if (!this.SetVolumeNoBroadcast(volume))
+                return false;
 
             this.events.OnVolumeChange(volume);
 
-            return result;
+            return true;
         }
 
+        /// <summary>
+        /// Returns the current volume, as a float between 0 and 1.<br />
+        /// </summary>
         [PublicAPI]
         public float GetVolume()
         {
-            return this.speakers.Length > 0 ? this.speakers[0].volume : 0;
+            float rawVolume = this.speakers.Length > 0 ? this.speakers[0].volume : 0;
+
+            if (rawVolume == 0)
+                return 0;
+
+            return (float)(Math.Log10(rawVolume * 10) + 1) / 2;
         }
 
+        /// <summary>
+        /// Returns the duration of the currently loaded VRCUrl, or -1 if there's no video loaded
+        /// </summary>
         [PublicAPI]
         public float GetDuration()
         {
             PlayerHandler playerHandler = this.GetCurrentPlayerHandler();
 
             if (playerHandler == null)
-                return 0;
+                return -1;
 
             return playerHandler.GetDuration();
         }
 
+        /// <summary>
+        /// Returns the current position within the loaded video. Use "time / duration" to get the progress between 0 and 1.
+        /// </summary>
         [PublicAPI]
         public float GetTime()
         {

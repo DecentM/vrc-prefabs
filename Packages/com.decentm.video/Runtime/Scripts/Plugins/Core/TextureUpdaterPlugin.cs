@@ -5,9 +5,9 @@ using UdonSharp;
 namespace DecentM.Video.Plugins
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public sealed class TextureUpdaterPlugin : VideoPlugin
+    internal sealed class TextureUpdaterPlugin : VideoPlugin
     {
-        public Texture idleTexture;
+        [SerializeField] private Texture idleTexture;
 
         protected override void OnPlay(float duration)
         {

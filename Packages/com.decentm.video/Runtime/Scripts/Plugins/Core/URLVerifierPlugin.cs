@@ -3,8 +3,11 @@ using VRC.SDKBase;
 
 namespace DecentM.Video.Plugins
 {
+    /// <summary>
+    /// Makes the video player deny loading URLs that fail validation
+    /// </summary>
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class URLVerifierPlugin : VideoPlugin
+    internal sealed class URLVerifierPlugin : VideoPlugin
     {
         private bool ValidateUrl(string url)
         {
@@ -31,7 +34,7 @@ namespace DecentM.Video.Plugins
             if (this.ValidateUrl(url.ToString()))
                 return;
 
-            this.events.OnLoadDenied(url, "URL failed validation");
+            this.system.DenyVideoRequest(url);
         }
     }
 }

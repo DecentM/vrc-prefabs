@@ -7,7 +7,8 @@ using VRC.SDK3.Components.Video;
 
 namespace DecentM.Video
 {
-    public class VideoEvent
+    
+    internal sealed class VideoEvent
     {
         internal void OnDebugLog() { }
 
@@ -28,8 +29,6 @@ namespace DecentM.Video
         internal void OnLoadReady() { }
         internal void OnLoadError() { }
         internal void OnLoadRequested() { }
-        internal void OnLoadApproved() { }
-        internal void OnLoadDenied() { }
         internal void OnLoadRatelimitWaiting() { }
 
         internal void OnAutoRetry() { }
@@ -80,9 +79,9 @@ namespace DecentM.Video
             this.BroadcastEvent(nameof(VideoEvent.OnFpsChange), fps);
         }
 
-        public void OnScreenResolutionChange(VideoScreen screen, float width, float height)
+        public void OnScreenResolutionChange(float width, float height)
         {
-            this.BroadcastEvent(nameof(VideoEvent.OnScreenResolutionChange), screen, width, height);
+            this.BroadcastEvent(nameof(VideoEvent.OnScreenResolutionChange), width, height);
         }
 
         public void OnPlay(float timestamp)
@@ -113,16 +112,6 @@ namespace DecentM.Video
         public void OnLoadRequested(VRCUrl url)
         {
             this.BroadcastEvent(nameof(VideoEvent.OnLoadRequested), url);
-        }
-
-        public void OnLoadApproved(VRCUrl url)
-        {
-            this.BroadcastEvent(nameof(VideoEvent.OnLoadApproved), url);
-        }
-
-        public void OnLoadDenied(VRCUrl url, string reason)
-        {
-            this.BroadcastEvent(nameof(VideoEvent.OnLoadDenied), url, reason);
         }
 
         public void OnLoadReady(float duration)

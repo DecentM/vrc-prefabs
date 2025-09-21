@@ -5,44 +5,15 @@ using UdonSharp;
 
 namespace DecentM.Video.Plugins
 {
+    /// <summary>
+    /// If the currently loaded video's metadata contains subtitles, this plugin listens to playback events and sends subtitle events when the current timestamp should be showing subtitles
+    /// </summary>
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class SubtitlesPlugin : VideoPlugin
+    public sealed class SubtitlesPlugin : VideoPlugin
     {
-        public TextMeshProUGUI debugSlot;
-        public TextMeshProUGUI pregenerateSlot;
+        [SerializeField] private TextMeshProUGUI pregenerateSlot;
 
         private TextAsset[] currentSubtitles;
-
-        // TODO: Refactor after we have variable syncing working
-        // [UdonSynced, FieldChangeCallback(nameof(displayValue))]
-        private string _displayValue;
-
-        public string displayValue
-        {
-            get => _displayValue;
-            set
-            {
-                this._displayValue = value;
-
-                if (this.isOwner)
-                   this.RequestSerialization();
-
-                // If the current non-owner already has subtitles loaded, we don't do anything.
-                // This way synced subtitles won't happen when there are multiple languages and people
-                // are using different ones.
-                else if (this.instructions.Length > 0)
-                   return;
-
-                if (string.IsNullOrEmpty(value))
-                    this.events.OnSubtitleClear();
-                else
-                    this.events.OnSubtitleRender(value);
-            }
-        }
-        private bool isOwner
-        {
-            get { return Networking.GetOwner(this.gameObject) == Networking.LocalPlayer; }
-        }
 
         protected override void OnPlay(float timestamp)
         {
@@ -61,20 +32,20 @@ namespace DecentM.Video.Plugins
             this.Reset();
         }
 
-        protected override void OnLoadApproved(VRCUrl url)
+        protected override void OnLoadRequested(VRCUrl url)
         {
             this.Reset();
         }
 
         #region Language handling
 
-        public static string GetLanguageIdFromFilename(string filename)
+        private static string GetLanguageIdFromFilename(string filename)
         {
             string[] parts = filename.Split('.');
             return parts[parts.Length - 1];
         }
 
-        public static string GetLanguageFromFilename(string filename)
+        private static string GetLanguageFromFilename(string filename)
         {
             string language = GetLanguageIdFromFilename(filename);
             if (language.EndsWith("-ar"))
@@ -366,8 +337,8 @@ namespace DecentM.Video.Plugins
             {
                 langs[i] = new string[]
                 {
-                    GetLanguageIdFromFilename(subtitles[i].name),
-                    GetLanguageFromFilename(subtitles[i].name)
+                    SubtitlesPlugin.GetLanguageIdFromFilename(subtitles[i].name),
+                    SubtitlesPlugin.GetLanguageFromFilename(subtitles[i].name)
                 };
             }
 
@@ -402,14 +373,14 @@ namespace DecentM.Video.Plugins
 
         #endregion
 
-        public float subtitleOffset = 0;
+        [SerializeField] private float subtitleOffset = 0;
 
         protected override void _Awake()
         {
             this.Reset();
         }
 
-        public void Reset()
+        private void Reset()
         {
             this.elapsed = 0;
             this.instructionIndex = 0;
@@ -454,16 +425,16 @@ namespace DecentM.Video.Plugins
             return result;
         }
 
-        public void SetInstructions(string newInstructions)
+        private void SetInstructions(string newInstructions)
         {
-            this.instructions = ParseInstructions(newInstructions);
+            this.instructions = SubtitlesPlugin.ParseInstructions(newInstructions);
         }
 
         private float elapsed = 0;
-        public float tickInterval = 0.1f;
+        [SerializeField] private float tickInterval = 0.1f;
 
         private float pregenerateElapsed = 0;
-        public float pregenerateInterval = 0.05f;
+        [SerializeField] private float pregenerateInterval = 0.05f;
 
         private void FixedUpdate()
         {
@@ -490,12 +461,12 @@ namespace DecentM.Video.Plugins
         private object[][] instructions = new object[0][];
         private int instructionIndex = 0;
 
-        public void JumpToStart()
+        private void JumpToStart()
         {
             this.instructionIndex = 0;
         }
 
-        public int timestampSeekAccuracy = 10000;
+        [SerializeField] private int timestampSeekAccuracy = 10000;
 
         #region Pregenerating TMPro font assets
 
@@ -593,19 +564,12 @@ namespace DecentM.Video.Plugins
              **/
 
             if (this.instructions == null || this.instructions.Length == 0)
-            {
-                if (this.debugSlot != null)
-                    this.debugSlot.text = "No subtitles set.";
                 return;
-            }
+           
 
             // We've reached the end of the instructions, stop processing more
             if (this.instructionIndex >= this.instructions.Length)
-            {
-                if (this.debugSlot != null)
-                    this.debugSlot.text = "End of subtitles reached.";
                 return;
-            }
 
             int timeMillis =
                 Mathf.RoundToInt(this.system.GetTime() * 1000)
@@ -639,15 +603,6 @@ namespace DecentM.Video.Plugins
                 }
             }
 
-            if (this.debugSlot != null)
-                this.debugSlot.text =
-                    $"Instructions: {this.instructions.Length}\n"
-                    + $"Next instruction index: {this.instructionIndex}\n"
-                    + $"Next instruction type: {((int)instruction[0] == 1 ? "write" : "clear")}\n"
-                    + $"Next instruction timestamp: {instruction[1]}\n"
-                    + $"Distance from next instruction: {diff}\n"
-                    + $"Current playback time {timeMillis}\n";
-
             // If the timestamp of the current instruction is in the past, it means we should be displaying it
             if ((int)instruction[1] < timeMillis)
             {
@@ -667,11 +622,11 @@ namespace DecentM.Video.Plugins
             switch (type)
             {
                 case 1:
-                    this.displayValue = value;
+                    this.events.OnSubtitleRender(value);
                     break;
 
                 case 2:
-                    this.displayValue = "";
+                    this.events.OnSubtitleClear();
                     break;
             }
         }

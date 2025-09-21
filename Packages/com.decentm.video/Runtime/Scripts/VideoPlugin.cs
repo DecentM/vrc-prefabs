@@ -8,6 +8,9 @@ using System;
 
 namespace DecentM.Video.Plugins
 {
+    /// <summary>
+    /// Base class, providing a fully typed interface for video events, and access to the video system
+    /// </summary>
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public abstract class VideoPlugin : PubsubSubscriber
     {
@@ -37,7 +40,6 @@ namespace DecentM.Video.Plugins
         protected virtual void OnFpsChange(int fps) { }
 
         protected virtual void OnScreenResolutionChange(
-            VideoScreen screen,
             float width,
             float height
         ) { }
@@ -63,10 +65,6 @@ namespace DecentM.Video.Plugins
         protected virtual void OnLoadError(VideoError error) { }
 
         protected virtual void OnLoadRequested(VRCUrl url) { }
-
-        protected virtual void OnLoadApproved(VRCUrl url) { }
-
-        protected virtual void OnLoadDenied(VRCUrl url, string reason) { }
 
         protected virtual void OnLoadRatelimitWaiting() { }
 
@@ -127,21 +125,6 @@ namespace DecentM.Video.Plugins
                     return;
                 }
 
-                case nameof(VideoEvent.OnLoadApproved):
-                {
-                    VRCUrl url = (VRCUrl)data[0];
-                    this.OnLoadApproved(url);
-                    return;
-                }
-
-                case nameof(VideoEvent.OnLoadDenied):
-                {
-                    VRCUrl url = (VRCUrl)data[0];
-                    string reason = (string)data[1];
-                    this.OnLoadDenied(url, reason);
-                    return;
-                }
-
                 case nameof(VideoEvent.OnLoadBegin):
                 {
                     VRCUrl url = (VRCUrl)data[0];
@@ -175,10 +158,9 @@ namespace DecentM.Video.Plugins
 
                 case nameof(VideoEvent.OnScreenResolutionChange):
                 {
-                    VideoScreen screen = (VideoScreen)data[0];
-                    float width = (float)data[1];
-                    float height = (float)data[2];
-                    this.OnScreenResolutionChange(screen, width, height);
+                    float width = (float)data[0];
+                    float height = (float)data[1];
+                    this.OnScreenResolutionChange(width, height);
                     return;
                 }
 

@@ -4,10 +4,9 @@ using UnityEngine;
 namespace DecentM.Video.Plugins
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public sealed class SoundEffectsPlugin : VideoPlugin
+    internal sealed class SoundEffectsPlugin : VideoPlugin
     {
-        [Space, SerializeField]
-        private AudioSource audioSource;
+        [SerializeField] private AudioSource audioSource;
 
         [Space]
         [SerializeField] private AudioClip autoRetry;

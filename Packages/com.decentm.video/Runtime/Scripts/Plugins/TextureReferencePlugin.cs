@@ -4,10 +4,10 @@ using UdonSharp;
 namespace DecentM.Video.Plugins
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class TextureReferencePlugin : VideoPlugin
+    internal sealed class TextureReferencePlugin : VideoPlugin
     {
-        public Material[] materials;
-        public Renderer[] renderers;
+        [SerializeField] private Material[] materials;
+        [SerializeField] private Renderer[] renderers;
 
         public string textureProperty = "_EmissionMap";
         public string avProProperty = "_IsAVProInput";

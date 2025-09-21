@@ -7,13 +7,18 @@ using DecentM.Collections;
 
 namespace DecentM.Video.Plugins
 {
+    /// <summary>
+    /// Allows inspecting all pubsub messages in the video system in the editor.
+    /// <br />
+    /// Attach this plugin to a video player, assign a Queue, and all the events will be visible in the Queue inspector.
+    /// </summary>
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class DebugPlugin : VideoPlugin
+    internal sealed class DebugPlugin : VideoPlugin
     {
         [SerializeField]
         private Queue/*<string>*/ logs;
 
-        public void Log(params string[] messages)
+        private void Log(params string[] messages)
         {
             if (this.logs.Count > 20)
             {
@@ -114,14 +119,12 @@ namespace DecentM.Video.Plugins
         }
 
         protected override void OnScreenResolutionChange(
-            VideoScreen screen,
             float width,
             float height
         )
         {
             this.Log(
                 nameof(OnScreenResolutionChange),
-                screen.name,
                 width.ToString(),
                 height.ToString()
             );
@@ -130,16 +133,6 @@ namespace DecentM.Video.Plugins
         protected override void OnLoadRequested(VRCUrl url)
         {
             this.Log(nameof(OnLoadRequested), "(with URL)");
-        }
-
-        protected override void OnLoadApproved(VRCUrl url)
-        {
-            this.Log(nameof(OnLoadApproved), "(with URL)");
-        }
-
-        protected override void OnLoadDenied(VRCUrl url, string reason)
-        {
-            this.Log(nameof(OnLoadDenied), $"(with URL) {reason}");
         }
 
         protected override void OnLoadRatelimitWaiting()

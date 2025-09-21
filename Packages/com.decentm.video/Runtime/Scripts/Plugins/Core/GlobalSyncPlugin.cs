@@ -4,17 +4,21 @@ using VRC.SDKBase;
 
 namespace DecentM.Video.Plugins
 {
+    /// <summary>
+    /// Causes the video player state to be synced to other players in the world. <br/>
+    /// Includes ownership locking, and drift correction.
+    /// </summary>
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class GlobalSyncPlugin : VideoPlugin
+    internal sealed class GlobalSyncPlugin : VideoPlugin
     {
-        public float diffToleranceSeconds = 2f;
+        [Tooltip("If the amount of drift is larger than this, the plugin will jump to the synced position."), SerializeField] private float diffToleranceSeconds = 2f;
 
         private float latency = 0.1f;
 
         [UdonSynced, FieldChangeCallback(nameof(progress))]
         private float _progress;
 
-        public float progress
+        internal float progress
         {
             set
             {
@@ -30,6 +34,7 @@ namespace DecentM.Video.Plugins
                 // While paused we accept any seek input from the owner
                 if (!system.IsPlaying())
                     this.system.Seek(value);
+
                 // If diff is positive, the local player is ahead of the remote one
                 if (diff > diffToleranceSeconds || diff < diffToleranceSeconds * -1)
                     this.system.Seek(desiredProgress);
@@ -40,7 +45,7 @@ namespace DecentM.Video.Plugins
         [UdonSynced, FieldChangeCallback(nameof(isPlaying))]
         private bool _isPlaying;
 
-        public bool isPlaying
+        internal bool isPlaying
         {
             set
             {
@@ -59,7 +64,7 @@ namespace DecentM.Video.Plugins
         [UdonSynced, FieldChangeCallback(nameof(url))]
         private VRCUrl _url;
 
-        public VRCUrl url
+        internal VRCUrl url
         {
             set
             {
@@ -70,7 +75,6 @@ namespace DecentM.Video.Plugins
 
                 _url = value;
 
-                this.events.OnLoadApproved(value);
                 this.system.LoadVideo(value);
             }
             get => _url;
@@ -92,15 +96,9 @@ namespace DecentM.Video.Plugins
 
             if (Networking.GetOwner(this.gameObject) != Networking.LocalPlayer)
             {
-                this.events.OnLoadDenied(url, "Only the player owner can change the URL");
+                this.system.DenyVideoRequest(url);
                 return;
             }
-        }
-
-        protected override void OnLoadApproved(VRCUrl url)
-        {
-            if (url == null)
-                return;
 
             this._url = url;
             this.RequestSerialization();
