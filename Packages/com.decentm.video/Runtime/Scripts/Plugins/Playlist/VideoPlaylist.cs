@@ -507,7 +507,8 @@ namespace DecentM.Video.Plugins
             if (url.ToString() == this.searchingUrl.ToString())
             {
                 this.system.SetScreenTexture(thumbnail.texture);
-                this.events.OnMetadataChange(
+                this.events.OnCustomVideoEvent("OnMetadataChange", new object[]
+                {
                     title,
                     uploader,
                     platform,
@@ -518,7 +519,7 @@ namespace DecentM.Video.Plugins
                     description,
                     duration,
                     subtitles
-                );
+                });
                 this.searchingUrl = null;
                 this.searchIndex = 0;
                 return;

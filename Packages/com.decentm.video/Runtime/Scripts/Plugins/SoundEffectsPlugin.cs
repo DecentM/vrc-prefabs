@@ -9,10 +9,8 @@ namespace DecentM.Video.Plugins
         [SerializeField] private AudioSource audioSource;
 
         [Space]
-        [SerializeField] private AudioClip autoRetry;
-        [SerializeField] private AudioClip autoRetryAbort;
+        [SerializeField] private AudioClip loadBegin;
         [SerializeField] private AudioClip loadReady;
-        [SerializeField] private AudioClip remotePlayerLoaded;
         [SerializeField] private AudioClip videoUnloaded;
 
         private void PlaySound(AudioClip clip)
@@ -23,24 +21,14 @@ namespace DecentM.Video.Plugins
             this.audioSource.PlayOneShot(clip);
         }
 
-        protected override void OnAutoRetry(int attempt)
+        protected override void OnLoadBegin()
         {
-            this.PlaySound(this.autoRetry);
-        }
-
-        protected override void OnAutoRetryAbort()
-        {
-            this.PlaySound(this.autoRetryAbort);
+            this.PlaySound(this.loadBegin);
         }
 
         protected override void OnLoadReady(float duration)
         {
             this.PlaySound(this.loadReady);
-        }
-
-        protected override void OnRemotePlayerLoaded(int loadedPlayers)
-        {
-            this.PlaySound(this.remotePlayerLoaded);
         }
 
         protected override void OnStop()

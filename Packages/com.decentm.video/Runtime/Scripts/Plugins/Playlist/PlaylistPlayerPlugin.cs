@@ -24,7 +24,7 @@ namespace DecentM.Video.Plugins
             this.PlayItem(next);
         }
 
-        protected override void OnAutoRetryAbort()
+        private void OnAutoRetryAbort()
         {
             if (this.playlist == null)
                 return;
@@ -46,6 +46,12 @@ namespace DecentM.Video.Plugins
             VRCUrl url = (VRCUrl)item[0];
 
             this.system.RequestVideo(url);
+        }
+
+        protected override void OnCustomVideoEvent(string name)
+        {
+            if (name == "OnAutoRetryAbort")
+                this.OnAutoRetryAbort();
         }
     }
 }

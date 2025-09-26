@@ -43,7 +43,7 @@ namespace DecentM.Video.Plugins
 
             this.receivedLoadedFrom++;
 
-            this.events.OnRemotePlayerLoaded(this.receivedLoadedFrom);
+            this.events.OnCustomVideoEvent("OnRemotePlayerLoaded", new object[] { this.receivedLoadedFrom });
 
             // Everyone is loaded when this counter is above the player count
             // (skipping one for the local player)

@@ -184,7 +184,7 @@ namespace DecentM.Video.Plugins
                 return;
 
             this.currentOwnerId = owner.playerId;
-            this.events.OnOwnershipChanged(this.currentOwnerId, owner);
+            this.events.OnCustomVideoEvent("OnOwnershipChanged", new object[] { this.currentOwnerId, owner });
         }
 
         public override void OnOwnershipTransferred(VRCPlayerApi player)
@@ -192,7 +192,7 @@ namespace DecentM.Video.Plugins
             if (player == null || !player.IsValid())
                 return;
 
-            this.events.OnOwnershipChanged(this.currentOwnerId, player);
+            this.events.OnCustomVideoEvent("OnOwnershipChanged", new object[] { this.currentOwnerId, player });
             this.currentOwnerId = player.playerId;
         }
 
@@ -214,14 +214,19 @@ namespace DecentM.Video.Plugins
             return requestingPlayer.playerId == requestedOwner.playerId;
         }
 
-        protected override void OnOwnershipSecurityChanged(bool locked)
+        protected override void OnCustomVideoEvent(string name)
         {
-            this.ownershipLocked = locked;
+            if (name == "OnOwnershipRequested")
+                Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
         }
 
-        protected override void OnOwnershipRequested()
+        protected override void OnCustomVideoEvent(string name, object[] data)
         {
-            Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+            if (name == "OnOwnershipSecurityChanged")
+            {
+                bool locked = (bool)data[0];
+                this.ownershipLocked = locked;
+            }
         }
     }
 }

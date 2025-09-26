@@ -7,7 +7,7 @@ using System;
 
 namespace DecentM.Video
 {
-    public class VideoHandlerType
+    internal class VideoHandlerType
     {
         public void Unity() { }
         public void AVPro() { }

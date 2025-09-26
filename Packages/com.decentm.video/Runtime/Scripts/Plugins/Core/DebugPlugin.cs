@@ -33,11 +33,6 @@ namespace DecentM.Video.Plugins
             this.Log(nameof(_Start));
         }
 
-        protected override void OnDebugLog(string message)
-        {
-            this.Log(message);
-        }
-
         protected override void OnVideoPlayerInit()
         {
             this.Log(nameof(OnVideoPlayerInit));
@@ -88,21 +83,6 @@ namespace DecentM.Video.Plugins
             this.Log(nameof(OnPause), timestamp.ToString());
         }
 
-        protected override void OnAutoRetry(int attempt)
-        {
-            this.Log(nameof(OnAutoRetry), attempt.ToString());
-        }
-
-        protected override void OnAutoRetryLoadTimeout(int failures)
-        {
-            this.Log(nameof(OnAutoRetryLoadTimeout), failures.ToString());
-        }
-
-        protected override void OnAutoRetryAbort()
-        {
-            this.Log(nameof(OnAutoRetryAbort));
-        }
-
         protected override void OnBrightnessChange(float alpha)
         {
             this.Log(nameof(OnBrightnessChange), alpha.ToString());
@@ -135,67 +115,19 @@ namespace DecentM.Video.Plugins
             this.Log(nameof(OnLoadRequested), "(with URL)");
         }
 
-        protected override void OnLoadRatelimitWaiting()
-        {
-            this.Log(nameof(OnLoadRatelimitWaiting));
-        }
-
         protected override void OnScreenTextureChange()
         {
             this.Log(nameof(OnScreenTextureChange));
         }
 
-        protected override void OnRemotePlayerLoaded(int loadedPlayers)
+        protected override void OnCustomVideoEvent(string name)
         {
-            this.Log(nameof(OnRemotePlayerLoaded), loadedPlayers.ToString());
+            this.Log(nameof(OnCustomVideoEvent));
         }
 
-        protected override void OnAutoRetryAllPlayersFailed()
+        protected override void OnCustomVideoEvent(string name, object[] data)
         {
-            this.Log(nameof(OnAutoRetryAllPlayersFailed));
-        }
-
-        protected override void OnMetadataChange(
-            string title,
-            string uploader,
-            string siteName,
-            int viewCount,
-            int likeCount,
-            string resolution,
-            int fps,
-            string description,
-            string duration,
-            TextAsset[] subtitles
-        )
-        {
-            this.Log(
-                nameof(OnMetadataChange),
-                viewCount.ToString(),
-                likeCount.ToString(),
-                fps.ToString(),
-                duration,
-                subtitles.Length.ToString()
-            );
-        }
-
-        protected override void OnSubtitleRender(string text)
-        {
-            this.Log(nameof(OnSubtitleRender), $"({text.Length} long string)");
-        }
-
-        protected override void OnSubtitleClear()
-        {
-            this.Log(nameof(OnSubtitleClear));
-        }
-
-        protected override void OnSubtitleLanguageOptionsChange(string[][] newOptions)
-        {
-            this.Log(nameof(OnSubtitleLanguageOptionsChange), newOptions.Length.ToString());
-        }
-
-        protected override void OnSubtitleLanguageRequested(string language)
-        {
-            this.Log(nameof(OnSubtitleLanguageRequested), language);
+            this.Log(nameof(OnCustomVideoEvent), $"{data.Length}");
         }
     }
 }

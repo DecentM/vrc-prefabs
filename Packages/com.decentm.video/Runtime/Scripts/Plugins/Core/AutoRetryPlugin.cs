@@ -30,7 +30,7 @@ namespace DecentM.Video.Plugins
             {
                 this.timeoutClock = 0;
                 this.OnLoadError(VideoError.Unknown);
-                this.events.OnAutoRetryLoadTimeout((this.failures + 1) * 5);
+                this.events.OnCustomVideoEvent("OnAutoRetryLoadTimeout", new object[] { (this.failures + 1) * 5 });
             }
         }
 
@@ -69,7 +69,7 @@ namespace DecentM.Video.Plugins
                 case VideoError.AccessDenied:
                     this.timeoutClock = 0;
                     this.failures = 0;
-                    this.events.OnAutoRetryAbort();
+                    this.events.OnCustomVideoEvent("OnAutoRetryAbort");
                     return;
             }
 
@@ -88,18 +88,18 @@ namespace DecentM.Video.Plugins
                     if (abortAfterAllPlayersFailed)
                     {
                         this.system.Stop();
-                        this.events.OnAutoRetryAbort();
+                        this.events.OnCustomVideoEvent("OnAutoRetryAbort");
                         return;
                     }
                     else
                     {
-                        this.events.OnAutoRetryAllPlayersFailed();
+                        this.events.OnCustomVideoEvent("OnAutoRetryAllPlayersFailed");
                     }
                 }
             }
 
             // Schedule a retry after the rate limit expires
-            this.events.OnAutoRetry(this.failures);
+            this.events.OnCustomVideoEvent("OnAutoRetryAbort", new object[] { this.failures });
             this.SendCustomEventDelayedSeconds(nameof(AttemptRetry), 5.1f);
         }
 

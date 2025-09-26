@@ -29,8 +29,6 @@ namespace DecentM.Video.Plugins
             this.__Start();
         }
 
-        protected virtual void OnDebugLog(string message) { }
-
         protected virtual void OnVideoPlayerInit() { }
 
         protected virtual void OnBrightnessChange(float alpha) { }
@@ -66,57 +64,15 @@ namespace DecentM.Video.Plugins
 
         protected virtual void OnLoadRequested(VRCUrl url) { }
 
-        protected virtual void OnLoadRatelimitWaiting() { }
+        protected virtual void OnCustomVideoEvent(string name, object[] data) { }
 
-        protected virtual void OnAutoRetry(int attempt) { }
-
-        protected virtual void OnAutoRetryLoadTimeout(int timeout) { }
-
-        protected virtual void OnAutoRetryAbort() { }
-
-        protected virtual void OnAutoRetryAllPlayersFailed() { }
-
-        protected virtual void OnOwnershipChanged(int previousOwnerId, VRCPlayerApi nextOwner) { }
-
-        protected virtual void OnOwnershipSecurityChanged(bool locked) { }
-
-        protected virtual void OnOwnershipRequested() { }
-
-        protected virtual void OnRemotePlayerLoaded(int loadedPlayers) { }
-
-        protected virtual void OnSubtitleRender(string text) { }
-
-        protected virtual void OnSubtitleClear() { }
-
-        protected virtual void OnSubtitleLanguageOptionsChange(string[][] newOptions) { }
-
-        protected virtual void OnSubtitleLanguageRequested(string language) { }
-
-        protected virtual void OnMetadataChange(
-            string title,
-            string uploader,
-            string siteName,
-            int viewCount,
-            int likeCount,
-            string resolution,
-            int fps,
-            string description,
-            string duration,
-            TextAsset[] subtitles
-        ) { }
+        protected virtual void OnCustomVideoEvent(string name) { }
 
         public sealed override void OnPubsubEvent(object name, object[] data)
         {
             switch (name)
             {
                 #region Core
-
-                case nameof(VideoEvent.OnDebugLog):
-                {
-                    string message = (string)data[0];
-                    this.OnDebugLog(message);
-                    return;
-                }
 
                 case nameof(VideoEvent.OnLoadRequested):
                 {
@@ -178,12 +134,6 @@ namespace DecentM.Video.Plugins
                     return;
                 }
 
-                case nameof(VideoEvent.OnLoadRatelimitWaiting):
-                {
-                    this.OnLoadRatelimitWaiting();
-                    return;
-                }
-
                 case nameof(VideoEvent.OnPlay):
                 {
                     float timestamp = (float)data[0];
@@ -225,131 +175,32 @@ namespace DecentM.Video.Plugins
                     return;
                 }
 
+                case nameof(VideoEvent.OnCustomVideoEvent):
+                {
+                    bool withData = data.Length > 1;
+
+                    if (withData)
+                    {
+                        string eventName = (string)data[0];
+                        this.OnCustomVideoEvent(eventName);
+                    }
+                    else
+                    {
+                        string eventName = (string)data[0];
+                        object[] eventData = (object[])data[1];
+                        this.OnCustomVideoEvent(eventName, eventData);
+                    }
+
+                    return;
+                }
+
                 #endregion
 
-                #region Plugins
-
-                case nameof(VideoEvent.OnAutoRetry):
-                {
-                    int attempt = (int)data[0];
-                    this.OnAutoRetry(attempt);
-                    return;
-                }
-
-                case nameof(VideoEvent.OnAutoRetryLoadTimeout):
-                {
-                    int timeout = (int)data[0];
-                    this.OnAutoRetryLoadTimeout(timeout);
-                    return;
-                }
-
-                case nameof(VideoEvent.OnAutoRetryAbort):
-                {
-                    this.OnAutoRetryAbort();
-                    return;
-                }
-
-                case nameof(VideoEvent.OnAutoRetryAllPlayersFailed):
-                {
-                    this.OnAutoRetryAllPlayersFailed();
-                    return;
-                }
-
-                case nameof(VideoEvent.OnOwnershipChanged):
-                {
-                    int previousOwnerId = (int)data[0];
-                    VRCPlayerApi nextOwner = (VRCPlayerApi)data[1];
-                    this.OnOwnershipChanged(previousOwnerId, nextOwner);
-                    return;
-                }
-
-                case nameof(VideoEvent.OnOwnershipSecurityChanged):
-                {
-                    bool locked = (bool)data[0];
-                    this.OnOwnershipSecurityChanged(locked);
-                    return;
-                }
-
-                case nameof(VideoEvent.OnOwnershipRequested):
-                {
-                    this.OnOwnershipRequested();
-                    return;
-                }
-
-                case nameof(VideoEvent.OnScreenTextureChange):
-                {
-                    this.OnScreenTextureChange();
-                    return;
-                }
-
-                case nameof(VideoEvent.OnRemotePlayerLoaded):
-                {
-                    int loadedPlayers = (int)data[0];
-                    this.OnRemotePlayerLoaded(loadedPlayers);
-                    return;
-                }
-
-                case nameof(VideoEvent.OnMetadataChange):
-                {
-                    string title = (string)data[0];
-                    string uploader = (string)data[1];
-                    string siteName = (string)data[2];
-                    int viewCount = (int)data[3];
-                    int likeCount = (int)data[4];
-                    string resolution = (string)data[5];
-                    int fps = (int)data[6];
-                    string description = (string)data[7];
-                    string duration = (string)data[8];
-                    TextAsset[] subtitles = (TextAsset[])data[9];
-
-                    this.OnMetadataChange(
-                        title,
-                        uploader,
-                        siteName,
-                        viewCount,
-                        likeCount,
-                        resolution,
-                        fps,
-                        description,
-                        duration,
-                        subtitles
-                    );
-                    return;
-                }
-
-                case nameof(VideoEvent.OnSubtitleRender):
-                {
-                    string text = (string)data[0];
-                    this.OnSubtitleRender(text);
-                    return;
-                }
-
-                case nameof(VideoEvent.OnSubtitleClear):
-                {
-                    this.OnSubtitleClear();
-                    return;
-                }
-
-                case nameof(VideoEvent.OnSubtitleLanguageOptionsChange):
-                {
-                    string[][] newOptions = (string[][])data;
-                    this.OnSubtitleLanguageOptionsChange(newOptions);
-                    return;
-                }
-
-                case nameof(VideoEvent.OnSubtitleLanguageRequested):
-                {
-                    string language = (string)data[0];
-                    this.OnSubtitleLanguageRequested(language);
-                    return;
-                }
 
                 default:
                 {
                     break;
                 }
-
-                #endregion
             }
         }
     }

@@ -317,7 +317,38 @@ namespace DecentM.Video.Plugins
             }
         }
 
-        protected override void OnMetadataChange(
+        protected override void OnCustomVideoEvent(string name, object[] data)
+        {
+            switch (name)
+            {
+                case nameof(OnMetadataChange):
+                    {
+                        string title = (string)data[0];
+                        string uploader = (string)data[1];
+                        string siteName = (string)data[2];
+                        int viewCount = (int)data[3];
+                        int likeCount = (int)data[4];
+                        string resolution = (string)data[5];
+                        int fps = (int)data[6];
+                        string description = (string)data[7];
+                        string duration = (string)data[8];
+                        TextAsset[] subtitles = (TextAsset[])data[9];
+
+                        this.OnMetadataChange(title, uploader, siteName, viewCount, likeCount, resolution, fps, description, duration, subtitles);
+                        break;
+                    }
+
+                case nameof(OnSubtitleLanguageRequested):
+                    {
+                        string language = (string)data[0];
+
+                        this.OnSubtitleLanguageRequested(language);
+                        break;
+                    }
+            }
+        }
+
+        private void OnMetadataChange(
             string title,
             string uploader,
             string siteName,
@@ -342,10 +373,10 @@ namespace DecentM.Video.Plugins
                 };
             }
 
-            this.events.OnSubtitleLanguageOptionsChange(langs);
+            this.events.OnCustomVideoEvent("OnSubtitleLanguageOptionsChange", new object[] { langs });
         }
 
-        protected override void OnSubtitleLanguageRequested(string language)
+        private void OnSubtitleLanguageRequested(string language)
         {
             if (string.IsNullOrEmpty(language))
             {
@@ -353,7 +384,7 @@ namespace DecentM.Video.Plugins
                 return;
             }
 
-            this.events.OnSubtitleClear();
+            this.events.OnCustomVideoEvent("OnSubtitleClear");
 
             for (int i = 0; i < currentSubtitles.Length; i++)
             {
@@ -384,7 +415,7 @@ namespace DecentM.Video.Plugins
         {
             this.elapsed = 0;
             this.instructionIndex = 0;
-            this.events.OnSubtitleClear();
+            this.events.OnCustomVideoEvent("OnSubtitleClear");
             this.SetInstructions("");
         }
 
@@ -595,7 +626,7 @@ namespace DecentM.Video.Plugins
                 // Seek if the previous instruction is in the future OR of the next instruction is in the past
                 if (Mathf.Abs(diff) > this.timestampSeekAccuracy && (previousDiff < 0 || diff > 0))
                 {
-                    this.events.OnSubtitleClear();
+                    this.events.OnCustomVideoEvent("OnSubtitleClear");
                     int index = this.SearchForInstructionIndex(timeMillis);
                     if (index >= 0)
                         this.instructionIndex = index;
@@ -622,11 +653,11 @@ namespace DecentM.Video.Plugins
             switch (type)
             {
                 case 1:
-                    this.events.OnSubtitleRender(value);
+                    this.events.OnCustomVideoEvent("OnSubtitleRender", new object[] { value });
                     break;
 
                 case 2:
-                    this.events.OnSubtitleClear();
+                    this.events.OnCustomVideoEvent("OnSubtitleClear");
                     break;
             }
         }
