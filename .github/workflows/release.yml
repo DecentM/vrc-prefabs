@@ -48,6 +48,7 @@ jobs:
     if: needs.config.outputs.config_package == 'true'
 
     strategy:
+      fail-fast: false
       matrix:
         package: ${{ fromJson(needs.matrix.outputs.packages) }}
 
