@@ -219,7 +219,7 @@ namespace DecentM.Collections.Tests
             while (currentId >= 0)
             {
                 int previousId = currentId;
-                currentId = dll.Next(currentId);
+                currentId = dll.Boundaries(currentId)[1];
                 if (currentId >= 0)
                     Assert.AreEqual(previousId + 1, currentId);
             }

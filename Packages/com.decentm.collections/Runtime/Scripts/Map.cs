@@ -3,6 +3,10 @@ using UnityEngine;
 
 namespace DecentM.Collections
 {
+    /// <summary>
+    /// A map is a collection of key-value pairs, where each key is unique.<br />
+    /// They're used to store values that can be looked up by a specific key. 
+    /// </summary>
     [AddComponentMenu("DecentM/Collections/Map")]
     public class Map : Collection
     {
@@ -13,6 +17,10 @@ namespace DecentM.Collections
         //      ...
         // };
 
+        /// <summary>
+        /// Add a key-value pair to the map.<br />
+        /// Returns false if the key already exists.
+        /// </summary>
         [PublicAPI]
         public bool Add(object key, object value)
         {
@@ -22,6 +30,10 @@ namespace DecentM.Collections
             return this.Set(key, value);
         }
 
+        /// <summary>
+        /// Sets the value for the specified key<br />
+        /// If the key already exists, it will be overwritten<br />
+        /// </summary>
         [PublicAPI]
         public bool Set(object key, object value)
         {
@@ -33,6 +45,9 @@ namespace DecentM.Collections
             return this.value.Length == length + 1;
         }
 
+        /// <summary>
+        /// Removes the given key and its value
+        /// </summary>
         [PublicAPI]
         public bool Remove(object key)
         {
@@ -47,6 +62,9 @@ namespace DecentM.Collections
             return this.value.Length == length - 1;
         }
 
+        /// <summary>
+        /// Gets the value for the given key, or null if the key doesn't exist
+        /// </summary>
         [PublicAPI]
         public object Get(object key)
         {
@@ -58,6 +76,10 @@ namespace DecentM.Collections
             return this.ElementAt(this.Values, index);
         }
 
+        /// <summary>
+        /// Gets the key for the given value, or null if the value doesn't exist<br />
+        /// (this operation is slow because it searches through all values until it finds the value)
+        /// </summary>
         [PublicAPI]
         public object KeyOf(object value)
         {
@@ -69,6 +91,9 @@ namespace DecentM.Collections
             return this.ElementAt(this.Keys, index);
         }
 
+        /// <summary>
+        /// All keys in the map
+        /// </summary>
         [PublicAPI]
         public object[] Keys
         {
@@ -85,6 +110,9 @@ namespace DecentM.Collections
             }
         }
 
+        /// <summary>
+        /// All values in the map
+        /// </summary>
         [PublicAPI]
         public object[] Values
         {
@@ -101,6 +129,9 @@ namespace DecentM.Collections
             }
         }
 
+        /// <summary>
+        /// Check if the map contains the given key
+        /// </summary>
         [PublicAPI]
         public bool Contains(object key)
         {

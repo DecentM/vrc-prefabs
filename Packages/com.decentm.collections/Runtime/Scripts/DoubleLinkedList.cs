@@ -3,6 +3,12 @@ using UnityEngine;
 
 namespace DecentM.Collections
 {
+    /// <summary>
+    /// A Double Linked List (DLL) is a sequence of elements in which each element points to both its previous and next element.<br />
+    /// Useful when you need to frequently add and remove elements from both ends of the list or from the middle, as these operations can be performed in constant time.<br />
+    /// <br />
+    /// This implementation is not performing in constant time, but it does implement the interface of a DLL.
+    /// </summary>
     [AddComponentMenu("DecentM/Collections/DoubleLinkedList")]
     public class DoubleLinkedList : Collection
     {
@@ -11,18 +17,28 @@ namespace DecentM.Collections
          * new object[] { prev, id, value, next };
          */
 
+        /// <summary>
+        /// Returns true if the specified value is in the list.
+        /// </summary>
         [PublicAPI]
         public bool Contains(object value)
         {
             return this.Contains(this.Values, value);
         }
 
+        /// <summary>
+        /// Returns true if an item with the specified ID is in the list.
+        /// </summary>
         [PublicAPI]
         public bool Contains(int id)
         {
             return this.Contains(this.Ids, id);
         }
 
+        /// <summary>
+        /// Returns the elements of the list as an array, in order from first to last, by following the "next" pointers.<br />
+        /// If the chain is broken, the result will contain only the elements up to the break.
+        /// </summary>
         [PublicAPI]
         public override object[] ToArray()
         {
@@ -43,6 +59,9 @@ namespace DecentM.Collections
             return result;
         }
 
+        /// <summary>
+        /// Replaces the contents of the list with the elements from the specified array, in the order they appear in the array.
+        /// </summary>
         [PublicAPI]
         public override void FromArray(object[] newValue)
         {
@@ -54,6 +73,9 @@ namespace DecentM.Collections
             }
         }
 
+        /// <summary>
+        /// Returns the ID of the item at the specified index.
+        /// </summary>
         [PublicAPI]
         public int IdByIndex(int index)
         {
@@ -65,6 +87,9 @@ namespace DecentM.Collections
             return (int)item[1];
         }
 
+        /// <summary>
+        /// Returns the index of the item with the specified ID, or -1 if not found.
+        /// </summary>
         [PublicAPI]
         public int IndexById(int id)
         {
@@ -77,6 +102,9 @@ namespace DecentM.Collections
             return -1;
         }
 
+        /// <summary>
+        /// Returns the index of the first occurrence of the specified value in the list, or -1 if not found.
+        /// </summary>
         [PublicAPI]
         public int IndexOf(object searchValue)
         {
@@ -131,24 +159,36 @@ namespace DecentM.Collections
             return -1;
         }
 
+        /// <summary>
+        /// The ID of the first item in the list, or -1 if the list is empty.
+        /// </summary>
         [PublicAPI]
         public int FirstId
         {
             get { return this.IdByIndex(this.FindWithNegativeIndex(0)); }
         }
 
+        /// <summary>
+        /// The ID of the last item in the list, or -1 if the list is empty.
+        /// </summary>
         [PublicAPI]
         public int LastId
         {
             get { return this.IdByIndex(this.FindWithNegativeIndex(3)); }
         }
 
+        /// <summary>
+        /// The first item in the list, or null if the list is empty.
+        /// </summary>
         [PublicAPI]
         public object First
         {
             get { return this.ElementById(this.FirstId); }
         }
 
+        /// <summary>
+        /// The last item in the list, or null if the list is empty.
+        /// </summary>
         [PublicAPI]
         public object Last
         {
@@ -209,6 +249,9 @@ namespace DecentM.Collections
             }
         }
 
+        /// <summary>
+        /// Returns the item with the specified ID, or null if not found.
+        /// </summary>
         [PublicAPI]
         public object ElementById(int id)
         {
@@ -228,6 +271,9 @@ namespace DecentM.Collections
             return new int[] { prev, next };
         }
 
+        /// <summary>
+        /// Returns a tuple (int[] { prev, next }) of IDs of the previous and next items in the list for the item with the specified ID.
+        /// </summary>
         [PublicAPI]
         public int[] Boundaries(int id)
         {
@@ -239,18 +285,9 @@ namespace DecentM.Collections
             return this.GetBoundaries(item);
         }
 
-        [PublicAPI]
-        public int Prev(int id)
-        {
-            return this.Boundaries(id)[0];
-        }
-
-        [PublicAPI]
-        public int Next(int id)
-        {
-            return this.Boundaries(id)[1];
-        }
-
+        /// <summary>
+        /// Adds the specified item to the end of the list and returns its ID.
+        /// </summary>
         [PublicAPI]
         public int Add(object item)
         {
@@ -274,6 +311,9 @@ namespace DecentM.Collections
             return this.IdByIndex(this.value.Length - 1);
         }
 
+        /// <summary>
+        /// Adds the specified item after the item with the specified ID and returns the added item's ID, or -1 if the specified ID was not found.
+        /// </summary>
         [PublicAPI]
         public int AddAfter(int id, object item)
         {
@@ -296,6 +336,10 @@ namespace DecentM.Collections
             return newId;
         }
 
+        /// <summary>
+        /// Removes the item with the specified ID from the list.<br />
+        /// Returns true if successful, or false if not found.
+        /// </summary>
         [PublicAPI]
         public bool Remove(int id)
         {

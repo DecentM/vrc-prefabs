@@ -23,19 +23,13 @@ namespace DecentM.Pubsub
             return this.subscribers.RemoveAt(index);
         }
 
-        [SerializeField]
-        public Queue/*<object[]>*/ queue;
+        [SerializeField] private Queue/*<object[]>*/ queue;
 
         private void QueuePush(object eventName, object[] data, PubsubSubscriber behaviour)
         {
             object[] queueItem = new object[] { eventName, data, behaviour };
 
             this.queue.Enqueue(queueItem);
-        }
-
-        private object[] QueuePop()
-        {
-            return (object[])this.queue.Dequeue();
         }
 
         private void FixedUpdate()
@@ -49,7 +43,7 @@ namespace DecentM.Pubsub
             while (processedCount < this.batchSize)
             {
                 // Get the first item from the queue and also remove it from the queue
-                object[] queueItem = this.QueuePop();
+                object[] queueItem = (object[])this.queue.Dequeue();
 
                 if (queueItem == null)
                 {
