@@ -1,7 +1,9 @@
 ﻿using JetBrains.Annotations;
+using UnityEngine;
 
 namespace DecentM.Collections
 {
+    [AddComponentMenu("DecentM/Collections/Map")]
     public class Map : Collection
     {
         // Value structure: new object[]
@@ -100,7 +102,7 @@ namespace DecentM.Collections
         }
 
         [PublicAPI]
-        public override bool Contains(object key)
+        public bool Contains(object key)
         {
             return this.Contains(this.Keys, key);
         }

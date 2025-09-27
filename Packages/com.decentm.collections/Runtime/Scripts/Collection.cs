@@ -117,12 +117,6 @@ namespace DecentM.Collections
         }
 
         [PublicAPI]
-        public virtual bool Contains(object item)
-        {
-            return this.Contains(this.value, item);
-        }
-
-        [PublicAPI]
         public virtual int Count => this.value.Length;
 
         [PublicAPI]

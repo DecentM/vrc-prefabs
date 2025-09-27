@@ -1,9 +1,17 @@
 ﻿using JetBrains.Annotations;
+using UnityEngine;
 
 namespace DecentM.Collections
 {
+    [AddComponentMenu("DecentM/Collections/Stack")]
     public class Stack : Collection
     {
+        [PublicAPI]
+        public bool Contains(object item)
+        {
+            return this.Contains(this.value, item);
+        }
+
         [PublicAPI]
         public bool Push(object item)
         {

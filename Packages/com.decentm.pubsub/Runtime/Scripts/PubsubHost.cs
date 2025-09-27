@@ -7,10 +7,9 @@ namespace DecentM.Pubsub
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public abstract class PubsubHost : UdonSharpBehaviour
     {
-        public int batchSize = 10;
+        [SerializeField] private int batchSize = 10;
 
-        [SerializeField]
-        public List/*<PubsubSubscriber>*/ subscribers;
+        [SerializeField] private List/*<PubsubSubscriber>*/ subscribers;
 
         public int Subscribe(PubsubSubscriber behaviour)
         {

@@ -5,7 +5,7 @@ using UdonSharpEditor;
 
 namespace DecentM.Collections.Editor
 {
-    public abstract class CollectionInspector : Inspector
+    internal abstract class CollectionInspector : Inspector
     {
         private const float RowHeight = 20;
 

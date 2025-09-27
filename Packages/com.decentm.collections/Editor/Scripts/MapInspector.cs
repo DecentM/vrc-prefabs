@@ -4,7 +4,7 @@ using UnityEngine;
 namespace DecentM.Collections.Editor
 {
     [CustomEditor(typeof(Map))]
-    public class MapInspector : CollectionInspector
+    internal class MapInspector : CollectionInspector
     {
         protected override void DrawRow(Rect row, int index, object itemRaw)
         {

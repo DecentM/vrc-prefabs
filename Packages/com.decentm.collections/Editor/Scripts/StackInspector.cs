@@ -4,7 +4,7 @@ using UnityEngine;
 namespace DecentM.Collections.Editor
 {
     [CustomEditor(typeof(Stack))]
-    public class StackInspector : CollectionInspector
+    internal class StackInspector : CollectionInspector
     {
         protected override void DrawRow(Rect row, int index, object item)
         {

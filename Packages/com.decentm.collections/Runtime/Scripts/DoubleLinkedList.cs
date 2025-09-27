@@ -1,7 +1,9 @@
 ﻿using JetBrains.Annotations;
+using UnityEngine;
 
 namespace DecentM.Collections
 {
+    [AddComponentMenu("DecentM/Collections/DoubleLinkedList")]
     public class DoubleLinkedList : Collection
     {
         /*
@@ -10,7 +12,7 @@ namespace DecentM.Collections
          */
 
         [PublicAPI]
-        public override bool Contains(object value)
+        public bool Contains(object value)
         {
             return this.Contains(this.Values, value);
         }
@@ -45,7 +47,11 @@ namespace DecentM.Collections
         public override void FromArray(object[] newValue)
         {
             this.Clear();
-            this.AddRange(newValue);
+
+            for (int i = 0; i < newValue.Length; i++)
+            {
+                this.Add(newValue[i]);
+            }
         }
 
         [PublicAPI]
@@ -288,25 +294,6 @@ namespace DecentM.Collections
             this.UpdateItemPrev(bounds[1], newId);
 
             return newId;
-        }
-
-        [PublicAPI]
-        public int[] AddRange(object[] items)
-        {
-            int[] result = new int[items.Length];
-
-            for (int i = 0; i < items.Length; i++)
-            {
-                result[i] = this.Add(items[i]);
-            }
-
-            return result;
-        }
-
-        [PublicAPI]
-        public int[] AddRange(Collection collection)
-        {
-            return this.AddRange(collection.ToArray());
         }
 
         [PublicAPI]
