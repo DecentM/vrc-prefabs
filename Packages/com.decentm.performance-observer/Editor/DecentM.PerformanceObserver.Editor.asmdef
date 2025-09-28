@@ -2,11 +2,11 @@
     "name": "DecentM.PerformanceObserver.Editor",
     "rootNamespace": "",
     "references": [
-        "DecentM.Shared",
         "DecentM.Shared.Editor",
         "DecentM.PerformanceObserver",
         "DecentM.Pubsub",
-        "UdonSharp.Runtime"
+        "UdonSharp.Runtime",
+        "UdonSharp.Editor"
     ],
     "includePlatforms": [
         "Editor"
