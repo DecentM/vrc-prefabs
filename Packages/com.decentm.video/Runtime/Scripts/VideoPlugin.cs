@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-using DecentM.Pubsub;
+﻿using DecentM.Pubsub;
 using VRC.SDKBase;
 using UdonSharp;
 using VRC.SDK3.Components.Video;

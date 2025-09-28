@@ -4,12 +4,19 @@ using UnityEngine;
 
 namespace DecentM.Pubsub
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [RequireComponent(typeof(List), typeof(Queue))]
     public abstract class PubsubHost : UdonSharpBehaviour
     {
-        [SerializeField] private int batchSize = 10;
+        private const int batchSize = 10;
 
-        [SerializeField] private List/*<PubsubSubscriber>*/ subscribers;
+        private List/*<PubsubSubscriber>*/ subscribers;
+        private Queue/*<object[]>*/ queue;
+
+        private void Start()
+        {
+            this.subscribers = this.GetComponent<List>();
+            this.queue = this.GetComponent<Queue>();
+        }
 
         public int Subscribe(PubsubSubscriber behaviour)
         {
@@ -22,8 +29,6 @@ namespace DecentM.Pubsub
         {
             return this.subscribers.RemoveAt(index);
         }
-
-        [SerializeField] private Queue/*<object[]>*/ queue;
 
         private void QueuePush(object eventName, object[] data, PubsubSubscriber behaviour)
         {
@@ -40,7 +45,7 @@ namespace DecentM.Pubsub
             int processedCount = 0;
 
             // Process a batch of items from the queue
-            while (processedCount < this.batchSize)
+            while (processedCount < PubsubHost.batchSize)
             {
                 // Get the first item from the queue and also remove it from the queue
                 object[] queueItem = (object[])this.queue.Dequeue();

@@ -7,7 +7,6 @@
   "changelogUrl": "https://github.com/DecentM/mods-workspace/tree/master/prefabs-source/CHANGELOG.md",
   "licensesUrl": "https://github.com/DecentM/mods-workspace/tree/master/LICENSE",
   "dependencies": {
-    "com.decentm.shared": "0.0.1",
     "com.decentm.collections": "0.0.1"
   },
   "author": {

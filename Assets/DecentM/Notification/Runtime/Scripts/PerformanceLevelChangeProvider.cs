@@ -15,19 +15,19 @@ namespace DecentM.Notification.Providers
         public Sprite iconMed;
         public Sprite iconLow;
 
-        protected override void OnPerformanceModeChange(PerformanceObserverMode mode, float fps)
+        protected override void OnPerformanceModeChange(string mode, float fps)
         {
             switch (mode)
             {
-                case PerformanceObserverMode.Low:
+                case nameof(PerformanceObserverMode.Low):
                     this.OnPerformanceLow();
                     return;
 
-                case PerformanceObserverMode.Medium:
+                case nameof(PerformanceObserverMode.Medium):
                     this.OnPerformanceMedium();
                     return;
 
-                case PerformanceObserverMode.High:
+                case nameof(PerformanceObserverMode.High):
                     this.OnPerformanceHigh();
                     return;
             }
@@ -37,21 +37,21 @@ namespace DecentM.Notification.Providers
         {
             if (!this.toggle.isOn)
                 return;
-            this.notifications.SendNotification(this.iconHigh, "Performance mode changed to High");
+            this.notifications.SendNotification(this.iconHigh, $"Performance mode changed to {nameof(PerformanceObserverMode.High)}");
         }
 
         private void OnPerformanceMedium()
         {
             if (!this.toggle.isOn)
                 return;
-            this.notifications.SendNotification(this.iconMed, "Performance mode changed to Medium");
+            this.notifications.SendNotification(this.iconMed, $"Performance mode changed to {nameof(PerformanceObserverMode.Medium)}");
         }
 
         private void OnPerformanceLow()
         {
             if (!this.toggle.isOn)
                 return;
-            this.notifications.SendNotification(this.iconLow, "Performance mode changed to Low");
+            this.notifications.SendNotification(this.iconLow, $"Performance mode changed to {nameof(PerformanceObserverMode.Low)}");
         }
     }
 }

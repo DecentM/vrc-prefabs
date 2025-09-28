@@ -4,17 +4,18 @@ using DecentM.Collections;
 
 namespace DecentM.Pubsub
 {
+    [RequireComponent(typeof(List))]
     public abstract class PubsubSubscriber : UdonSharpBehaviour
     {
         [HideInInspector] public PubsubHost[] pubsubHosts = new PubsubHost[0];
 
-        [SerializeField] private List/*<int>*/ subscriptions;
+        private List/*<int>*/ subscriptions;
 
         virtual protected void _Start() { }
 
         private void Start()
         {
-            this._Start();
+            this.subscriptions = this.GetComponent<List>();
 
             if (this.pubsubHosts.Length == 0)
             {
@@ -24,6 +25,7 @@ namespace DecentM.Pubsub
             }
 
             this.SubscribeAll();
+            this._Start();
         }
 
         virtual protected void _Awake() { }

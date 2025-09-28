@@ -12,13 +12,7 @@ namespace DecentM.Subtitles.Editor
         public const string Vsi = ".vsi";
 
         public const string Srt = ".srt";
-        public const string Ass = ".ass";
-        public const string Usf = ".usf";
         public const string Vtt = ".vtt";
-        public const string Stl = ".stl";
-        public const string Sub = ".sub";
-        public const string Ssa = ".ssa";
-        public const string Ttxt = ".ttxt";
 
         public static bool IsSupported(string filetype)
         {

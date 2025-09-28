@@ -21,7 +21,6 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.decentm.shared": "0.0.1",
         "com.decentm.collections": "0.0.1"
       }
     },
