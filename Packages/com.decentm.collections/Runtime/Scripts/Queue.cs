@@ -6,7 +6,7 @@ namespace DecentM.Collections
     /// <summary>
     /// A queue is a collection that accepts new items at the end, and removes items from the front (First-In-Fist-Out).
     /// </summary>
-    [AddComponentMenu("DecentM/Collections/Queue")]
+    [AddComponentMenu("DecentM/Collections/Queue"), DisallowMultipleComponent]
     public class Queue : Collection
     {
         /// <summary>

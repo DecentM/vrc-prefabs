@@ -7,7 +7,7 @@ namespace DecentM.Collections
     /// A map is a collection of key-value pairs, where each key is unique.<br />
     /// They're used to store values that can be looked up by a specific key. 
     /// </summary>
-    [AddComponentMenu("DecentM/Collections/Map")]
+    [AddComponentMenu("DecentM/Collections/Map"), DisallowMultipleComponent]
     public class Map : Collection
     {
         // Value structure: new object[]

@@ -9,7 +9,7 @@ namespace DecentM.Collections
     /// <br />
     /// This implementation is not performing in constant time, but it does implement the interface of a DLL.
     /// </summary>
-    [AddComponentMenu("DecentM/Collections/DoubleLinkedList")]
+    [AddComponentMenu("DecentM/Collections/DoubleLinkedList"), DisallowMultipleComponent]
     public class DoubleLinkedList : Collection
     {
         /*

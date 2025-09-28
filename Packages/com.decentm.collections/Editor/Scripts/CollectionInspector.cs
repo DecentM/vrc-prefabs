@@ -11,7 +11,6 @@ namespace DecentM.Collections.Editor
 
         public override void OnInspectorGUI()
         {
-
             UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(this.target);
 
             Collection target = (Collection)this.target;
