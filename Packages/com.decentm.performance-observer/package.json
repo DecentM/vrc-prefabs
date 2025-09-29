@@ -1,6 +1,6 @@
 {
     "name": "com.decentm.performance-observer",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "displayName": "DecentM.PerformanceObserver",
     "description": "An event driven system that detects the user's FPS and allows custom scripts to respond",
     "unity": "2022.3",
