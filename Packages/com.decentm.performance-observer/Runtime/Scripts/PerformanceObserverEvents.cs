@@ -1,5 +1,6 @@
 ﻿using DecentM.Pubsub;
 using UdonSharp;
+using UnityEngine;
 
 namespace DecentM.PerformanceObserver
 {
@@ -9,7 +10,7 @@ namespace DecentM.PerformanceObserver
         internal void OnPerformanceModeChange() { }
     }
 
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None), AddComponentMenu("DecentM/PerformanceObserver/PerformanceObserverEvents")]
     public sealed class PerformanceObserverEvents : PubsubHost
     {
         public void OnPerformanceModeChange(string currentMode, float lastFpsAverage)

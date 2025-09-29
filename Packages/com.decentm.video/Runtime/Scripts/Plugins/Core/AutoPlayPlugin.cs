@@ -1,5 +1,6 @@
 ﻿using VRC.SDKBase;
 using UnityEngine;
+using UdonSharp;
 
 namespace DecentM.Video.Plugins
 {
@@ -7,15 +8,9 @@ namespace DecentM.Video.Plugins
     /// Causes the video player to automatically start playing a video once it loads.
     /// If there are multiple players in the world, it'll wait for everyone to load before starting playback.
     /// </summary>
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None), AddComponentMenu("DecentM/Video/Plugins/AutoPlay")]
     internal sealed class AutoPlayPlugin : VideoPlugin
     {
-        [SerializeField] private bool autoplayOnLoad = true;
-
-        private bool isOwner
-        {
-            get { return Networking.GetOwner(this.gameObject) == Networking.LocalPlayer; }
-        }
-
         private int receivedLoadedFrom = 0;
 
         protected override void OnLoadReady(float duration)
@@ -26,7 +21,7 @@ namespace DecentM.Video.Plugins
                 return;
             }
 
-            if (this.isOwner)
+            if (this.system.IsLocallyOwned())
                 return;
 
             this.SendCustomNetworkEvent(
@@ -38,11 +33,10 @@ namespace DecentM.Video.Plugins
         // Everyone except the owner does this, because then owner already knows when it finishes loading
         public void OnClientLoaded()
         {
-            if (!this.isOwner || !this.autoplayOnLoad)
+            if (!this.system.IsLocallyOwned())
                 return;
 
             this.receivedLoadedFrom++;
-
             this.events.OnCustomVideoEvent("OnRemotePlayerLoaded", new object[] { this.receivedLoadedFrom });
 
             // Everyone is loaded when this counter is above the player count
@@ -55,7 +49,7 @@ namespace DecentM.Video.Plugins
 
         protected override void OnLoadRequested(VRCUrl url)
         {
-            if (!this.isOwner || !this.autoplayOnLoad)
+            if (!this.system.IsLocallyOwned())
                 return;
 
             this.receivedLoadedFrom = 0;

@@ -4,25 +4,19 @@
       "version": "file:com.decentm.collections",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {
-        "com.decentm.shared": "0.0.1"
-      }
+      "dependencies": {}
     },
     "com.decentm.performance-observer": {
       "version": "file:com.decentm.performance-observer",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {
-        "com.decentm.shared": "0.0.1"
-      }
+      "dependencies": {}
     },
     "com.decentm.pubsub": {
       "version": "file:com.decentm.pubsub",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {
-        "com.decentm.collections": "0.0.1"
-      }
+      "dependencies": {}
     },
     "com.decentm.shared": {
       "version": "file:com.decentm.shared",
@@ -34,10 +28,7 @@
       "version": "file:com.decentm.video",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {
-        "com.decentm.shared": "0.0.1",
-        "com.decentm.pubsub": "0.0.1"
-      }
+      "dependencies": {}
     },
     "com.unity.ai.navigation": {
       "version": "1.1.5",

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DecentM.Collections.Editor
 {
-    [CustomEditor(typeof(DoubleLinkedList))]
+    [CustomEditor(typeof(DoubleLinkedList), true)]
     internal class DoubleLinkedListInspector : CollectionInspector
     {
         protected override void DrawRow(Rect row, int index, object item)

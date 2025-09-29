@@ -8,9 +8,10 @@
   "documentationUrl": "https://decentm.github.io/",
   "changelogUrl": "https://github.com/DecentM/mods-workspace/tree/master/prefabs-source/CHANGELOG.md",
   "licensesUrl": "https://github.com/DecentM/mods-workspace/tree/master/LICENSE",
-  "dependencies": {
+  "vpmDependencies": {
     "com.decentm.shared": "0.0.1",
-    "com.decentm.pubsub": "0.0.1"
+    "com.decentm.pubsub": "0.0.2",
+    "com.decentm.collections": "0.0.5"
   },
   "author": {
     "name": "DecentM"

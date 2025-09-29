@@ -6,7 +6,7 @@ namespace DecentM.Collections
     /// <summary>
     /// A list is a collection of items that can be accessed by their index.
     /// </summary>
-    [AddComponentMenu("DecentM/Collections/List"), DisallowMultipleComponent]
+    [AddComponentMenu("DecentM/Collections/NonGenerics/List"), DisallowMultipleComponent]
     public class List : Collection
     {
         /// <summary>

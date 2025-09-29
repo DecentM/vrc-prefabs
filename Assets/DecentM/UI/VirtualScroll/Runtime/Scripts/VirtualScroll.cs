@@ -25,7 +25,7 @@ namespace DecentM.UI
 
         private void UpdateWindowSize()
         {
-            this.window.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(this.itemHeight * this.data.Count, this.itemHeight * this.itemsPerScreen));
+            this.window.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(this.itemHeight * this.data.Count(), this.itemHeight * this.itemsPerScreen));
 
             foreach (VirtualScrollItem item in this.items.ToArray())
             {
@@ -93,9 +93,9 @@ namespace DecentM.UI
 
         private int GetIndexForHeight(float normalisedHeight)
         {
-            int index = Mathf.FloorToInt(normalisedHeight * this.data.Count);
+            int index = Mathf.FloorToInt(normalisedHeight * this.data.Count());
 
-            return Mathf.Clamp(index, 0, this.data.Count - 1);
+            return Mathf.Clamp(index, 0, this.data.Count() - 1);
         }
 
         private int firstVisibleIndex

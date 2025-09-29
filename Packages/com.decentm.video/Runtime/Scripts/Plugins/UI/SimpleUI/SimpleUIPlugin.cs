@@ -10,7 +10,7 @@ namespace DecentM.Video.Plugins
     /// <summary>
     /// Implements a minimal UI to control the video player using its events
     /// </summary>
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None), AddComponentMenu("DecentM/Video/Plugins/UI/SimpleUIPlugin")]
     internal sealed class SimpleUIPlugin : VideoPlugin
     {
         [Space]
@@ -24,7 +24,7 @@ namespace DecentM.Video.Plugins
         [SerializeField] private Slider brightness;
         [SerializeField] private Slider volume;
 
-        protected override void __Start()
+        protected override void _Start()
         {
             this.volume.SetValueWithoutNotify(this.system.GetVolume());
             this.brightness.SetValueWithoutNotify(this.system.GetBrightness());

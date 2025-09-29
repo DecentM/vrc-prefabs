@@ -4,7 +4,7 @@ using UdonSharp;
 
 namespace DecentM.Video.Plugins
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None), AddComponentMenu("DecentM/Video/Plugins/TextureUpdater")]
     internal sealed class TextureUpdaterPlugin : VideoPlugin
     {
         [SerializeField] private Texture idleTexture;

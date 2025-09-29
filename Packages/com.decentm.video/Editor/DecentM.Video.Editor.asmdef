@@ -4,12 +4,11 @@
     "references": [
         "DecentM.Shared.Editor",
         "UnityEditor.TestRunner",
-        "DecentM.Shared",
         "DecentM.Pubsub",
         "DecentM.VideoRatelimit",
         "DecentM.Video",
         "UdonSharp.Runtime",
-        "DecentM.YTDlp"
+        "DecentM.Collections"
     ],
     "includePlatforms": [
         "Editor"

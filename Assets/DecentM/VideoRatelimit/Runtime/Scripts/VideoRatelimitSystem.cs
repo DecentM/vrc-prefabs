@@ -18,7 +18,7 @@ namespace DecentM.VideoRatelimit
 
         private void FixedUpdate()
         {
-            if (!this.isWaiting && this.queue.Count != 0)
+            if (!this.isWaiting && this.queue.Count() != 0)
             {
                 this.SendWindowEventToFirst();
                 return;

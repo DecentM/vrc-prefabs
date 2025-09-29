@@ -1,4 +1,5 @@
 ﻿using UdonSharp;
+using UnityEngine;
 using VRC.SDKBase;
 
 namespace DecentM.Video.Plugins
@@ -6,7 +7,7 @@ namespace DecentM.Video.Plugins
     /// <summary>
     /// Makes the video player deny loading URLs that fail validation
     /// </summary>
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None), AddComponentMenu("DecentM/Video/Plugins/URLVerifier")]
     internal sealed class URLVerifierPlugin : VideoPlugin
     {
         private bool ValidateUrl(string url)

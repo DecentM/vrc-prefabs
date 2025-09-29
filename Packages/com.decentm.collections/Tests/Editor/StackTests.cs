@@ -21,7 +21,7 @@ namespace DecentM.Collections.Tests
         {
             Stack stack = this.Prepare();
 
-            Assert.AreEqual(3, stack.Count);
+            Assert.AreEqual(3, stack.Count());
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace DecentM.Collections.Tests
             Stack stack = this.Prepare();
 
             Assert.IsTrue(stack.Push("a"));
-            Assert.AreEqual(4, stack.Count);
+            Assert.AreEqual(4, stack.Count());
         }
 
         [Test]

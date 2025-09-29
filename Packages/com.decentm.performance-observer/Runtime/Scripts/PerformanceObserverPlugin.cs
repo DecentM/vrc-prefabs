@@ -8,16 +8,14 @@ namespace DecentM.PerformanceObserver.Plugins
         [NonSerialized] protected PerformanceObserverSystem system;
         [NonSerialized] protected PerformanceObserverEvents events;
 
-        protected virtual void __Start() { }
+        protected virtual void _Start() { }
 
-        protected override sealed void _Start()
+        private void Start()
         {
             this.system = this.GetComponentInParent<PerformanceObserverSystem>();
             this.events = this.GetComponentInParent<PerformanceObserverEvents>();
-            this.pubsubHosts = new PubsubHost[1];
-            this.pubsubHosts[0] = this.events;
-
-            this.__Start();
+            this.Subscribe(this.events);
+            this._Start();
         }
 
         protected virtual void OnPerformanceModeChange(string mode, float fps) { }

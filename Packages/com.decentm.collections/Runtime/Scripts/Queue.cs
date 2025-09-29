@@ -6,7 +6,7 @@ namespace DecentM.Collections
     /// <summary>
     /// A queue is a collection that accepts new items at the end, and removes items from the front (First-In-Fist-Out).
     /// </summary>
-    [AddComponentMenu("DecentM/Collections/Queue"), DisallowMultipleComponent]
+    [AddComponentMenu("DecentM/Collections/NonGenerics/Queue"), DisallowMultipleComponent]
     public class Queue : Collection
     {
         /// <summary>
@@ -22,9 +22,12 @@ namespace DecentM.Collections
         /// Add an item to the end of the queue
         /// </summary>
         [PublicAPI]
-        public void Enqueue(object item)
+        public bool Enqueue(object item)
         {
+            int length = this.value.Length;
             this.value = this.Add(this.value, item);
+
+            return length + 1 == this.value.Length;
         }
 
         /// <summary>

@@ -4,25 +4,33 @@ using UnityEngine;
 
 namespace DecentM.Pubsub
 {
-    [RequireComponent(typeof(List), typeof(Queue))]
+    [RequireComponent(typeof(PubsubSubscriberList), typeof(Queue))]
     public abstract class PubsubHost : UdonSharpBehaviour
     {
-        private const int batchSize = 10;
-
-        private List/*<PubsubSubscriber>*/ subscribers;
+        private PubsubSubscriberList subscribers;
         private Queue/*<object[]>*/ queue;
 
         private void Start()
         {
-            this.subscribers = this.GetComponent<List>();
             this.queue = this.GetComponent<Queue>();
+        }
+
+        private const int BatchSpeed = 3;
+
+        private int GetBatchSize()
+        {
+            return Mathf.RoundToInt(this.subscribers.Count() / PubsubHost.BatchSpeed) + 1;
         }
 
         public int Subscribe(PubsubSubscriber behaviour)
         {
+            // Some clients may call this before Start(), so we initialise here instead of in Start()
+            if (this.subscribers == null)
+                this.subscribers = this.GetComponent<PubsubSubscriberList>();
+
             this.subscribers.Add(behaviour);
 
-            return this.subscribers.Count - 1;
+            return this.subscribers.Count() - 1;
         }
 
         public bool Unsubscribe(int index)
@@ -39,13 +47,13 @@ namespace DecentM.Pubsub
 
         private void FixedUpdate()
         {
-            if (this.queue == null || this.queue.Count == 0)
+            if (this.queue == null || this.queue.Count() == 0)
                 return;
 
             int processedCount = 0;
 
             // Process a batch of items from the queue
-            while (processedCount < PubsubHost.batchSize)
+            while (processedCount < this.GetBatchSize())
             {
                 // Get the first item from the queue and also remove it from the queue
                 object[] queueItem = (object[])this.queue.Dequeue();
@@ -68,7 +76,7 @@ namespace DecentM.Pubsub
 
         protected void BroadcastEvent(object eventName, params object[] data)
         {
-            if (this.subscribers == null || this.subscribers.Count == 0)
+            if (this.subscribers == null || this.subscribers.Count() == 0)
                 return;
 
             foreach (PubsubSubscriber subscriber in this.subscribers.ToArray())

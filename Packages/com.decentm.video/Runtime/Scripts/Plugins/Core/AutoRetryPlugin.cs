@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UdonSharp;
+using UnityEngine;
 using VRC.SDK3.Components.Video;
 using VRC.SDKBase;
 
@@ -8,9 +9,10 @@ namespace DecentM.Video.Plugins
     /// When loading the video fails, this plugin will cause the player to retry a number of times.
     /// If there are multiple players configured, it'll try them all, sequentially.
     /// </summary>
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None), AddComponentMenu("DecentM/Video/Plugins/AutoRetry")]
     internal sealed class AutoRetryPlugin : VideoPlugin
     {
-        [Tooltip("Switch to the next player handler after this many failures. Each attempt takes 5 seconds."), SerializeField] private int failureCeiling = 2;
+        [Tooltip("Switch to the next player handler after this many failures. Each attempt takes 5 seconds."), SerializeField, Range(0, 10)] private int failureCeiling = 2;
         [Tooltip("Abort loading if all players error. If false, the first player will be tried again."), SerializeField] private bool abortAfterAllPlayersFailed = true;
         
         private int failures = 0;

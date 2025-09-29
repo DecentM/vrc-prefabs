@@ -9,13 +9,13 @@ namespace DecentM.Collections.Tests
         public void Add_Count()
         {
             List list = new List();
-            Assert.AreEqual(0, list.Count);
+            Assert.AreEqual(0, list.Count());
 
             list.Add("a");
-            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(1, list.Count());
 
             list.Add("b");
-            Assert.AreEqual(2, list.Count);
+            Assert.AreEqual(2, list.Count());
         }
 
         [Test]
@@ -34,10 +34,10 @@ namespace DecentM.Collections.Tests
         public void AddRange_Count()
         {
             List list = new List();
-            Assert.AreEqual(list.Count, 0);
+            Assert.AreEqual(list.Count(), 0);
 
             list.AddRange(new string[] { "a", "b" });
-            Assert.AreEqual(list.Count, 2);
+            Assert.AreEqual(list.Count(), 2);
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace DecentM.Collections.Tests
             list.AddRange(new string[] { "a", "b", "c" });
             list.RemoveAt(0);
 
-            Assert.AreEqual(2, list.Count);
+            Assert.AreEqual(2, list.Count());
             Assert.AreEqual(0, list.IndexOf("b"));
             Assert.AreEqual(1, list.IndexOf("c"));
         }
@@ -165,7 +165,7 @@ namespace DecentM.Collections.Tests
             list.AddRange(new string[] { "a", "b", "c" });
             list.Remove("b");
 
-            Assert.AreEqual(2, list.Count);
+            Assert.AreEqual(2, list.Count());
             Assert.AreEqual(0, list.IndexOf("a"));
             Assert.AreEqual(1, list.IndexOf("c"));
         }
@@ -178,7 +178,7 @@ namespace DecentM.Collections.Tests
             list.AddRange(new string[] { "a", "b", "c", "d", "e", "f" });
             list.RemoveRange(1, 2);
 
-            Assert.AreEqual(list.Count, 4);
+            Assert.AreEqual(list.Count(), 4);
             Assert.AreEqual(0, list.IndexOf("a"));
             Assert.AreEqual(1, list.IndexOf("d"));
             Assert.AreEqual(2, list.IndexOf("e"));

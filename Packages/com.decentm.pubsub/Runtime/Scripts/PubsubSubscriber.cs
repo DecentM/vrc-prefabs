@@ -1,71 +1,37 @@
 ﻿using UnityEngine;
 using UdonSharp;
-using DecentM.Collections;
+using DecentM.Collections.Generics;
 
 namespace DecentM.Pubsub
 {
-    [RequireComponent(typeof(List))]
+    [RequireComponent(typeof(IntList))]
     public abstract class PubsubSubscriber : UdonSharpBehaviour
     {
-        [HideInInspector] public PubsubHost[] pubsubHosts = new PubsubHost[0];
+        private PubsubHost pubsubHost;
 
-        private List/*<int>*/ subscriptions;
+        private int subscription = -1;
 
-        virtual protected void _Start() { }
-
-        private void Start()
+        protected bool Subscribe(PubsubHost host)
         {
-            this.subscriptions = this.GetComponent<List>();
+            if (this.subscription != -1 || this.pubsubHost != null)
+                return false;
 
-            if (this.pubsubHosts.Length == 0)
-            {
-                Debug.LogWarning(
-                    $"no pubsub host object is attached to {this.name}, this subscriber will not receive events until a host is attached"
-                );
-            }
-
-            this.SubscribeAll();
-            this._Start();
+            this.pubsubHost = host;
+            this.subscription = this.pubsubHost.Subscribe(this);
+            return this.subscription != -1;
         }
 
-        virtual protected void _Awake() { }
-
-        private void Awake()
+        protected bool Unsubscribe()
         {
-            this._Awake();
-        }
+            if (this.subscription == -1 || this.pubsubHost == null)
+                return false;
 
-        private void SubscribeAll()
-        {
-            for (int i = 0; i < this.pubsubHosts.Length; i++)
-            {
-                if (this.pubsubHosts[i] == null)
-                    continue;
+            if (!this.pubsubHost.Unsubscribe(this.subscription))
+                return false;
 
-                int subscription = this.pubsubHosts[i].Subscribe(this);
-
-                this.subscriptions.Add(subscription);
-            }
-        }
-
-        private void UnsubscribeAll()
-        {
-            for (int i = 0; i < this.pubsubHosts.Length; i++)
-            {
-                if (this.pubsubHosts[i] == null)
-                    continue;
-                int subscription = (int)this.subscriptions.ElementAt(i);
-
-                this.pubsubHosts[i].Unsubscribe(subscription);
-            }
-        }
-
-        // We expect inheriting behaviours to run this if they change our list of pubsub hosts
-        protected void ResubscribeAll()
-        {
-            this.UnsubscribeAll();
-            this.subscriptions.Clear();
-            this.SubscribeAll();
+            this.subscription = -1;
+            this.pubsubHost = null;
+            return true;
         }
 
         public abstract void OnPubsubEvent(object name, object[] data);

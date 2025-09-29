@@ -9,22 +9,19 @@ namespace DecentM.Video.Plugins
     /// <summary>
     /// Base class, providing a fully typed interface for video events, and access to the video system
     /// </summary>
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public abstract class VideoPlugin : PubsubSubscriber
     {
         [NonSerialized] protected VideoSystem system;
         [NonSerialized] protected VideoEvents events;
 
-        protected virtual void __Start() { }
+        protected virtual void _Start() { }
 
-        protected override sealed void _Start()
+        private void Start()
         {
             this.system = this.GetComponentInParent<VideoSystem>();
             this.events = this.GetComponentInParent<VideoEvents>();
-            this.pubsubHosts = new PubsubHost[1];
-            this.pubsubHosts[0] = this.events;
-
-            this.__Start();
+            this.Subscribe(this.events);
+            this._Start();
         }
 
         protected virtual void OnVideoPlayerInit() { }
@@ -193,12 +190,6 @@ namespace DecentM.Video.Plugins
                 }
 
                 #endregion
-
-
-                default:
-                {
-                    break;
-                }
             }
         }
     }

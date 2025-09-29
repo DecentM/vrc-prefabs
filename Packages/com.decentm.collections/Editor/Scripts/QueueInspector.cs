@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DecentM.Collections.Editor
 {
-    [CustomEditor(typeof(Queue))]
+    [CustomEditor(typeof(Queue), true)]
     internal class QueueInspector : CollectionInspector
     {
         protected override void DrawRow(Rect row, int index, object item)

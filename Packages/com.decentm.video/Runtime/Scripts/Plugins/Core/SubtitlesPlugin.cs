@@ -8,7 +8,7 @@ namespace DecentM.Video.Plugins
     /// <summary>
     /// If the currently loaded video's metadata contains subtitles, this plugin listens to playback events and sends subtitle events when the current timestamp should be showing subtitles
     /// </summary>
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None), AddComponentMenu("DecentM/Video/Plugins/Subtitles")]
     public sealed class SubtitlesPlugin : VideoPlugin
     {
         [SerializeField] private TextMeshProUGUI pregenerateSlot;
@@ -406,7 +406,7 @@ namespace DecentM.Video.Plugins
 
         [SerializeField] private float subtitleOffset = 0;
 
-        protected override void _Awake()
+        protected override void _Start()
         {
             this.Reset();
         }

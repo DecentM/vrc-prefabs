@@ -50,7 +50,7 @@ namespace DecentM.UI
 
         private void FixedUpdate()
         {
-            if (this.options.Length == this.instantiatedOptions.Count)
+            if (this.options.Length == this.instantiatedOptions.Count())
                 return;
 
             this.elapsed += Time.fixedUnscaledDeltaTime;
@@ -58,7 +58,7 @@ namespace DecentM.UI
                 return;
             this.elapsed = 0;
 
-            int newIndex = this.instantiatedOptions.Count;
+            int newIndex = this.instantiatedOptions.Count();
             if (newIndex >= this.options.Length || this.options[newIndex] == null)
                 return;
 

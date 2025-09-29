@@ -6,11 +6,9 @@ namespace DecentM.Video.Plugins
     /// <summary>
     /// When a video loads, this plugin updates the screen resolution to match the video's size
     /// </summary>
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None), AddComponentMenu("DecentM/Video/Plugins/ResolutionUpdater")]
     internal sealed class ResolutionUpdaterPlugin : VideoPlugin
     {
-        [SerializeField] private Vector2Int defaultResolution = new Vector2Int(1920, 1080);
-
         private void ChangeScreenResolution()
         {
             Texture videoTexture = this.system.GetScreenTexture();

@@ -3,10 +3,9 @@
     "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro",
-        "DecentM.Shared",
         "DecentM.Pubsub",
-        "DecentM.PerformanceObserver",
-        "UdonSharp.Runtime"
+        "UdonSharp.Runtime",
+        "DecentM.PerformanceObserver"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -6,7 +6,7 @@ namespace DecentM.Collections
     /// <summary>
     /// A stack is a collection that accepts new items at the top, and removes items from the top (Last-In-First-Out).
     /// </summary>
-    [AddComponentMenu("DecentM/Collections/Stack"), DisallowMultipleComponent]
+    [AddComponentMenu("DecentM/Collections/NonGenerics/Stack"), DisallowMultipleComponent]
     public class Stack : Collection
     {
         /// <summary>

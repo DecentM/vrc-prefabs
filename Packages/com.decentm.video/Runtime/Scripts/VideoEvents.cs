@@ -1,7 +1,8 @@
 ﻿using DecentM.Pubsub;
 using UdonSharp;
-using VRC.SDKBase;
+using UnityEngine;
 using VRC.SDK3.Components.Video;
+using VRC.SDKBase;
 
 namespace DecentM.Video
 {
@@ -28,7 +29,7 @@ namespace DecentM.Video
         internal void OnCustomVideoEvent() { }
     }
 
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None), AddComponentMenu("DecentM/Video/Core/Events")]
     public sealed class VideoEvents : PubsubHost
     {
         #region Core

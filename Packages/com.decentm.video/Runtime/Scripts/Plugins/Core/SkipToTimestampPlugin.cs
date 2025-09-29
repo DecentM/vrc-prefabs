@@ -1,4 +1,5 @@
 ﻿using UdonSharp;
+using UnityEngine;
 using VRC.SDKBase;
 
 namespace DecentM.Video.Plugins
@@ -6,7 +7,7 @@ namespace DecentM.Video.Plugins
     /// <summary>
     /// When a video loads, this plugin will skip to the correct timestamp if the URL has a known skip parameter
     /// </summary>
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None), AddComponentMenu("DecentM/Video/Plugins/SkipToTimestamp")]
     internal sealed class SkipToTimestampPlugin : VideoPlugin
     {
         private float GetTimestamp(string url)
@@ -65,6 +66,7 @@ namespace DecentM.Video.Plugins
                 return;
 
             float timestamp = this.GetTimestamp(url.ToString());
+
             if (timestamp == -1)
                 return;
 

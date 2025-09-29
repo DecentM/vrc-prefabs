@@ -65,7 +65,7 @@ namespace DecentM.Collections.Tests
             Traverse(dll.FirstId, DLLTraversalDirection.Forward);
             Traverse(dll.LastId, DLLTraversalDirection.Backward);
 
-            bool success = processed == dll.Count * 2;
+            bool success = processed == dll.Count() * 2;
 
             if (!success)
                 this.Dump(dll);
@@ -75,7 +75,7 @@ namespace DecentM.Collections.Tests
 
         private void Dump(DoubleLinkedList dll)
         {
-            for (int i = 0; i < dll.Count; i++)
+            for (int i = 0; i < dll.Count(); i++)
             {
                 int id = dll.IdByIndex(i);
                 object item = dll.ElementById(id);
@@ -94,7 +94,7 @@ namespace DecentM.Collections.Tests
         {
             DoubleLinkedList dll = this.Prepare();
 
-            Assert.AreEqual(3, dll.Count);
+            Assert.AreEqual(3, dll.Count());
         }
 
         [Test]
@@ -191,7 +191,7 @@ namespace DecentM.Collections.Tests
 
             Assert.IsTrue(dll.Remove(1));
 
-            Assert.AreEqual(2, dll.Count);
+            Assert.AreEqual(2, dll.Count());
         }
 
         [Test]

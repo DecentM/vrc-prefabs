@@ -1,5 +1,4 @@
-﻿using DecentM.Pubsub;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using UdonSharp;
 using UnityEngine;
 
@@ -17,7 +16,7 @@ namespace DecentM.PerformanceObserver
     /// </summary>
     [
         UdonBehaviourSyncMode(BehaviourSyncMode.None),
-        AddComponentMenu("DecentM/PerformanceObserver/PerformanceObserver"),
+        AddComponentMenu("DecentM/PerformanceObserver/PerformanceObserverSystem"),
         RequireComponent(typeof(PerformanceObserverEvents))
     ]
     public sealed class PerformanceObserverSystem : UdonSharpBehaviour

@@ -13,29 +13,28 @@ namespace DecentM.Video
         public void AVPro() { }
     }
 
+    [RequireComponent(typeof(Renderer))]
     internal abstract class PlayerHandler : UdonSharpBehaviour
     {
         public abstract string type { get; }
 
         [NonSerialized] private BaseVRCVideoPlayer player;
         [NonSerialized] private VideoEvents events;
-        public Renderer screen;
         [NonSerialized] private VideoSystem system;
 
-        private MaterialPropertyBlock _fetchBlock;
+        [NonSerialized] private Renderer screen;
 
         void Start()
         {
-
             this.player = this.GetComponent<BaseVRCVideoPlayer>();
             this.system = this.GetComponentInParent<VideoSystem>();
             this.events = this.GetComponentInParent<VideoEvents>();
-            this._fetchBlock = new MaterialPropertyBlock();
-
+            
+            this.screen = this.GetComponent<Renderer>();
             this.system.RegisterPlayerHandler(this);
         }
 
-        public float progressReportIntervalSeconds = 1;
+        private const float progressReportIntervalSeconds = 1;
 
         private float clock = 0;
 
@@ -48,9 +47,9 @@ namespace DecentM.Video
             )
                 return;
 
-            this.clock += Time.fixedDeltaTime;
+            this.clock += Time.fixedUnscaledDeltaTime;
 
-            if (this.clock > this.progressReportIntervalSeconds)
+            if (this.clock > PlayerHandler.progressReportIntervalSeconds)
             {
                 this.HandleProgress();
                 this.clock = 0;
@@ -59,15 +58,16 @@ namespace DecentM.Video
 
         internal Texture GetScreenTexture()
         {
-            Texture result = this.screen.material.GetTexture("_MainTex");
+            Texture tex = this.screen.material.GetTexture("_MainTex");
 
-            if (result == null)
+            if (tex == null)
             {
-                this.screen.GetPropertyBlock(_fetchBlock);
-                result = _fetchBlock.GetTexture("_MainTex");
+                MaterialPropertyBlock fetchBlock = new MaterialPropertyBlock();
+                this.screen.GetPropertyBlock(fetchBlock);
+                tex = fetchBlock.GetTexture("_MainTex");
             }
 
-            return result;
+            return tex;
         }
 
         private void HandleProgress()

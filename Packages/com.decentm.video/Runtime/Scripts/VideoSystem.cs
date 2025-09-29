@@ -1,7 +1,6 @@
-﻿using DecentM.Collections;
+﻿using DecentM.Collections.Generics;
 using JetBrains.Annotations;
 using System;
-using System.Security.Policy;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -9,10 +8,15 @@ using VRC.SDKBase;
 namespace DecentM.Video
 {
 
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [
+        UdonBehaviourSyncMode(BehaviourSyncMode.None),
+        AddComponentMenu("DecentM/Video/VideoSystem"),
+        RequireComponent(typeof(VideoEvents), typeof(GameObjectList))
+    ]
     public sealed class VideoSystem : UdonSharpBehaviour
     {
-        [SerializeField] private List/*<VideoHandler>*/ playerHandlers;
+        [NonSerialized] private GameObjectList playerHandlers;
+
         [SerializeField] private AudioSource[] speakers;
         [SerializeField] private VideoScreen[] screens;
 
@@ -22,7 +26,10 @@ namespace DecentM.Video
 
         private void Start()
         {
+            this.playerHandlers = this.GetComponent<GameObjectList>();
             this.events = this.GetComponent<VideoEvents>();
+            // In case there's no plugin to set up ownership, we assume the local player is the owner
+            this.ownerId = VRCPlayerApi.GetPlayerId(Networking.LocalPlayer);
             this.SendCustomEventDelayedSeconds(nameof(BroadcastInit), 0.1f);
         }
 
@@ -56,20 +63,23 @@ namespace DecentM.Video
         /// Calculates the aspect ratio, and sets it on supported screens. The default prefab comes with a supported screen.
         /// </summary>
         [PublicAPI]
-        public void ChangeScreenResolution(float width, float height)
+        public bool ChangeScreenResolution(float width, float height)
         {
             float aspectRatio = width / height;
+            int successes = 0;
 
             for (int i = 0; i < this.screens.Length; i++)
             {
                 VideoScreen screen = this.screens[i];
 
-                if (screen == null)
+                if (!screen.SetAspectRatio(aspectRatio))
                     continue;
 
-                screen.SetAspectRatio(aspectRatio);
-                this.events.OnScreenResolutionChange(width, height);
+                successes++;
             }
+
+            this.events.OnScreenResolutionChange(width, height);
+            return successes == this.screens.Length;
         }
 
         /// <summary>
@@ -91,14 +101,20 @@ namespace DecentM.Video
         /// The default prefab comes with a plugin that takes care of this.
         /// </summary>
         [PublicAPI]
-        public void SetScreenTexture(Texture texture)
+        public bool SetScreenTexture(Texture texture)
         {
+            int successes = 0;
+
             foreach (VideoScreen screen in this.screens)
             {
-                screen.SetTexture(texture);
+                if (!screen.SetTexture(texture))
+                    continue;
+
+                successes++;
             }
 
             this.events.OnScreenTextureChange();
+            return successes == this.screens.Length;
         }
 
         private void DisablePlayer(PlayerHandler player)
@@ -125,7 +141,7 @@ namespace DecentM.Video
 
         private void DisableAllPlayers()
         {
-            foreach (PlayerHandler player in playerHandlers.ToArray())
+            foreach (PlayerHandler player in this.playerHandlers.ToArray())
             {
                 this.DisablePlayer(player);
             }
@@ -137,13 +153,13 @@ namespace DecentM.Video
 #endif
         internal int NextPlayerHandler()
         {
-            if (this.playerHandlers.Count == 0)
+            if (this.playerHandlers.Count() == 0)
                 return -1;
 
             int newIndex = this.currentPlayerHandlerIndex + 1;
 
             if (
-                newIndex >= this.playerHandlers.Count
+                newIndex >= this.playerHandlers.Count()
                 || newIndex < 0
                 || this.currentPlayerHandlerIndex == newIndex
                 || this.playerHandlers.ElementAt(newIndex) == null
@@ -188,12 +204,19 @@ namespace DecentM.Video
             return playerHandler.IsPlaying();
         }
 
-        private void UpdateAvProType(bool isAVPro)
+        private bool UpdateAvProType(bool isAVPro)
         {
+            int successes = 0;
+
             foreach (VideoScreen screen in this.screens)
             {
-                screen.SetIsAVPro(isAVPro);
+                if (!screen.SetIsAVPro(isAVPro))
+                    continue;
+
+                successes++;
             }
+
+            return successes == this.screens.Length;
         }
 
         /// <summary>
@@ -279,7 +302,7 @@ namespace DecentM.Video
         {
             if (!string.IsNullOrWhiteSpace(this.approvalPending.ToString()))
                 return;
-            
+
             this.denials = 0;
             this.approvalPending = url;
             this.SendCustomEventDelayedSeconds(nameof(CheckForDenials), this.approvalTimeout);
@@ -502,6 +525,23 @@ namespace DecentM.Video
                 return 0;
 
             return playerHandler.GetTime();
+        }
+
+        private int ownerId = -1;
+
+        public void SetOwner(VRCPlayerApi player)
+        {
+            this.ownerId = VRCPlayerApi.GetPlayerId(player);
+        }
+
+        public VRCPlayerApi GetOwner()
+        {
+            return VRCPlayerApi.GetPlayerById(this.ownerId);
+        }
+
+        public bool IsLocallyOwned()
+        {
+            return this.ownerId == VRCPlayerApi.GetPlayerId(Networking.LocalPlayer);
         }
     }
 }

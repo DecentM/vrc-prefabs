@@ -16,7 +16,7 @@ namespace DecentM.Collections.Editor
             Collection target = (Collection)this.target;
             object[] data = target.ToArray();
 
-            this.HelpBox(MessageType.Info, $"Total: {target.Count}");
+            this.HelpBox(MessageType.Info, $"Total: {target.Count()}");
 
             Rect region = this.DrawRegion(data.Length * RowHeight);
             EditorGUI.BeginDisabledGroup(true);

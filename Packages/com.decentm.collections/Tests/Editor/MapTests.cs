@@ -25,7 +25,7 @@ namespace DecentM.Collections.Tests
         {
             Map map = this.Prepare();
 
-            Assert.AreEqual(6, map.Count);
+            Assert.AreEqual(6, map.Count());
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace DecentM.Collections.Tests
 
             Assert.IsFalse(map.Add("a", 2));
 
-            Assert.AreEqual(6, map.Count);
+            Assert.AreEqual(6, map.Count());
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace DecentM.Collections.Tests
             Assert.IsTrue(map.Remove("a"));
             Assert.IsFalse(map.Remove("a"));
 
-            Assert.AreEqual(5, map.Count);
+            Assert.AreEqual(5, map.Count());
         }
 
         [Test]

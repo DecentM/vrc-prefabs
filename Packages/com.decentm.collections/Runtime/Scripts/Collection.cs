@@ -116,16 +116,37 @@ namespace DecentM.Collections
             return tmp;
         }
 
-        [PublicAPI]
-        public virtual int Count => this.value.Length;
+        protected int Count(object[] array)
+        {
+            return array.Length;
+        }
 
         [PublicAPI]
-        public virtual bool IsEmpty => this.value.Length == 0;
+        public virtual int Count()
+        {
+            return this.Count(this.value);
+        }
+
+        protected bool IsEmpty(object[] array)
+        {
+            return array.Length == 0;
+        }
+
+        [PublicAPI]
+        public virtual bool IsEmpty()
+        {
+            return this.IsEmpty(this.value);
+        }
+
+        protected object[] ToArray(object[] array)
+        {
+            return array;
+        }
 
         [PublicAPI]
         public virtual object[] ToArray()
         {
-            return this.value;
+            return this.ToArray(this.value);
         }
 
         [PublicAPI]

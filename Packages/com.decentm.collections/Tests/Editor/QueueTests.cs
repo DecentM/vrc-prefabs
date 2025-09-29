@@ -12,7 +12,7 @@ namespace DecentM.Collections.Tests
 
             queue.Enqueue("a");
 
-            Assert.AreEqual(1, queue.Count);
+            Assert.AreEqual(1, queue.Count());
         }
 
         [Test]
@@ -31,10 +31,10 @@ namespace DecentM.Collections.Tests
             Queue queue = new Queue();
 
             queue.EnqueueFirst("b");
-            Assert.AreEqual(1, queue.Count);
+            Assert.AreEqual(1, queue.Count());
 
             queue.EnqueueFirst("a");
-            Assert.AreEqual(2, queue.Count);
+            Assert.AreEqual(2, queue.Count());
         }
 
         [Test]
@@ -56,11 +56,11 @@ namespace DecentM.Collections.Tests
             queue.Enqueue("a");
             queue.Enqueue("b");
 
-            Assert.AreEqual(2, queue.Count);
+            Assert.AreEqual(2, queue.Count());
             Assert.AreEqual("a", queue.Dequeue());
-            Assert.AreEqual(1, queue.Count);
+            Assert.AreEqual(1, queue.Count());
             Assert.AreEqual("b", queue.Dequeue());
-            Assert.AreEqual(0, queue.Count);
+            Assert.AreEqual(0, queue.Count());
         }
 
         [Test]

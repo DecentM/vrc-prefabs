@@ -12,24 +12,28 @@ namespace DecentM.Video.Plugins
     /// <br />
     /// Attach this plugin to a video player, assign a Queue, and all the events will be visible in the Queue inspector.
     /// </summary>
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [
+        UdonBehaviourSyncMode(BehaviourSyncMode.None),
+        AddComponentMenu("DecentM/Video/Plugins/Debug"),
+        RequireComponent(typeof(Queue))
+    ]
     internal sealed class DebugPlugin : VideoPlugin
     {
-        [SerializeField]
-        private Queue/*<string>*/ logs;
+        [NonSerialized] private Queue/*<string>*/ logs;
+
+        private const int QueueSize = 20;
 
         private void Log(params string[] messages)
         {
-            if (this.logs.Count > 20)
-            {
+            if (this.logs.Count() > DebugPlugin.QueueSize)
                 this.logs.Dequeue();
-            }
 
             this.logs.Enqueue(String.Join(" ", messages));
         }
 
-        protected override void __Start()
+        protected override void _Start()
         {
+            this.logs = this.GetComponent<Queue>();
             this.Log(nameof(_Start));
         }
 
@@ -55,7 +59,7 @@ namespace DecentM.Video.Plugins
 
         protected override void OnLoadBegin(VRCUrl url)
         {
-            this.Log(nameof(OnLoadBegin), "(with URL)");
+            this.Log(nameof(OnLoadBegin), $"(url: \"{url.ToString()}\")");
         }
 
         protected override void OnLoadError(VideoError videoError)
@@ -127,7 +131,7 @@ namespace DecentM.Video.Plugins
 
         protected override void OnCustomVideoEvent(string name, object[] data)
         {
-            this.Log(nameof(OnCustomVideoEvent), $"{data.Length}");
+            this.Log(nameof(OnCustomVideoEvent), name, $"{data.Length}");
         }
     }
 }

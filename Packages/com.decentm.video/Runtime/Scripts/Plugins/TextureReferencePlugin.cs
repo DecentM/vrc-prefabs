@@ -3,7 +3,7 @@ using UdonSharp;
 
 namespace DecentM.Video.Plugins
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None), AddComponentMenu("DecentM/Video/Plugins/TextureReference")]
     internal sealed class TextureReferencePlugin : VideoPlugin
     {
         [SerializeField] private Material[] materials;

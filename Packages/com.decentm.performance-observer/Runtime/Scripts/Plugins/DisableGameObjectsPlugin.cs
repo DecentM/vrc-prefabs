@@ -14,7 +14,7 @@ namespace DecentM.PerformanceObserver.Plugins
         [SerializeField] private GameObject[] enableOnMedium;
         [SerializeField] private GameObject[] enableOnLow;
 
-        protected override void __Start()
+        protected override void _Start()
         {
             this.OnPerformanceModeChange(nameof(PerformanceObserverMode.High), 0);
         }
